@@ -16,8 +16,10 @@ class AdminRoot extends React.Component {
         selectedCircle: null,
     };
 
-    this.openModal  = this.openModal.bind(this);
-    this.closeModal = this.closeModal.bind(this);
+    this.openModal      = this.openModal.bind(this);
+    this.closeModal     = this.closeModal.bind(this);
+    this.addFavorite    = this.addFavorite.bind(this);
+    this.removeFavorite = this.removeFavorite.bind(this);
   }
 
   componentDidMount() {
@@ -29,18 +31,41 @@ class AdminRoot extends React.Component {
       });
   }
 
-  openModal(selectedCircle){
+  openModal(selectedCircle) {
     this.setState({ selectedCircle, modalShow: true });
   }
 
-  closeModal(){
+  closeModal() {
     this.setState({ modalShow: false });
+  }
+
+  addFavorite(circle) {
+    circle.favorite = {
+      created_at: new Date().getTime(),
+      checked: 1,
+      comment: null,
+    }
+
+    this.setState({ circle: this.state.circles });
+  }
+
+  removeFavorite(circle) {
+    delete circle.favorite;
+
+    this.setState({ circle: this.state.circles });
   }
 
   render() {
     const { circles, modalShow, selectedCircle } = this.state;
 
     return <div className="container">
+      <h3>aaaa</h3>
+      <h3>
+        <Glyphicon glyph="refresh"/>
+        <Glyphicon glyph="export"/>
+        <Glyphicon glyph="link"/>
+        <Glyphicon glyph="refresh"/>
+      </h3>
       <Modal show={modalShow} onHide={this.closeModal}>
         <Modal.Header closeButton>
           <Modal.Title>
@@ -55,6 +80,9 @@ class AdminRoot extends React.Component {
           {
             selectedCircle && <div>
               <Image src={selectedCircle.circlecut}/>
+
+              <h4>お品書き</h4>
+              <p>{selectedCircle.circle_comment}</p>
             </div>
           }
         </Modal.Body>
@@ -64,10 +92,11 @@ class AdminRoot extends React.Component {
         <ReactTable
           className="-striped -highlight"
           defaultPageSize={20}
-          showPagination={false}
+          showPagination={true}
           data={circles}
           getTrProps={(a,b) => {
             return {
+              style: { color: b && b.original && b.original.favorite ? "red" : "" },
               onClick: () => {
                 this.openModal(b.original);
               }
@@ -76,16 +105,9 @@ class AdminRoot extends React.Component {
           columns={[
             {
               Header: "サークル情報",
+              headerStyle: { backgroundColor: "#ddf" },
               columns: [
                 { 
-                  Header: "場所",
-                  headerStyle: { backgroundColor: "#ddd" },
-                  accessor: "space_sym",
-                  width: 50, 
-                  resizable: false,
-                  className: "text-center",
-                  Cell: row => <Glyphicon glyph="plus"/>
-                },{ 
                   Header: "場所",
                   headerStyle: { backgroundColor: "#ddd" },
                   accessor: "space_sym",
@@ -133,6 +155,7 @@ class AdminRoot extends React.Component {
               ]  
             },{
               Header: "お品書き",
+              headerStyle: { backgroundColor: "#dfd" },
               columns: [
                 { 
                   Header: "リンク",
@@ -156,21 +179,24 @@ class AdminRoot extends React.Component {
               ]
             },{
               Header: "チェックリスト",
+              headerStyle: { backgroundColor: "#dff" },
               columns: [
                 { 
-                  Header: "リンク",
+                  Header: "場所",
                   headerStyle: { backgroundColor: "#ddd" },
-                  accessor: "circle_link",
-                  className: "text-center",
-                  width: 60,
+                  accessor: "space_sym",
+                  width: 50, 
                   resizable: false,
-                  Cell: row => row.value
-                    ? <Glyphicon glyph=""/>
-                    : ""
+                  className: "text-center",
+                  Cell: row => {
+                    return row.original.favorite
+                      ? <Glyphicon glyph="minus" onClick={e => { e.stopPropagation(); this.removeFavorite(row.original) }}/>
+                      : <Glyphicon glyph="plus"  onClick={e => { e.stopPropagation(); this.addFavorite(row.original) }}/>
+                  },
                 },{ 
                   Header: "コメント",
                   headerStyle: { backgroundColor: "#ddd" },
-                  accessor: "circle_comment",
+                  accessor: "favorite.comment",
                   width: 300, 
                   Cell: row => row.value
                     ? row.value
