@@ -2,8 +2,7 @@ import React from 'react';
 import request from 'superagent';
 import FontAwesome from 'react-fontawesome';
 import ReactTable from "react-table";
-//import { Link } from 'react-router-dom';
-import { Modal, Image, Glyphicon, Row } from 'react-bootstrap';
+import { Col, Button, Modal, Image, Glyphicon, Row } from 'react-bootstrap';
 
 class AdminRoot extends React.Component {
   constructor(props, context) {
@@ -59,13 +58,17 @@ class AdminRoot extends React.Component {
     const { circles, modalShow, selectedCircle } = this.state;
 
     return <div className="container">
-      <h3>aaaa</h3>
-      <h3>
-        <Glyphicon glyph="refresh"/>
-        <Glyphicon glyph="export"/>
-        <Glyphicon glyph="link"/>
-        <Glyphicon glyph="refresh"/>
-      </h3>
+      <h3>Checklist</h3>
+      <Row>
+        <div className="text-warning">
+          <Glyphicon glyph="exclamation-sign"/>
+          ログインを行うことでチェックリストの作成を行うことができます。
+          <Button bsStyle="primary" bsSize="xs">
+            <FontAwesome name="twitter" size="1x"/> Login via Twitter
+          </Button>
+        </div>
+        <br/>
+      </Row>
       <Modal show={modalShow} onHide={this.closeModal}>
         <Modal.Header closeButton>
           <Modal.Title>
