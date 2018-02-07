@@ -142,7 +142,7 @@ class AdminRoot extends React.Component {
                   resizable: false,
                   className: "text-center",
                   Cell: row => row.value
-                    ? <a href={row.value} target="_blank"><Glyphicon glyph="link"/></a>
+                    ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><Glyphicon glyph="link"/></a>
                     : ""
                 },{ 
                   Header: "HP",
@@ -152,7 +152,7 @@ class AdminRoot extends React.Component {
                   resizable: false,
                   className: "text-center",
                   Cell: row => row.value
-                    ? <a href={row.value} target="_blank"><Glyphicon glyph="link"/></a>
+                    ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><Glyphicon glyph="link"/></a>
                     : ""
                 },
               ]  
@@ -168,7 +168,7 @@ class AdminRoot extends React.Component {
                   width: 60,
                   resizable: false,
                   Cell: row => row.value
-                    ? <a href={row.value} target="_blank"><Glyphicon glyph="link"/></a>
+                    ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><Glyphicon glyph="link"/></a>
                     : ""
                 },{ 
                   Header: "コメント",
