@@ -2,7 +2,7 @@ import React from 'react';
 import request from 'superagent';
 import FontAwesome from 'react-fontawesome';
 import ReactTable from "react-table";
-import { Col, Button, Modal, Image, Glyphicon, Row } from 'react-bootstrap';
+import { Badge, Nav, NavItem, Navbar, Col, Button, Modal, Image, Glyphicon, Row } from 'react-bootstrap';
 
 class AdminRoot extends React.Component {
   constructor(props, context) {
@@ -13,6 +13,7 @@ class AdminRoot extends React.Component {
         loading: true,
         modalShow: false,
         selectedCircle: null,
+        me: null,
     };
 
     this.openModal      = this.openModal.bind(this);
@@ -22,6 +23,14 @@ class AdminRoot extends React.Component {
   }
 
   componentDidMount() {
+    fetch(
+      "https://v7hwasc1o7.execute-api.ap-northeast-1.amazonaws.com/dev/me?" + new Date().getTime(),
+      { mode: "cors", credentials: 'include' }
+    )
+    .then(data => data.json())
+    .then(data => { this.setState({ me: data }) })
+    .catch(err => { this.setState({ me: null }) })
+
     request
       .get(window.location.origin + '/aqmd3rd.json')
       .end((err,res) => {
@@ -55,20 +64,39 @@ class AdminRoot extends React.Component {
   }
 
   render() {
-    const { circles, modalShow, selectedCircle } = this.state;
+    const { circles, modalShow, selectedCircle, me } = this.state;
 
     return <div className="container">
-      <h3>Checklist</h3>
-      <Row>
-        <div className="text-warning">
-          <Glyphicon glyph="exclamation-sign"/>
-          ログインを行うことでチェックリストの作成を行うことができます。
-          <Button bsStyle="primary" bsSize="xs">
-            <FontAwesome name="twitter" size="1x"/> Login via Twitter
-          </Button>
-        </div>
-        <br/>
-      </Row>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <Navbar fixedTop>
+        <Navbar.Header>
+          <Navbar.Brand>チェックリスト</Navbar.Brand>
+          <Navbar.Toggle />
+        </Navbar.Header>
+        <Navbar.Collapse>
+          {
+            me &&
+              <Navbar.Text pullRight>
+                <Navbar.Link href="#">
+                {me.display_name} (@{me.screen_name})
+                </Navbar.Link>
+              </Navbar.Text>
+          }
+        </Navbar.Collapse>
+      </Navbar>
+      {
+        !me &&
+          <div className="text-warning">
+            <Glyphicon glyph="exclamation-sign"/>
+            ログインを行うことでチェックリストの作成を行うことができます。
+            <Button bsStyle="primary" bsSize="xs">
+              <FontAwesome name="twitter" size="1x"/> Login via Twitter
+            </Button>
+          </div>
+      }
       <Modal show={modalShow} onHide={this.closeModal}>
         <Modal.Header closeButton>
           <Modal.Title>
@@ -91,7 +119,6 @@ class AdminRoot extends React.Component {
         </Modal.Body>
       </Modal>
 
-      <Row>
         <ReactTable
           className="-striped -highlight"
           defaultPageSize={20}
@@ -208,7 +235,6 @@ class AdminRoot extends React.Component {
               ]
             }
           ]} />
-      </Row>
 
       {
         this.state.loading &&
