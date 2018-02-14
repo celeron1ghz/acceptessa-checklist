@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import FontAwesome from 'react-fontawesome';
 import { Glyphicon, Panel, Label, FormControl, Modal, Image } from 'react-bootstrap';
 
 class CircleDescriptionModal extends React.Component {
@@ -43,11 +44,15 @@ class CircleDescriptionModal extends React.Component {
                 </p>
                 {
                   circle.pixiv_id &&
-                    <p><Label>Pixiv</Label> <a href={circle.pixiv_id} target="_blank">{circle.pixiv_id}</a></p>
+                    <p><Label><FontAwesome name="link"/> Pixiv</Label> <a href={circle.pixiv_id} target="_blank">{circle.pixiv_id}</a></p>
                 }
                 {
                   circle.site_url &&
-                    <p><Label>ホームページ</Label> <a href={circle.site_url} target="_blank">{circle.site_url}</a></p>
+                    <p><Label><FontAwesome name="link"/> ホームページ</Label> <a href={circle.site_url} target="_blank">{circle.site_url}</a></p>
+                }
+                {
+                  circle.twitter_id &&
+                    <p><Label><FontAwesome name="twitter"/> Twitter</Label> <a href={"https://twitter.com/" + circle.twitter_id} target="_blank">@{circle.twitter_id}</a></p>
                 }
               </Panel.Body>
             </Panel>
