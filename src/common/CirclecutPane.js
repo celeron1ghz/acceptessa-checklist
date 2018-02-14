@@ -8,7 +8,7 @@ class CirclecutPane extends React.Component {
   }
 
   removeFavorite(circle) {
-    this.props.onRemoveFavorite(circle)
+    this.props.onRemoveFavorite(circle);
   }
 
   imageClick(circle) {
@@ -20,19 +20,23 @@ class CirclecutPane extends React.Component {
 
     return <div style={{ minWidth: "" }}>
       {
-        circles.map(c =>
-          <Col
+        circles.map(c => {
+          const s = c.space_count === "1"
+            ? { xs: 12, sm: 6,  md: 4, lg: 3, width: "255px" }
+            : { xs: 12, sm: 12, md: 8, lg: 6, width: "510px" };
+
+          return <Col
             key={c.circlecut}
-            xs={12} sm={6} md={4} lg={3}
+            xs={s.xs} sm={s.sm} md={s.md} lg={s.lg}
             onClick={this.imageClick.bind(this,c)}
             style={{ textAlign: "" }}>
-              <div style={{ minWidth: "255px", maxWidth: "255px" }}>
-                <Image src={c.circlecut} responsive style={{ display: "inline-block" }}/>
-                <div style={{ marginTop: "5px", marginBottom: "25px" }}>
+              <div style={{ minWidth: s.width, maxWidth: s.width }}>
+                <Image src={c.circlecut} responsive style={{ display: "inline-block", border: "5px solid aqua" }}/>
+                <div style={{ marginTop: "5px", marginBottom: "25px", fontSize: "12px" }}>
                   <Col xs={3} sm={3} md={3} lg={3}>
                     {c.space_sym} {c.space_num}
                   </Col>
-                  <Col xs={6} sm={6} md={6} lg={6} style={{ fontSize: "12px" }}>
+                  <Col xs={6} sm={6} md={6} lg={6}>
                     {c.circle_name}
                   </Col>
                   <Col xsPush={3} smPush={3} mdPush={3} lgPush={3} className="text-right">
@@ -48,10 +52,10 @@ class CirclecutPane extends React.Component {
                   </Col>
                 </div>
               </div>
-          </Col>
-        )
+          </Col>;
+        })
       }
-    </div>
+    </div>;
   }
 }
 

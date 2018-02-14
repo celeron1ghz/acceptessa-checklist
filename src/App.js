@@ -55,7 +55,7 @@ class AdminRoot extends React.Component {
       created_at: new Date().getTime(),
       checked: 1,
       comment: null,
-    }
+    };
 
     this.setState({ circle: this.state.circles });
   }
