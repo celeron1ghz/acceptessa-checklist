@@ -24,16 +24,11 @@ class AdminRoot extends React.Component {
     this.closeModal     = this.closeModal.bind(this);
     this.addFavorite    = this.addFavorite.bind(this);
     this.removeFavorite = this.removeFavorite.bind(this);
+    this.loginPopup     = this.loginPopup.bind(this);
   }
 
   componentDidMount() {
-    fetch(
-      "https://v7hwasc1o7.execute-api.ap-northeast-1.amazonaws.com/dev/me?" + new Date().getTime(),
-      { mode: "cors", credentials: 'include' }
-    )
-    .then(data => data.json())
-    .then(data => { this.setState({ me: data }) })
-    .catch(err => { this.setState({ me: null }) })
+    this.loadLoginInfo();
 
     request
       .get(window.location.origin + '/aqmd3rd.json')
@@ -41,6 +36,13 @@ class AdminRoot extends React.Component {
         let data = JSON.parse(res.text);
         this.setState({ circles: data.circles, sort_order: data.sort_order, loading: false });
       });
+  }
+
+  loadLoginInfo() {
+    fetch(this.BASE_URL + "/me?" + new Date().getTime(), { mode: "cors", credentials: 'include' })
+      .then(data => data.json())
+      .then(data => { this.setState({ me: data }) })
+      .catch(err => { this.setState({ me: null }) })
   }
 
   openModal(selectedCircle) {
@@ -67,6 +69,16 @@ class AdminRoot extends React.Component {
     this.setState({ circle: this.state.circles });
   }
 
+  loginPopup() {
+    const popup = window.open(this.BASE_URL + "/auth");
+    const id = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(id);
+        this.loadLoginInfo()
+      }
+    },500);
+  }
+
   render() {
     const { circles, modalShow, selectedCircle, me } = this.state;
 
@@ -83,7 +95,7 @@ class AdminRoot extends React.Component {
                     <FontAwesome name="sign-out"/> ログアウト
                   </Button>
                 </div>
-              : <Button bsStyle="primary" bsSize="xs" href={this.BASE_URL + "/auth"} target="_blank">
+              : <Button bsStyle="primary" bsSize="xs" onClick={this.loginPopup}>
                   <FontAwesome name="twitter"/> Login via Twitter
                 </Button>
           }
