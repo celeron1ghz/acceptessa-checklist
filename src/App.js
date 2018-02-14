@@ -1,6 +1,7 @@
 import React from 'react';
 import request from 'superagent';
 import FontAwesome from 'react-fontawesome';
+import { withRouter } from 'react-router-dom';
 import { Alert, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
 
 import CircleDescriptionModal from './common/CircleDescriptionModal';
@@ -54,10 +55,14 @@ class AdminRoot extends React.Component {
   }
 
   openModal(selectedCircle) {
+    const param = new URLSearchParams();
+    param.append("circle_id", selectedCircle.circle_id);
+    this.props.history.push("?" + param.toString());
     this.setState({ selectedCircle, modalShow: true });
   }
 
   closeModal() {
+    this.props.history.push("?");
     this.setState({ modalShow: false });
   }
 
@@ -82,9 +87,14 @@ class AdminRoot extends React.Component {
     const id = setInterval(() => {
       if (popup.closed) {
         clearInterval(id);
-        this.loadLoginInfo()
+        this.loadLoginInfo();
       }
     },500);
+  }
+
+  componentWillReceiveProps(props){
+    const param = new URLSearchParams(props.location.search);
+    // TODO: hashchange handling here
   }
 
   render() {
@@ -158,4 +168,4 @@ class AdminRoot extends React.Component {
   }
 }
 
-export default AdminRoot;
+export default withRouter(AdminRoot);
