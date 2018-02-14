@@ -1,10 +1,11 @@
 import React from 'react';
 import request from 'superagent';
 import FontAwesome from 'react-fontawesome';
-import { Tab, Row, Nav, NavItem, MenuItem, Navbar, Button, Glyphicon } from 'react-bootstrap';
+import { Tab, Nav, NavItem, Navbar, Button, Glyphicon } from 'react-bootstrap';
 
 import CircleDescriptionModal from './common/CircleDescriptionModal';
 import CircleListPane from './common/CircleListPane';
+import CirclecutPane from './common/CirclecutPane';
 
 class AdminRoot extends React.Component {
   constructor(props, context) {
@@ -93,7 +94,6 @@ class AdminRoot extends React.Component {
             </Button>
           </div>
       }
-
       <Tab.Container id="left-tabs-example" defaultActiveKey="list">
         <div>
           <Nav bsStyle="pills">
@@ -111,10 +111,14 @@ class AdminRoot extends React.Component {
                 onRemoveFavorite={this.removeFavorite}/>
             </Tab.Pane>
             <Tab.Pane eventKey="circlecut">
-              Tab 2 content
+              <CirclecutPane
+                circles={circles}
+                onImageClick={this.openModal}
+                onAddFavorite={this.addFavorite}
+                onRemoveFavorite={this.removeFavorite}/>
             </Tab.Pane>
             <Tab.Pane eventKey="favorite">
-              Tab 3 content
+              あたり
             </Tab.Pane>
           </Tab.Content>
         </div>
