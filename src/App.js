@@ -1,7 +1,7 @@
 import React from 'react';
 import request from 'superagent';
 import FontAwesome from 'react-fontawesome';
-import { Navbar, Button, Glyphicon } from 'react-bootstrap';
+import { Tab, Row, Nav, NavItem, MenuItem, Navbar, Button, Glyphicon } from 'react-bootstrap';
 
 import CircleDescriptionModal from './common/CircleDescriptionModal';
 import CircleListPane from './common/CircleListPane';
@@ -93,12 +93,34 @@ class AdminRoot extends React.Component {
             </Button>
           </div>
       }
+
+      <Tab.Container id="left-tabs-example" defaultActiveKey="list">
+        <div>
+          <Nav bsStyle="pills">
+            <NavItem eventKey="list"><Glyphicon glyph="th-list"/> リスト表示</NavItem>
+            <NavItem eventKey="circlecut"><Glyphicon glyph="picture"/> サークルカット</NavItem>
+            <NavItem eventKey="favorite"><Glyphicon glyph="star"/> お気に入り済み</NavItem>
+          </Nav>
+          <br/>
+          <Tab.Content>
+            <Tab.Pane eventKey="list">
+              <CircleListPane
+                circles={circles}
+                onRowClick={this.openModal}
+                onAddFavorite={this.addFavorite}
+                onRemoveFavorite={this.removeFavorite}/>
+            </Tab.Pane>
+            <Tab.Pane eventKey="circlecut">
+              Tab 2 content
+            </Tab.Pane>
+            <Tab.Pane eventKey="favorite">
+              Tab 3 content
+            </Tab.Pane>
+          </Tab.Content>
+        </div>
+      </Tab.Container>
+
       <CircleDescriptionModal show={modalShow} circle={selectedCircle} onClose={this.closeModal}/>
-      <CircleListPane
-        circles={circles}
-        onRowClick={this.openModal}
-        onAddFavorite={this.addFavorite}
-        onRemoveFavorite={this.removeFavorite}/>
 
       {
         this.state.loading &&
