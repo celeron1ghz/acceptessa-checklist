@@ -1,7 +1,7 @@
 import React from 'react';
 import request from 'superagent';
 import FontAwesome from 'react-fontawesome';
-import { Tab, Nav, NavItem, Navbar, Button, Glyphicon } from 'react-bootstrap';
+import { Alert, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
 
 import CircleDescriptionModal from './common/CircleDescriptionModal';
 import CircleListPane from './common/CircleListPane';
@@ -19,6 +19,7 @@ class AdminRoot extends React.Component {
         me: null,
     };
 
+    this.BASE_URL       = "https://v7hwasc1o7.execute-api.ap-northeast-1.amazonaws.com/dev";
     this.openModal      = this.openModal.bind(this);
     this.closeModal     = this.closeModal.bind(this);
     this.addFavorite    = this.addFavorite.bind(this);
@@ -71,35 +72,35 @@ class AdminRoot extends React.Component {
 
     return <div className="container">
       <br/>
-      <Navbar>
-        <Navbar.Header>
-          <Navbar.Brand>
-            {
-              me && <span>{me.display_name} (@{me.screen_name}) のチェックリスト</span>
-            }
-            {
-              !me && <span>チェックリスト</span>
-            }
-          </Navbar.Brand>
-          <Navbar.Toggle />
-        </Navbar.Header>
-      </Navbar>
+      <Well bsSize="small" className="clearfix">
+        <span>サークル一覧 (アクアマリンドリーム)</span>
+        <div className="pull-right">
+          {
+            me
+              ? <div>
+                  @{me.screen_name}{' '}
+                  <Button bsSize="xs" bsStyle="warning">
+                    <FontAwesome name="sign-out"/> ログアウト
+                  </Button>
+                </div>
+              : <Button bsStyle="primary" bsSize="xs" href={this.BASE_URL + "/auth"} target="_blank">
+                  <FontAwesome name="twitter"/> Login via Twitter
+                </Button>
+          }
+        </div>
+      </Well>
       {
         !me &&
-          <div className="text-warning">
-            <Glyphicon glyph="exclamation-sign"/>
-            ログインを行うことでチェックリストの作成を行うことができます。
-            <Button bsStyle="primary" bsSize="xs">
-              <FontAwesome name="twitter"/> Login via Twitter
-            </Button>
-          </div>
+          <Alert>
+            <Glyphicon glyph="exclamation-sign"/> ログインを行うことでチェックリストの作成を行うことができます。
+          </Alert>
       }
       <Tab.Container id="left-tabs-example" defaultActiveKey="list">
         <div>
           <Nav bsStyle="pills">
-            <NavItem eventKey="list"><Glyphicon glyph="th-list"/> リスト表示</NavItem>
-            <NavItem eventKey="circlecut"><Glyphicon glyph="picture"/> サークルカット</NavItem>
-            <NavItem eventKey="favorite"><Glyphicon glyph="star"/> お気に入り済み</NavItem>
+            <NavItem eventKey="list"><Glyphicon glyph="th-list"/> リスト表示 <Badge>{circles.length}</Badge></NavItem>
+            <NavItem eventKey="circlecut"><Glyphicon glyph="picture"/> サークルカット <Badge>{circles.length}</Badge></NavItem>
+            <NavItem eventKey="favorite"><Glyphicon glyph="star"/> お気に入り済み <Badge>28</Badge></NavItem>
           </Nav>
           <br/>
           <Tab.Content>
