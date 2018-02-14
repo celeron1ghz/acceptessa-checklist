@@ -25,6 +25,7 @@ class AdminRoot extends React.Component {
     this.addFavorite    = this.addFavorite.bind(this);
     this.removeFavorite = this.removeFavorite.bind(this);
     this.loginPopup     = this.loginPopup.bind(this);
+    this.logout         = this.logout.bind(this);
   }
 
   componentDidMount() {
@@ -40,6 +41,13 @@ class AdminRoot extends React.Component {
 
   loadLoginInfo() {
     fetch(this.BASE_URL + "/me?" + new Date().getTime(), { mode: "cors", credentials: 'include' })
+      .then(data => data.json())
+      .then(data => { this.setState({ me: data }) })
+      .catch(err => { this.setState({ me: null }) })
+  }
+
+  logout() {
+    fetch(this.BASE_URL + "/logout?" + new Date().getTime(), { mode: "cors", credentials: 'include' })
       .then(data => data.json())
       .then(data => { this.setState({ me: data }) })
       .catch(err => { this.setState({ me: null }) })
@@ -91,7 +99,7 @@ class AdminRoot extends React.Component {
             me
               ? <div>
                   @{me.screen_name}{' '}
-                  <Button bsSize="xs" bsStyle="warning">
+                  <Button bsSize="xs" bsStyle="warning" onClick={this.logout}>
                     <FontAwesome name="sign-out"/> ログアウト
                   </Button>
                 </div>
