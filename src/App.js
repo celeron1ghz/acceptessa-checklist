@@ -2,7 +2,9 @@ import React from 'react';
 import request from 'superagent';
 import FontAwesome from 'react-fontawesome';
 import ReactTable from "react-table";
-import { Badge, Nav, NavItem, Navbar, Col, Button, Modal, Image, Glyphicon, Row } from 'react-bootstrap';
+import { Navbar, Button, Glyphicon } from 'react-bootstrap';
+
+import CircleDescriptionModal from './common/CircleDescriptionModal';
 
 class AdminRoot extends React.Component {
   constructor(props, context) {
@@ -68,24 +70,18 @@ class AdminRoot extends React.Component {
 
     return <div className="container">
       <br/>
-      <br/>
-      <br/>
-      <br/>
-      <Navbar fixedTop>
+      <Navbar>
         <Navbar.Header>
-          <Navbar.Brand>チェックリスト</Navbar.Brand>
+          <Navbar.Brand>
+            {
+              me && <span>{me.display_name} (@{me.screen_name}) のチェックリスト</span>
+            }
+            {
+              !me && <span>チェックリスト</span>
+            }
+          </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
-        <Navbar.Collapse>
-          {
-            me &&
-              <Navbar.Text pullRight>
-                <Navbar.Link href="#">
-                {me.display_name} (@{me.screen_name})
-                </Navbar.Link>
-              </Navbar.Text>
-          }
-        </Navbar.Collapse>
       </Navbar>
       {
         !me &&
@@ -93,149 +89,114 @@ class AdminRoot extends React.Component {
             <Glyphicon glyph="exclamation-sign"/>
             ログインを行うことでチェックリストの作成を行うことができます。
             <Button bsStyle="primary" bsSize="xs">
-              <FontAwesome name="twitter" size="1x"/> Login via Twitter
+              <FontAwesome name="twitter"/> Login via Twitter
             </Button>
           </div>
       }
-      <Modal show={modalShow} onHide={this.closeModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {
-              selectedCircle && <div>
-                {selectedCircle.circle_name}
-              </div>
+      <CircleDescriptionModal show={modalShow} circle={selectedCircle} onClose={this.closeModal}/>
+
+      <ReactTable
+        className="-striped -highlight"
+        defaultPageSize={20}
+        showPagination={true}
+        data={circles}
+        getTrProps={(a,b) => {
+          return {
+            style: { color: b && b.original && b.original.favorite ? "red" : "" },
+            onClick: () => {
+              this.openModal(b.original);
             }
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+          };
+        }}
+        columns={[
           {
-            selectedCircle && <div>
-              <Image src={selectedCircle.circlecut}/>
-
-              <h4>お品書き</h4>
-              <p>{selectedCircle.circle_comment}</p>
-            </div>
-          }
-        </Modal.Body>
-      </Modal>
-
-        <ReactTable
-          className="-striped -highlight"
-          defaultPageSize={20}
-          showPagination={true}
-          data={circles}
-          getTrProps={(a,b) => {
-            return {
-              style: { color: b && b.original && b.original.favorite ? "red" : "" },
-              onClick: () => {
-                this.openModal(b.original);
+            Header: "チェック",
+            headerStyle: { backgroundColor: "#dff", fontSize: "12px" },
+            columns: [
+              {
+                Header: "場所",
+                headerStyle: { backgroundColor: "#ddd", fontSize: "12px" },
+                accessor: "favorite",
+                width: 70,
+                resizable: false,
+                className: "text-center",
+                Cell: row => {
+                  return row.original.favorite
+                    ? <Button bsStyle="danger" bsSize="xs" onClick={e => { e.stopPropagation(); this.removeFavorite(row.original)}}><Glyphicon glyph="minus"/> 削除</Button>
+                    : <Button bsStyle="primary" bsSize="xs" onClick={e => { e.stopPropagation(); this.addFavorite(row.original)  }}><Glyphicon glyph="plus"/> 追加</Button>
+                },
               }
-            };
-          }}
-          columns={[
-            {
-              Header: "サークル情報",
-              headerStyle: { backgroundColor: "#ddf" },
-              columns: [
-                { 
-                  Header: "場所",
-                  headerStyle: { backgroundColor: "#ddd" },
-                  accessor: "space_sym",
-                  width: 60, 
-                  resizable: false,
-                  className: "text-center",
-                },{ 
-                  Header: "数字",
-                  headerStyle: { backgroundColor: "#ddd" },
-                  accessor: "space_num",
-                  width: 40, 
-                  resizable: false,
-                  className: "text-center",
-                },{ 
-                  Header: "サークル名",
-                  headerStyle: { backgroundColor: "#ddd" },
-                  accessor: "circle_name",
-                  width: 200, 
-                },{ 
-                  Header: "作者",
-                  headerStyle: { backgroundColor: "#ddd" },
-                  accessor: "penname",
-                  width: 100, 
-                },{ 
-                  Header: "Pixiv",
-                  headerStyle: { backgroundColor: "#ddd" },
-                  accessor: "pixiv_id",
-                  width: 60,
-                  resizable: false,
-                  className: "text-center",
-                  Cell: row => row.value
-                    ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><Glyphicon glyph="link"/></a>
-                    : ""
-                },{ 
-                  Header: "HP",
-                  headerStyle: { backgroundColor: "#ddd" },
-                  accessor: "site_url",
-                  width: 60, 
-                  resizable: false,
-                  className: "text-center",
-                  Cell: row => row.value
-                    ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><Glyphicon glyph="link"/></a>
-                    : ""
-                },
-              ]  
-            },{
-              Header: "お品書き",
-              headerStyle: { backgroundColor: "#dfd" },
-              columns: [
-                { 
-                  Header: "リンク",
-                  headerStyle: { backgroundColor: "#ddd" },
-                  accessor: "circle_link",
-                  className: "text-center",
-                  width: 60,
-                  resizable: false,
-                  Cell: row => row.value
-                    ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><Glyphicon glyph="link"/></a>
-                    : ""
-                },{ 
-                  Header: "コメント",
-                  headerStyle: { backgroundColor: "#ddd" },
-                  accessor: "circle_comment",
-                  width: 300, 
-                  Cell: row => row.value
-                    ? row.value
-                    : <span className="text-muted">(未記入)</span>
-                },
-              ]
-            },{
-              Header: "チェックリスト",
-              headerStyle: { backgroundColor: "#dff" },
-              columns: [
-                { 
-                  Header: "場所",
-                  headerStyle: { backgroundColor: "#ddd" },
-                  accessor: "space_sym",
-                  width: 50, 
-                  resizable: false,
-                  className: "text-center",
-                  Cell: row => {
-                    return row.original.favorite
-                      ? <Glyphicon glyph="minus" onClick={e => { e.stopPropagation(); this.removeFavorite(row.original) }}/>
-                      : <Glyphicon glyph="plus"  onClick={e => { e.stopPropagation(); this.addFavorite(row.original) }}/>
-                  },
-                },{ 
-                  Header: "コメント",
-                  headerStyle: { backgroundColor: "#ddd" },
-                  accessor: "favorite.comment",
-                  width: 300, 
-                  Cell: row => row.value
-                    ? row.value
-                    : <span className="text-muted">(未記入)</span>
-                },
-              ]
-            }
-          ]} />
-
+            ]
+          },{
+            Header: "サークル情報",
+            headerStyle: { backgroundColor: "#ddf" },
+            columns: [
+              {
+                Header: "場所",
+                headerStyle: { backgroundColor: "#ddd" },
+                accessor: "space_sym",
+                width: 60,
+                resizable: false,
+                className: "text-center",
+              },{
+                Header: "数字",
+                headerStyle: { backgroundColor: "#ddd" },
+                accessor: "space_num",
+                width: 40,
+                resizable: false,
+                className: "text-center",
+              },{
+                Header: "サークル名",
+                headerStyle: { backgroundColor: "#ddd" },
+                accessor: "circle_name",
+                width: 200,
+              },{
+                Header: "作者",
+                headerStyle: { backgroundColor: "#ddd" },
+                accessor: "penname",
+                width: 100,
+              }
+            ]
+          },{
+            Header: "お品書き",
+            headerStyle: { backgroundColor: "#dfd" },
+            columns: [
+              {
+                Header: "コメント",
+                headerStyle: { backgroundColor: "#ddd" },
+                accessor: "circle_comment",
+                width: 300,
+                Cell: row => row.value
+                  ? row.value
+                  : <span style={{ color: "#ccc" }}>(未記入)</span>
+              },{
+                Header: "Link",
+                headerStyle: { backgroundColor: "#ddd" },
+                accessor: "circle_link",
+                className: "text-center",
+                width: 40,
+                resizable: false,
+                Cell: row => row.value
+                  ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><Glyphicon glyph="link"/></a>
+                  : ""
+              }
+            ]
+          },{
+            Header: "チェックリスト",
+            headerStyle: { backgroundColor: "#dff" },
+            columns: [
+              {
+                Header: "コメント",
+                headerStyle: { backgroundColor: "#ddd" },
+                accessor: "favorite.comment",
+                width: 300,
+                Cell: row => row.value
+                  ? row.value
+                  : <span style={{ color: "#ccc" }}>(未記入)</span>
+              },
+            ]
+          }
+        ]} />
       {
         this.state.loading &&
           <div className="text-center text-muted">
