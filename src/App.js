@@ -37,6 +37,7 @@ class AdminRoot extends React.Component {
       .end((err,res) => {
         let data = JSON.parse(res.text);
         this.setState({ circles: data.circles, sort_order: data.sort_order, loading: false });
+        this.componentWillReceiveProps(this.props);
       });
   }
 
@@ -58,12 +59,12 @@ class AdminRoot extends React.Component {
     const param = new URLSearchParams();
     param.append("circle_id", selectedCircle.circle_id);
     this.props.history.push("?" + param.toString());
-    this.setState({ selectedCircle, modalShow: true });
+    //this.setState({ selectedCircle, modalShow: true });
   }
 
   closeModal() {
     this.props.history.push("?");
-    this.setState({ modalShow: false });
+    //this.setState({ modalShow: false });
   }
 
   addFavorite(circle) {
@@ -94,7 +95,14 @@ class AdminRoot extends React.Component {
 
   componentWillReceiveProps(props){
     const param = new URLSearchParams(props.location.search);
-    // TODO: hashchange handling here
+    const circle_id = param.get("circle_id");
+    const circle = this.state.circles.filter(c => c.circle_id === circle_id)[0]
+
+    if (circle) {
+      this.setState({ selectedCircle: circle, modalShow: true });
+    } else {
+      this.setState({ modalShow: false });
+    }
   }
 
   render() {
