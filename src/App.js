@@ -12,7 +12,8 @@ class AdminRoot extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-        circles: [],
+        circleList: [],
+        circleIdx:  {},
         sort_order: [],
         loading: true,
         modalShow: false,
@@ -36,7 +37,7 @@ class AdminRoot extends React.Component {
       .get(window.location.origin + '/aqmd3rd.json')
       .end((err,res) => {
         let data = JSON.parse(res.text);
-        this.setState({ circles: data.circles, sort_order: data.sort_order, loading: false });
+        this.setState({ circleList: data.circles, sort_order: data.sort_order, loading: false });
         this.componentWillReceiveProps(this.props);
       });
   }
@@ -59,12 +60,10 @@ class AdminRoot extends React.Component {
     const param = new URLSearchParams();
     param.append("circle_id", selectedCircle.circle_id);
     this.props.history.push("?" + param.toString());
-    //this.setState({ selectedCircle, modalShow: true });
   }
 
   closeModal() {
     this.props.history.push("?");
-    //this.setState({ modalShow: false });
   }
 
   addFavorite(circle) {
@@ -74,13 +73,13 @@ class AdminRoot extends React.Component {
       comment: null,
     };
 
-    this.setState({ circle: this.state.circles });
+    this.setState({ circleList: this.state.circleList });
   }
 
   removeFavorite(circle) {
     delete circle.favorite;
 
-    this.setState({ circle: this.state.circles });
+    this.setState({ circleList: this.state.circleList });
   }
 
   loginPopup() {
@@ -106,7 +105,7 @@ class AdminRoot extends React.Component {
   }
 
   render() {
-    const { circles, modalShow, selectedCircle, me } = this.state;
+    const { circleList, modalShow, selectedCircle, me } = this.state;
 
     return <div className="container">
       <br/>
@@ -137,15 +136,15 @@ class AdminRoot extends React.Component {
       <Tab.Container id="left-tabs-example" defaultActiveKey="list">
         <div>
           <Nav bsStyle="pills">
-            <NavItem eventKey="list"><Glyphicon glyph="th-list"/> リスト表示 <Badge>{circles.length}</Badge></NavItem>
-            <NavItem eventKey="circlecut"><Glyphicon glyph="picture"/> サークルカット <Badge>{circles.length}</Badge></NavItem>
+            <NavItem eventKey="list"><Glyphicon glyph="th-list"/> リスト表示 <Badge>{circleList.length}</Badge></NavItem>
+            <NavItem eventKey="circlecut"><Glyphicon glyph="picture"/> サークルカット <Badge>{circleList.length}</Badge></NavItem>
             <NavItem eventKey="favorite"><Glyphicon glyph="star"/> お気に入り済み <Badge>28</Badge></NavItem>
           </Nav>
           <br/>
           <Tab.Content>
             <Tab.Pane eventKey="list">
               <CircleListPane
-                circles={circles}
+                circles={circleList}
                 onRowClick={this.openModal}
                 onAddFavorite={this.addFavorite}
                 onRemoveFavorite={this.removeFavorite}
@@ -153,7 +152,7 @@ class AdminRoot extends React.Component {
             </Tab.Pane>
             <Tab.Pane eventKey="circlecut">
               <CirclecutPane
-                circles={circles}
+                circles={circleList}
                 onImageClick={this.openModal}
                 onAddFavorite={this.addFavorite}
                 onRemoveFavorite={this.removeFavorite}
