@@ -2,9 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTable from "react-table";
 import _ from 'lodash';
-import { Glyphicon, Button } from 'react-bootstrap';
+import { Row, Col, Glyphicon, Button } from 'react-bootstrap';
 
 class CircleListPane extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = { table: null };
+  }
+
   addFavorite(circle) {
     this.props.onAddFavorite(circle);
   }
@@ -19,6 +24,7 @@ class CircleListPane extends React.Component {
 
   render() {
     const { circles, showChecklistComponent } = this.props;
+    const { table } = this.state;
 
     const columns = [
       {
@@ -42,9 +48,8 @@ class CircleListPane extends React.Component {
           },{
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "space_num",
-            width: 40,
+            width: 50,
             resizable: false,
-            filterable: false,
             className: "text-center",
           },{
             headerStyle: { backgroundColor: "#ddd" },
@@ -64,12 +69,31 @@ class CircleListPane extends React.Component {
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "circle_link",
             className: "text-center",
-            width: 40,
+            width: 75,
             resizable: false,
-            filterable: false,
             Cell: row => row.value
               ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><Glyphicon glyph="link"/></a>
-              : ""
+              : "",
+            Filter: ({ filter, onChange }) => {
+              return <select
+                onChange={event => onChange(event.target.value)}
+                style={{ width: "100%" }}
+                value={filter ? filter.value : ""}>
+                  <option value="なし">なし</option>
+                  <option value="あり">あり</option>
+                  <option value="">全て</option>
+              </select>
+            },
+            filterMethod: (filter, row, column) => {
+              const state = filter.value;
+              if (state === "あり") {
+                return !!row.circle_link;
+              } else if (state === "なし") {
+                return !row.circle_link;
+              } else {
+                return true
+              }
+            },
           },{
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "circle_comment",
@@ -123,13 +147,38 @@ class CircleListPane extends React.Component {
 
     }
 
+    const jp = {
+      circle_name: "サークル名",
+      penname:     "作者",
+      space_sym:   "記号",
+      space_num:   "数字",
+      circle_link: "お品書きのリンク",
+    }
+
     return <div>
+      {
+        table &&
+          <Row>
+            <Col xs={12} sm={12} md={12} lg={12}>
+              {
+                table.filtered.length !== 0 &&
+                  <div>
+                  {table.filtered.map(f => <span><b>{jp[f.id]}</b>='{f.value}' </span>)}
+
+                  の検索結果
+                  (<b>{table.data.length}</b> サークル中 <b>{table.sortedData.length}</b> 件)
+                  </div>
+              }
+            </Col>
+          </Row>
+      }
+      <br/>
       <ReactTable
         filterable
         className="-striped -highlight"
-        defaultPageSize={30}
+        pageSize={circles.length}
         showPageSizeOptions={false}
-        showPaginationTop={true}
+        showPaginationTop={false}
         showPaginationBottom={false}
         loading={circles.length === "0"}
         columns={columns}
@@ -137,6 +186,9 @@ class CircleListPane extends React.Component {
         defaultFilterMethod={(filter, row, column) => {
           const id = filter.pivotId || filter.id;
           return row[id] !== undefined ? String(row[id]).search(filter.value) !== -1 : false;
+        }}
+        onFetchData={(state, instance) => {
+          this.setState({ table: state });
         }}
         getTrProps={(a,b) => {
           return {
