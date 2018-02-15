@@ -155,7 +155,8 @@ class AdminRoot extends React.Component {
                 circles={circles}
                 onImageClick={this.openModal}
                 onAddFavorite={this.addFavorite}
-                onRemoveFavorite={this.removeFavorite}/>
+                onRemoveFavorite={this.removeFavorite}
+                showChecklistComponent={!!me}/>
             </Tab.Pane>
             <Tab.Pane eventKey="favorite">
               あたり

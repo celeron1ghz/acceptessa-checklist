@@ -16,7 +16,7 @@ class CirclecutPane extends React.Component {
   }
 
   render() {
-    const { circles } = this.props;
+    const { circles, showChecklistComponent } = this.props;
 
     return <div style={{ minWidth: "" }}>
       {
@@ -27,7 +27,13 @@ class CirclecutPane extends React.Component {
 
           return <Col key={c.circlecut} xs={s.xs} sm={s.sm} md={s.md} lg={s.lg}>
             <div style={{ minWidth: s.width, maxWidth: s.width }} onClick={this.imageClick.bind(this,c)}>
-              <Image src={c.circlecut} responsive style={{ display: "inline-block", border: "5px solid aqua" }}/>
+              <Image
+                responsive
+                src={c.circlecut}
+                style={{
+                  display: "inline-block",
+                  border: c.favorite ? "5px solid aqua" : "5px solid transparent",
+                }}/>
               <div style={{ marginTop: "5px", marginBottom: "25px", fontSize: "12px" }}>
                 <Col xs={3} sm={3} md={3} lg={3}>
                   {c.space_sym} {c.space_num}
@@ -35,17 +41,20 @@ class CirclecutPane extends React.Component {
                 <Col xs={6} sm={6} md={6} lg={6}>
                   {c.circle_name}
                 </Col>
-                <Col xsPush={3} smPush={3} mdPush={3} lgPush={3} className="text-right">
-                  {
-                    c.favorite
-                      ? <Button bsStyle="danger" bsSize="xs" onClick={e => { e.stopPropagation(); this.removeFavorite(c) }}>
-                          <Glyphicon glyph="minus"/> 削除
-                        </Button>
-                      : <Button bsStyle="primary" bsSize="xs" onClick={e => { e.stopPropagation(); this.addFavorite(c) }}>
-                          <Glyphicon glyph="plus"/> 追加
-                        </Button>
-                  }
-                </Col>
+                {
+                  showChecklistComponent &&
+                    <Col xsPush={3} smPush={3} mdPush={3} lgPush={3} className="text-right">
+                      {
+                        c.favorite
+                          ? <Button bsStyle="danger" bsSize="xs" onClick={e => { e.stopPropagation(); this.removeFavorite(c) }}>
+                              <Glyphicon glyph="minus"/> 削除
+                            </Button>
+                          : <Button bsStyle="primary" bsSize="xs" onClick={e => { e.stopPropagation(); this.addFavorite(c) }}>
+                              <Glyphicon glyph="plus"/> 追加
+                            </Button>
+                      }
+                    </Col>
+                }
               </div>
             </div>
           </Col>;
@@ -60,6 +69,7 @@ CirclecutPane.propTypes = {
   onImageClick: PropTypes.func.isRequired,
   onAddFavorite: PropTypes.func.isRequired,
   onRemoveFavorite: PropTypes.func.isRequired,
+  showChecklistComponent: PropTypes.bool,
 };
 
 export default CirclecutPane;
