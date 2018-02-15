@@ -147,7 +147,8 @@ class AdminRoot extends React.Component {
                 circles={circles}
                 onRowClick={this.openModal}
                 onAddFavorite={this.addFavorite}
-                onRemoveFavorite={this.removeFavorite}/>
+                onRemoveFavorite={this.removeFavorite}
+                showChecklistComponent={me}/>
             </Tab.Pane>
             <Tab.Pane eventKey="circlecut">
               <CirclecutPane
