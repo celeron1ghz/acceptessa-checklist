@@ -194,7 +194,7 @@ class CircleListPane extends React.Component {
       <ReactTable
         filterable
         className="-striped -highlight"
-        pageSize={circles.length}
+        pageSize={table && table.sortedData.length !== 0 ? table.sortedData.length : circles.length}
         showPageSizeOptions={false}
         showPaginationTop={false}
         showPaginationBottom={false}
