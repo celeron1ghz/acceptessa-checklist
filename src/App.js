@@ -7,6 +7,7 @@ import { Label, Alert, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 
 import CircleDescriptionModal from './common/CircleDescriptionModal';
 import CircleListPane from './common/CircleListPane';
 import CirclecutPane from './common/CirclecutPane';
+import FavoriteListPane from './common/FavoriteListPane';
 
 class AdminRoot extends React.Component {
   constructor(props, context) {
@@ -158,7 +159,7 @@ class AdminRoot extends React.Component {
                 showChecklistComponent={!!me}/>
             </Tab.Pane>
             <Tab.Pane eventKey="favorite">
-              あたり
+              <FavoriteListPane/>
             </Tab.Pane>
           </Tab.Content>
         </div>
