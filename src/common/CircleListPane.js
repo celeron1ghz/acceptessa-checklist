@@ -15,7 +15,7 @@ class CircleListPane extends React.Component {
   }
 
   removeFavorite(circle) {
-    this.props.onRemoveFavorite(circle)
+    this.props.onRemoveFavorite(circle);
   }
 
   rowClick(circle) {
@@ -25,6 +25,19 @@ class CircleListPane extends React.Component {
   render() {
     const { circles, showChecklistComponent } = this.props;
     const { table } = this.state;
+
+    function makePlaceholderFilter(placeholder) {
+      return ({filter, onChange}) => (
+        <input type='text'
+          placeholder={placeholder}
+          style={{
+            width: '100%'
+          }}
+          value={filter ? filter.value : ''}
+          onChange={(event) => onChange(event.target.value)}
+        />
+      );
+    }
 
     const columns = [
       {
@@ -43,22 +56,25 @@ class CircleListPane extends React.Component {
                 style={{ width: "100%" }}
                 value={filter ? filter.value : "all"}>
                   <option value="">全て</option>
-                  {_.uniq(circles.map(c => c.space_sym)).map(sym => <option value={sym}>{sym}</option>)}
+                  {_.uniq(circles.map(c => c.space_sym)).map(sym => <option key={sym} value={sym}>{sym}</option>)}
               </select>
           },{
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "space_num",
-            width: 50,
+            width: 55,
             resizable: false,
             className: "text-center",
+            Filter: makePlaceholderFilter("(数)"),
           },{
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "circle_name",
             width: 250,
+            Filter: makePlaceholderFilter("(サークル名を検索)"),
           },{
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "penname",
             width: 150,
+            Filter: makePlaceholderFilter("(作者を検索)"),
           }
         ]
       },{
@@ -82,7 +98,7 @@ class CircleListPane extends React.Component {
                   <option value="なし">なし</option>
                   <option value="あり">あり</option>
                   <option value="">全て</option>
-              </select>
+              </select>;
             },
             filterMethod: (filter, row, column) => {
               const state = filter.value;
@@ -91,13 +107,14 @@ class CircleListPane extends React.Component {
               } else if (state === "なし") {
                 return !row.circle_link;
               } else {
-                return true
+                return true;
               }
             },
           },{
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "circle_comment",
             width: 490,
+            Filter: makePlaceholderFilter("(お品書きを検索)"),
             Cell: row => row.value
               ? row.value
               : <span style={{ color: "#ccc" }}>(未記入)</span>
@@ -153,7 +170,8 @@ class CircleListPane extends React.Component {
       space_sym:   "記号",
       space_num:   "数字",
       circle_link: "お品書きのリンク",
-    }
+      circle_comment: "お品書きのコメント",
+    };
 
     return <div>
       {
@@ -163,7 +181,7 @@ class CircleListPane extends React.Component {
               {
                 table.filtered.length !== 0 &&
                   <div>
-                  {table.filtered.map(f => <span><b>{jp[f.id]}</b>='{f.value}' </span>)}
+                  {table.filtered.map(f => <span key={f.id}><b>{jp[f.id]}</b>='{f.value}' </span>)}
 
                   の検索結果
                   (<b>{table.data.length}</b> サークル中 <b>{table.sortedData.length}</b> 件)
@@ -183,9 +201,10 @@ class CircleListPane extends React.Component {
         loading={circles.length === "0"}
         columns={columns}
         data={circles}
+        Filter={1}
         defaultFilterMethod={(filter, row, column) => {
           const id = filter.pivotId || filter.id;
-          return row[id] !== undefined ? String(row[id]).search(filter.value) !== -1 : false;
+          return row[id] !== undefined ? String(row[id]).indexOf(filter.value) !== -1 : false;
         }}
         onFetchData={(state, instance) => {
           this.setState({ table: state });

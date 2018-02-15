@@ -2,7 +2,7 @@ import React from 'react';
 import request from 'superagent';
 import FontAwesome from 'react-fontawesome';
 import { withRouter } from 'react-router-dom';
-import { Alert, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
+import { Label, Alert, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
 
 import CircleDescriptionModal from './common/CircleDescriptionModal';
 import CircleListPane from './common/CircleListPane';
@@ -116,7 +116,8 @@ class AdminRoot extends React.Component {
           {
             me
               ? <div>
-                  @{me.screen_name}{' '}
+                  <Label bsStyle="success"><FontAwesome name="twitter"/> {me.screen_name}</Label>
+                  {' '}
                   <Button bsSize="xs" bsStyle="warning" onClick={this.logout}>
                     <FontAwesome name="sign-out"/> ログアウト
                   </Button>
