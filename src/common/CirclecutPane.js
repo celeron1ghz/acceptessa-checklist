@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import { Label, Glyphicon, Button, Col, Image } from 'react-bootstrap';
 
 class CirclecutPane extends React.Component {
@@ -16,11 +17,18 @@ class CirclecutPane extends React.Component {
   }
 
   render() {
-    const { circles, showChecklistComponent } = this.props;
+    const { favorites, showChecklistComponent } = this.props;
+    const circleList = _.cloneDeep(this.props.circles);
+
+    for (const c of circleList) {
+      if (favorites[c.circle_id]) {
+        c.favorite = favorites[c.circle_id];
+      }
+    }
 
     return <div>
       {
-        circles.map(c => {
+        circleList.map(c => {
           const s = c.space_count === "1"
             ? { xs: 12, sm: 6,  md: 4, lg: 3, width: "255px" }
             : { xs: 12, sm: 12, md: 8, lg: 6, Wwidth: "510px" };
@@ -75,6 +83,7 @@ class CirclecutPane extends React.Component {
 
 CirclecutPane.propTypes = {
   circles: PropTypes.array.isRequired,
+  favorites: PropTypes.object.isRequired,
   onImageClick: PropTypes.func.isRequired,
   onAddFavorite: PropTypes.func.isRequired,
   onRemoveFavorite: PropTypes.func.isRequired,

@@ -12,9 +12,10 @@ class AdminRoot extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-        circleList: [],
-        circleIdx:  {},
-        sort_order: [],
+        circleList:  [],
+        circleIdx:   {},
+        favoriteIdx: {},
+        sort_order:  [],
         loading: true,
         modalShow: false,
         selectedCircle: null,
@@ -67,19 +68,15 @@ class AdminRoot extends React.Component {
   }
 
   addFavorite(circle) {
-    circle.favorite = {
-      created_at: new Date().getTime(),
-      checked: 1,
-      comment: null,
-    };
-
-    this.setState({ circleList: this.state.circleList });
+    const { favoriteIdx } = this.state;
+    favoriteIdx[circle.circle_id] = { created_at: new Date().getTime(), comment: null };
+    this.setState({ favoriteIdx });
   }
 
   removeFavorite(circle) {
-    delete circle.favorite;
-
-    this.setState({ circleList: this.state.circleList });
+    const { favoriteIdx } = this.state;
+    delete favoriteIdx[circle.circle_id];
+    this.setState({ favoriteIdx });
   }
 
   loginPopup() {
@@ -95,7 +92,7 @@ class AdminRoot extends React.Component {
   componentWillReceiveProps(props){
     const param = new URLSearchParams(props.location.search);
     const circle_id = param.get("circle_id");
-    const circle = this.state.circles.filter(c => c.circle_id === circle_id)[0]
+    const circle = this.state.circleList.filter(c => c.circle_id === circle_id)[0]
 
     if (circle) {
       this.setState({ selectedCircle: circle, modalShow: true });
@@ -105,7 +102,7 @@ class AdminRoot extends React.Component {
   }
 
   render() {
-    const { circleList, modalShow, selectedCircle, me } = this.state;
+    const { circleList, favoriteIdx, modalShow, selectedCircle, me } = this.state;
 
     return <div className="container">
       <br/>
@@ -145,6 +142,7 @@ class AdminRoot extends React.Component {
             <Tab.Pane eventKey="list">
               <CircleListPane
                 circles={circleList}
+                favorites={favoriteIdx}
                 onRowClick={this.openModal}
                 onAddFavorite={this.addFavorite}
                 onRemoveFavorite={this.removeFavorite}
@@ -153,6 +151,7 @@ class AdminRoot extends React.Component {
             <Tab.Pane eventKey="circlecut">
               <CirclecutPane
                 circles={circleList}
+                favorites={favoriteIdx}
                 onImageClick={this.openModal}
                 onAddFavorite={this.addFavorite}
                 onRemoveFavorite={this.removeFavorite}

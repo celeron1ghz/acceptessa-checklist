@@ -23,8 +23,15 @@ class CircleListPane extends React.Component {
   }
 
   render() {
-    const { circles, showChecklistComponent } = this.props;
+    const { favorites, showChecklistComponent } = this.props;
     const { table } = this.state;
+    const circleList = _.cloneDeep(this.props.circles);
+
+    for (const c of circleList) {
+      if (favorites[c.circle_id]) {
+        c.favorite = favorites[c.circle_id];
+      }
+    }
 
     function makePlaceholderFilter(placeholder) {
       return ({filter, onChange}) => (
@@ -56,7 +63,7 @@ class CircleListPane extends React.Component {
                 style={{ width: "100%" }}
                 value={filter ? filter.value : "all"}>
                   <option value="">全て</option>
-                  {_.uniq(circles.map(c => c.space_sym)).map(sym => <option key={sym} value={sym}>{sym}</option>)}
+                  {_.uniq(circleList.map(c => c.space_sym)).map(sym => <option key={sym} value={sym}>{sym}</option>)}
               </select>
           },{
             headerStyle: { backgroundColor: "#ddd" },
@@ -194,13 +201,13 @@ class CircleListPane extends React.Component {
       <ReactTable
         filterable
         className="-striped -highlight"
-        pageSize={table && table.sortedData.length !== 0 ? table.sortedData.length : circles.length}
+        pageSize={table && table.sortedData.length !== 0 ? table.sortedData.length : circleList.length}
         showPageSizeOptions={false}
         showPaginationTop={false}
         showPaginationBottom={false}
-        loading={circles.length === "0"}
+        loading={circleList.length === "0"}
         columns={columns}
-        data={circles}
+        data={circleList}
         Filter={1}
         defaultFilterMethod={(filter, row, column) => {
           const id = filter.pivotId || filter.id;
@@ -227,6 +234,7 @@ class CircleListPane extends React.Component {
 
 CircleListPane.propTypes = {
   circles: PropTypes.array.isRequired,
+  favorites: PropTypes.object.isRequired,
   onRowClick: PropTypes.func.isRequired,
   onAddFavorite: PropTypes.func.isRequired,
   onRemoveFavorite: PropTypes.func.isRequired,
