@@ -136,7 +136,7 @@ class AdminRoot extends React.Component {
           <Nav bsStyle="pills">
             <NavItem eventKey="list"><Glyphicon glyph="th-list"/> リスト表示 <Badge>{circleList.length}</Badge></NavItem>
             <NavItem eventKey="circlecut"><Glyphicon glyph="picture"/> サークルカット <Badge>{circleList.length}</Badge></NavItem>
-            <NavItem eventKey="favorite"><Glyphicon glyph="star"/> お気に入り済み <Badge>28</Badge></NavItem>
+            <NavItem eventKey="favorite"><Glyphicon glyph="star"/> お気に入り済み <Badge>{Object.keys(favoriteIdx).length}</Badge></NavItem>
           </Nav>
           <br/>
           <Tab.Content>
@@ -159,7 +159,10 @@ class AdminRoot extends React.Component {
                 showChecklistComponent={!!me}/>
             </Tab.Pane>
             <Tab.Pane eventKey="favorite">
-              <FavoriteListPane/>
+              <FavoriteListPane
+                circles={circleList}
+                favorites={favoriteIdx}
+                onRowClick={this.openModal}/>
             </Tab.Pane>
           </Tab.Content>
         </div>
