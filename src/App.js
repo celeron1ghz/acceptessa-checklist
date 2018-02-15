@@ -148,7 +148,7 @@ class AdminRoot extends React.Component {
                 onRowClick={this.openModal}
                 onAddFavorite={this.addFavorite}
                 onRemoveFavorite={this.removeFavorite}
-                showChecklistComponent={me}/>
+                showChecklistComponent={!!me}/>
             </Tab.Pane>
             <Tab.Pane eventKey="circlecut">
               <CirclecutPane
