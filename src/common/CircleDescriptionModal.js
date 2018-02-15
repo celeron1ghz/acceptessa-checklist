@@ -1,20 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
-import { Glyphicon, Panel, Label, FormControl, Modal, Image } from 'react-bootstrap';
+import { Button, Glyphicon, Panel, Label, FormControl, Modal, Image } from 'react-bootstrap';
 
 class CircleDescriptionModal extends React.Component {
   constructor(props, context) {
     super(props, context);
+    this.state = { comment: null };
     this.close = this.close.bind(this);
+    this.updateInput = this.updateInput.bind(this);
+    this.updateComment = this.updateComment.bind(this);
+  }
+
+  updateComment() {
+    this.props.onUpdateComment(this.props.circle, this.state.comment);
   }
 
   close() {
     this.props.onClose();
   }
 
+  updateInput(e) {
+    this.setState({ comment: e.target.value });
+  }
+
   render() {
-    const { show, circle } = this.props;
+    const { show, circle, favorite, comment } = this.props;
 
     return <Modal show={show} onHide={this.close}>
       <Modal.Header closeButton>
@@ -32,7 +43,9 @@ class CircleDescriptionModal extends React.Component {
       <Modal.Body>
         {
           circle && <div>
-            <Image thumbnail src={circle.circlecut}/>
+            <div className="text-center">
+              <Image thumbnail src={circle.circlecut}/>
+            </div>
 
             <h4>サークルの情報</h4>
             <Panel>
@@ -74,15 +87,20 @@ class CircleDescriptionModal extends React.Component {
 
             <h4>自分のコメント</h4>
             {
-              !circle.favorite &&
+              !favorite &&
                 <div className="text-muted">
                   <Glyphicon glyph="exclamation-sign"/> ログインしてお気に入りに追加すると、メモを記入できるようになります。
                 </div>
             }
             {
-              circle.favorite &&
+              favorite &&
                 <div>
-                  <FormControl componentClass="textarea" placeholder="(コメントが未記入です)" value={circle.circle_comment || ''}/>
+                  <FormControl
+                    componentClass="textarea"
+                    placeholder="(コメントが未記入です)"
+                    value={comment}
+                    onChange={this.updateInput}/>
+                  <Button block bsStyle="primary" onClick={this.updateComment}><Glyphicon glyph="refresh"/> コメントを更新する</Button>
                 </div>
             }
           </div>
@@ -96,7 +114,9 @@ class CircleDescriptionModal extends React.Component {
 CircleDescriptionModal.propTypes = {
   show: PropTypes.bool,
   circle: PropTypes.object,
+  favorite: PropTypes.object,
   onClose: PropTypes.func.isRequired,
+  onUpdateComment: PropTypes.func.isRequired,
 };
 
 export default CircleDescriptionModal;

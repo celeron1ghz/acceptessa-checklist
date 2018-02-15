@@ -80,6 +80,13 @@ class AdminRoot extends React.Component {
     this.setState({ favoriteIdx });
   }
 
+  updateFavoriteComment(circle,comment) {
+    const { favoriteIdx } = this.state;
+    const fav = favoriteIdx[circle.circle_id];
+    fav.comment = comment;
+    this.setState({ favoriteIdx });
+  }
+
   loginPopup() {
     const popup = window.open(this.BASE_URL + "/auth");
     const id = setInterval(() => {
@@ -168,7 +175,12 @@ class AdminRoot extends React.Component {
         </div>
       </Tab.Container>
 
-      <CircleDescriptionModal show={modalShow} circle={selectedCircle} onClose={this.closeModal}/>
+      <CircleDescriptionModal
+        show={modalShow}
+        circle={selectedCircle}
+        favorite={selectedCircle ? favoriteIdx[selectedCircle.circle_id] : null}
+        onClose={this.closeModal}
+        onUpdateComment={this.updateFavoriteComment}/>
 
       {
         this.state.loading &&
