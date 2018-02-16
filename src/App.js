@@ -48,8 +48,25 @@ class AdminRoot extends React.Component {
     request
       .get(window.location.origin + '/map.json')
       .end((err,res) => {
-        let data = JSON.parse(res.text);
-        this.setState({ map: data });
+        const data = JSON.parse(res.text);
+        const maps = [];
+
+        for (const sym of Object.keys(data.positions)) {
+          const positions = data.positions[sym];
+
+          for (const pos of positions)  {
+            for (const i of _.range(pos.start, pos.end + 1) ) {
+              maps.push({
+                sym: sym,
+                num: i,
+                top: (pos.y + (i - ( pos.start - 1 ) -1) * 18 ) + "px",
+                left: pos.x + "px",
+              });
+            }
+          }
+        }
+
+        this.setState({ map: maps });
       });
   }
 
@@ -190,24 +207,19 @@ class AdminRoot extends React.Component {
                 width: "500px",
                 minWidth: "500px",
                 background: "url(/map.png) 0 0 no-repeat",
-                position: "relative", }}>
+                position: "relative" }}>
                 {
-                  Object.keys(map.positions).map(k => {
-                    const data = map.positions[k];
-                    return data.map(d => {
-                      return _.range(d.start, d.end+1).map(i => {
-                        return <div style={{
-                          border: "1px solid black",
-                          backgroundColor: "rgba(255,0,0,0.5)",
-                          position: "absolute",
-                          width: "15px",
-                          height: "19px",
-                          top: (d.y + (i - ( d.start - 1 ) -1) * 18 ) + "px",
-                          left: d.x + "px" }}>
-                        </div>
-                      })
-                    })
-                  })
+                  map.map(pos =>
+                    <div style={{
+                      border: "1px solid black",
+                      backgroundColor: "rgba(255,0,0,0.5)",
+                      position: "absolute",
+                      width: "15px",
+                      height: "19px",
+                      top: pos.top,
+                      left: pos.left }}>
+                    </div>
+                  )
                 }
               </div>
             }
