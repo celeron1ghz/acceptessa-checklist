@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { sprintf } from 'sprintf-js'
 
-import Blink from './BlinkElement';
+import Blink from '../common/BlinkElement';
 
 class MapPane extends React.Component {
   onClick(circle) {
