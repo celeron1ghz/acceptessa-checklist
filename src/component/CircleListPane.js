@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTable from "react-table";
 import _ from 'lodash';
-import { Row, Col, Glyphicon, Button } from 'react-bootstrap';
+import { Glyphicon, Button } from 'react-bootstrap';
 
 class CircleListPane extends React.Component {
   constructor(props, context) {
@@ -182,22 +182,19 @@ class CircleListPane extends React.Component {
 
     return <div>
       {
-        table &&
-          <Row>
-            <Col xs={12} sm={12} md={12} lg={12}>
-              {
-                table.filtered.length !== 0 &&
-                  <div>
-                  {table.filtered.map(f => <span key={f.id}><b>{jp[f.id]}</b>='{f.value}' </span>)}
-
-                  の検索結果
+        table && <div>
+          {
+            table.filtered.length !== 0
+              ? <div>
+                  {table.filtered.map(f => <span key={f.id}><b>{jp[f.id]}</b>='{f.value}' </span>)} の検索結果
                   (<b>{table.data.length}</b> サークル中 <b>{table.sortedData.length}</b> 件)
-                  </div>
-              }
-            </Col>
-          </Row>
+                </div>
+              : <div className="text-muted">
+                  <Glyphicon glyph="exclamation-sign"/> テーブルの行をクリックすると詳細画面が開きます。
+                </div>
+          }
+        </div>
       }
-      <br/>
       <ReactTable
         filterable
         className="-striped -highlight"

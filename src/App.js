@@ -142,7 +142,7 @@ class AdminRoot extends React.Component {
     return <div className="container">
       <br/>
       <Well bsSize="small" className="clearfix">
-        <span>サークル一覧 (アクアマリンドリーム)</span>
+        <span>サークル一覧 (アクアマリンドリーム)  <Badge>{circleList.length}</Badge></span>
         <div className="pull-right">
           {
             me
@@ -168,8 +168,8 @@ class AdminRoot extends React.Component {
       <Tab.Container id="left-tabs-example" defaultActiveKey="list">
         <div>
           <Nav bsStyle="pills">
-            <NavItem eventKey="list"><Glyphicon glyph="th-list"/> リスト表示 <Badge>{circleList.length}</Badge></NavItem>
-            <NavItem eventKey="circlecut"><Glyphicon glyph="picture"/> サークルカット <Badge>{circleList.length}</Badge></NavItem>
+            <NavItem eventKey="list"><Glyphicon glyph="th-list"/> リスト表示</NavItem>
+            <NavItem eventKey="circlecut"><Glyphicon glyph="picture"/> サークルカット</NavItem>
             <NavItem eventKey="map"><Glyphicon glyph="map-marker"/> マップ</NavItem>
             <NavItem eventKey="favorite"><Glyphicon glyph="star"/> お気に入り済み <Badge>{Object.keys(favoriteIdx).length}</Badge></NavItem>
           </Nav>

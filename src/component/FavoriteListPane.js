@@ -113,6 +113,9 @@ class FavoriteListPane extends React.Component {
     ];
 
     return <div>
+      <div className="text-muted">
+        <Glyphicon glyph="exclamation-sign"/> テーブルの行をクリックすると詳細画面が開きます。
+      </div>
       <ReactTable
         filterable
         className="-striped -highlight"

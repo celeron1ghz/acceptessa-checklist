@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { sprintf } from 'sprintf-js'
+import { Glyphicon } from 'react-bootstrap';
 
 import CirclePositionElement from '../common/CirclePositionElement';
 
@@ -22,8 +23,12 @@ class MapPane extends React.Component {
       circleIdx[c.space_sym + c.space_num] = c;
     }
 
-    return <div>
+    return <div className="text-center">
+      <div className="text-muted">
+        <Glyphicon glyph="exclamation-sign"/> サークルのスペースをクリックすると詳細画面が開きます。
+      </div>
       <div style={{
+        display: "inline-block",
         border: "1px solid black",
         height: "800px",
         width: "500px",

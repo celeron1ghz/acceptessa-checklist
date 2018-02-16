@@ -27,6 +27,9 @@ class CirclecutPane extends React.Component {
     }
 
     return <div>
+      <div className="text-muted">
+        <Glyphicon glyph="exclamation-sign"/> 画像をクリックすると詳細画面が開きます。
+      </div>
       {
         circleList.map(c => {
           const s = c.space_count === "1"
