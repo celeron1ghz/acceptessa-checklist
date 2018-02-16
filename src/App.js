@@ -1,6 +1,7 @@
 import React from 'react';
 import request from 'superagent';
 import FontAwesome from 'react-fontawesome';
+import _ from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { Label, Alert, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
 
@@ -17,6 +18,7 @@ class AdminRoot extends React.Component {
         circleIdx:   {},
         favoriteIdx: {},
         sort_order:  [],
+        map: null,
         loading: true,
         modalShow: false,
         selectedCircle: null,
@@ -41,6 +43,13 @@ class AdminRoot extends React.Component {
         let data = JSON.parse(res.text);
         this.setState({ circleList: data.circles, sort_order: data.sort_order, loading: false });
         this.componentWillReceiveProps(this.props);
+      });
+
+    request
+      .get(window.location.origin + '/map.json')
+      .end((err,res) => {
+        let data = JSON.parse(res.text);
+        this.setState({ map: data });
       });
   }
 
@@ -110,7 +119,7 @@ class AdminRoot extends React.Component {
   }
 
   render() {
-    const { circleList, favoriteIdx, modalShow, selectedCircle, me } = this.state;
+    const { circleList, favoriteIdx, map, modalShow, selectedCircle, me } = this.state;
 
     return <div className="container">
       <br/>
@@ -143,6 +152,7 @@ class AdminRoot extends React.Component {
           <Nav bsStyle="pills">
             <NavItem eventKey="list"><Glyphicon glyph="th-list"/> リスト表示 <Badge>{circleList.length}</Badge></NavItem>
             <NavItem eventKey="circlecut"><Glyphicon glyph="picture"/> サークルカット <Badge>{circleList.length}</Badge></NavItem>
+            <NavItem eventKey="map"><Glyphicon glyph="map-marker"/> マップ</NavItem>
             <NavItem eventKey="favorite"><Glyphicon glyph="star"/> お気に入り済み <Badge>{Object.keys(favoriteIdx).length}</Badge></NavItem>
           </Nav>
           <br/>
@@ -170,6 +180,37 @@ class AdminRoot extends React.Component {
                 circles={circleList}
                 favorites={favoriteIdx}
                 onRowClick={this.openModal}/>
+            </Tab.Pane>
+            <Tab.Pane eventKey="map">
+            {
+              map &&
+              <div style={{
+                border: "1px solid black",
+                height: "800px",
+                width: "500px",
+                minWidth: "500px",
+                background: "url(/map.png) 0 0 no-repeat",
+                position: "relative", }}>
+                {
+                  Object.keys(map.positions).map(k => {
+                    const data = map.positions[k];
+                    return data.map(d => {
+                      return _.range(d.start, d.end+1).map(i => {
+                        return <div style={{
+                          border: "1px solid black",
+                          backgroundColor: "rgba(255,0,0,0.5)",
+                          position: "absolute",
+                          width: "15px",
+                          height: "19px",
+                          top: (d.y + (i - ( d.start - 1 ) -1) * 18 ) + "px",
+                          left: d.x + "px" }}>
+                        </div>
+                      })
+                    })
+                  })
+                }
+              </div>
+            }
             </Tab.Pane>
           </Tab.Content>
         </div>
