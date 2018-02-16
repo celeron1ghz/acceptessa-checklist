@@ -2,10 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { sprintf } from 'sprintf-js'
 
+import Blink from './BlinkElement';
+
 class MapPane extends React.Component {
   onClick(circle) {
     this.props.onCircleClick(circle);
   }
+
   render(){
     const { circles, favorites, maps } = this.props;
 
@@ -35,23 +38,12 @@ class MapPane extends React.Component {
             }
 
             const bgColor = circle && favorites[circle.circle_id]
-              ? "rgba(255,255,0,0.5)"
+              ? "rgba(255,255,0,0.3)"
               : circle
-                ? "rgba(255,0,0,0.5)"
-                : "rgba(0,0,255,0.5)";
+                ? "rgba(255,0,0,0.3)"
+                : "rgba(0,0,255,0.3)";
 
-            return <div key={pos.sym + pos.num}
-              onClick={this.onClick.bind(this,circle)}
-              style={{
-                border: "1px solid black",
-                backgroundColor: bgColor,
-                position: "absolute",
-                width: "15px",
-                height: "19px",
-                top: pos.top,
-                left: pos.left
-              }}>
-            </div>
+            return <Blink top={pos.top} left={pos.left} bgColor={bgColor}/>;
           })
         }
       </div>
