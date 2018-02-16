@@ -203,7 +203,8 @@ class AdminRoot extends React.Component {
               <MapPane
                 maps={map}
                 circles={circleList}
-                favorites={favoriteIdx}/>
+                favorites={favoriteIdx}
+                onCircleClick={this.openModal}/>
             </Tab.Pane>
           </Tab.Content>
         </div>

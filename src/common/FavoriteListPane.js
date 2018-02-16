@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTable from "react-table";
 import _ from 'lodash';
-import { Label, Glyphicon, Button, Col, Image } from 'react-bootstrap';
+import { Glyphicon } from 'react-bootstrap';
 
 class FavoriteListPane extends React.Component {
   rowClick(circle) {
