@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { sprintf } from 'sprintf-js'
-import { Glyphicon } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Glyphicon } from 'react-bootstrap';
 
 import CirclePositionElement from '../common/CirclePositionElement';
 
@@ -41,6 +41,7 @@ class MapPane extends React.Component {
 
             if (!circle) {
               console.log("NOT FOUND", pos.sym, pos.num);
+              return null;
             }
 
             const bgColor = circle && favorites[circle.circle_id]
@@ -49,13 +50,21 @@ class MapPane extends React.Component {
                 ? "rgba(255,0,0,0.3)"
                 : "rgba(0,0,255,0.3)";
 
-            return <CirclePositionElement
-              key={pos.sym + pos.num}
-              top={pos.top}
-              left={pos.left}
-              bgColor={bgColor}
-              blink={false}
-              onClick={this.onClick.bind(this,circle)}/>;
+            return <OverlayTrigger
+              placement="left"
+              overlay={
+                <Tooltip id="tooltip">
+                  {circle ? `${circle.space_sym}-${circle.space_num} : ${circle.circle_name} (${circle.penname})` : ''}
+                </Tooltip>
+              }>
+                <CirclePositionElement
+                  key={pos.sym + pos.num}
+                  top={pos.top}
+                  left={pos.left}
+                  bgColor={bgColor}
+                  blink={false}
+                  onClick={this.onClick.bind(this,circle)}/>
+            </OverlayTrigger>
           })
         }
       </div>
