@@ -215,7 +215,9 @@ class AdminRoot extends React.Component {
         circle={selectedCircle}
         favorite={selectedCircle ? favoriteIdx[selectedCircle.circle_id] : null}
         onClose={this.closeModal}
-        onUpdateComment={this.updateFavoriteComment}/>
+        onUpdateComment={this.updateFavoriteComment}
+        onAddFavorite={this.addFavorite}
+        onRemoveFavorite={this.removeFavorite}/>
 
       {
         this.state.loading &&

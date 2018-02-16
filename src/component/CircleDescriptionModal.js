@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
-import { Button, Glyphicon, Panel, Label, FormControl, Modal, Image } from 'react-bootstrap';
+import { Alert, Button, Glyphicon, Panel, Label, FormControl, Modal, Image } from 'react-bootstrap';
 
 class CircleDescriptionModal extends React.Component {
   constructor(props, context) {
@@ -14,6 +14,14 @@ class CircleDescriptionModal extends React.Component {
 
   updateComment() {
     this.props.onUpdateComment(this.props.circle, this.state.comment);
+  }
+
+  addFavorite(circle) {
+    this.props.onAddFavorite(circle);
+  }
+
+  removeFavorite(circle) {
+    this.props.onRemoveFavorite(circle);
   }
 
   close() {
@@ -32,10 +40,10 @@ class CircleDescriptionModal extends React.Component {
         <Modal.Title>
           {
             circle && <div>
+              {circle.circle_name}{' '}
               {
-                circle.favorite && <span><Glyphicon glyph="star" style={{color: "#cc3" }}/>{' '}</span>
+                favorite && <Label bsStyle="warning"><Glyphicon glyph="star"/> お気に入り</Label>
               }
-              {circle.circle_name}
             </div>
           }
         </Modal.Title>
@@ -44,8 +52,18 @@ class CircleDescriptionModal extends React.Component {
         {
           circle && <div>
             <div className="text-center">
-              <Image thumbnail src={circle.circlecut}/>
+              <Image thumbnail src={circle.circlecut} style={{ border: favorite ? "4px solid aqua" : "4px solid transparent" }}/>
             </div>
+
+            <br/>
+            {
+              favorite
+                ? <Button block bsStyle="warning" onClick={this.removeFavorite.bind(this,circle)}><Glyphicon glyph="remove"/> お気に入りから削除する</Button>
+
+                : <Button block bsStyle="primary" onClick={this.addFavorite.bind(this,circle)}><Glyphicon glyph="plus"/> お気に入りに追加する</Button>
+
+            }
+            <br/>
 
             <h4>サークルの情報</h4>
             <Panel>
@@ -117,6 +135,8 @@ CircleDescriptionModal.propTypes = {
   favorite: PropTypes.object,
   onClose: PropTypes.func.isRequired,
   onUpdateComment: PropTypes.func.isRequired,
+  onAddFavorite: PropTypes.func.isRequired,
+  onRemoveFavorite: PropTypes.func.isRequired,
 };
 
 export default CircleDescriptionModal;
