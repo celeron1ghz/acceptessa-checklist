@@ -6,9 +6,10 @@ import { withRouter } from 'react-router-dom';
 import { Label, Alert, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
 
 import CircleDescriptionModal from './common/CircleDescriptionModal';
+import FavoriteListPane from './common/FavoriteListPane';
 import CircleListPane from './common/CircleListPane';
 import CirclecutPane from './common/CirclecutPane';
-import FavoriteListPane from './common/FavoriteListPane';
+import MapPane from './common/MapPane';
 
 class AdminRoot extends React.Component {
   constructor(props, context) {
@@ -199,6 +200,9 @@ class AdminRoot extends React.Component {
                 onRowClick={this.openModal}/>
             </Tab.Pane>
             <Tab.Pane eventKey="map">
+              <MapPane
+                circles={circleList}
+                favorites={favoriteIdx}/>
             {
               map &&
               <div style={{
