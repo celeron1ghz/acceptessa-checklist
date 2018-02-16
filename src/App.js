@@ -201,32 +201,9 @@ class AdminRoot extends React.Component {
             </Tab.Pane>
             <Tab.Pane eventKey="map">
               <MapPane
+                maps={map}
                 circles={circleList}
                 favorites={favoriteIdx}/>
-            {
-              map &&
-              <div style={{
-                border: "1px solid black",
-                height: "800px",
-                width: "500px",
-                minWidth: "500px",
-                background: "url(/map.png) 0 0 no-repeat",
-                position: "relative" }}>
-                {
-                  map.map(pos =>
-                    <div style={{
-                      border: "1px solid black",
-                      backgroundColor: "rgba(255,0,0,0.5)",
-                      position: "absolute",
-                      width: "15px",
-                      height: "19px",
-                      top: pos.top,
-                      left: pos.left }}>
-                    </div>
-                  )
-                }
-              </div>
-            }
             </Tab.Pane>
           </Tab.Content>
         </div>
