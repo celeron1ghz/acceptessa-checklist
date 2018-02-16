@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Blink = styled.div`
+const CirclePositionElement = styled.div`
     @keyframes pointerBlink {
     	0% {
     		opacity: 0.9;
@@ -30,4 +30,4 @@ const Blink = styled.div`
     cursor: pointer;
 `;
 
-export default Blink;
+export default CirclePositionElement;

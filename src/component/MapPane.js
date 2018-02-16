@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { sprintf } from 'sprintf-js'
 
-import Blink from '../common/BlinkElement';
+import CirclePositionElement from '../common/CirclePositionElement';
 
 class MapPane extends React.Component {
   onClick(circle) {
@@ -33,6 +33,7 @@ class MapPane extends React.Component {
         {
           maps.map(pos => {
             const circle = circleIdx[pos.sym + sprintf('%02d', pos.num)];
+
             if (!circle) {
               console.log("NOT FOUND", pos.sym, pos.num);
             }
@@ -43,7 +44,13 @@ class MapPane extends React.Component {
                 ? "rgba(255,0,0,0.3)"
                 : "rgba(0,0,255,0.3)";
 
-            return <Blink top={pos.top} left={pos.left} bgColor={bgColor} blink={true}/>;
+            return <CirclePositionElement
+              key={pos.sym + pos.num}
+              top={pos.top}
+              left={pos.left}
+              bgColor={bgColor}
+              blink={false}
+              onClick={this.onClick.bind(this,circle)}/>;
           })
         }
       </div>
