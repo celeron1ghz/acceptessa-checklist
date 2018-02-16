@@ -43,7 +43,7 @@ class MapPane extends React.Component {
                 ? "rgba(255,0,0,0.3)"
                 : "rgba(0,0,255,0.3)";
 
-            return <Blink top={pos.top} left={pos.left} bgColor={bgColor}/>;
+            return <Blink top={pos.top} left={pos.left} bgColor={bgColor} blink={true}/>;
           })
         }
       </div>
