@@ -3,7 +3,7 @@ import request from 'superagent';
 import FontAwesome from 'react-fontawesome';
 import _ from 'lodash';
 import { withRouter } from 'react-router-dom';
-import { Label, Alert, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
+import { ButtonToolbar, DropdownButton, MenuItem, Alert, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
 
 import CircleDescriptionModal from './component/CircleDescriptionModal';
 import FavoriteListPane from './component/FavoriteListPane';
@@ -146,13 +146,17 @@ class AdminRoot extends React.Component {
         <div className="pull-right">
           {
             me
-              ? <div>
-                  <Label bsStyle="success"><FontAwesome name="twitter"/> {me.screen_name}</Label>
-                  {' '}
-                  <Button bsSize="xs" bsStyle="warning" onClick={this.logout}>
-                    <FontAwesome name="sign-out"/> ログアウト
-                  </Button>
-                </div>
+              ? <ButtonToolbar>
+                  <DropdownButton
+                    bsStyle="success"
+                    bsSize="xsmall"
+                    id="dropdown-size-extra-small"
+                    title={<span><FontAwesome name="twitter"/> {me.screen_name}</span>}>
+                      <MenuItem eventKey="1"><Glyphicon glyph="export"/> エクスポート</MenuItem>
+                      <MenuItem divider />
+                      <MenuItem eventKey="4" onClick={this.logout}><FontAwesome name="sign-out"/> ログアウト</MenuItem>
+                  </DropdownButton>
+                </ButtonToolbar>
               : <Button bsStyle="primary" bsSize="xs" onClick={this.loginPopup}>
                   <FontAwesome name="twitter"/> Login via Twitter
                 </Button>

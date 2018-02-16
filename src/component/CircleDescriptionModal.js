@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
-import { Alert, Button, Glyphicon, Panel, Label, FormControl, Modal, Image } from 'react-bootstrap';
+import { Button, Glyphicon, Panel, Label, FormControl, Modal, Image } from 'react-bootstrap';
 
 class CircleDescriptionModal extends React.Component {
   constructor(props, context) {
