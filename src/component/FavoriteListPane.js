@@ -109,6 +109,20 @@ class FavoriteListPane extends React.Component {
               : <span style={{ color: "#ccc" }}>(未記入)</span>
           }
         ]
+      },{
+        Header: "チェックリスト",
+        headerStyle: { backgroundColor: "#dff" },
+        columns: [
+          {
+            Header: "コメント",
+            headerStyle: { backgroundColor: "#ddd" },
+            accessor: "favorite.comment",
+            width: 300,
+            Cell: row => row.value
+              ? row.value
+              : <span style={{ color: "#ccc" }}>(未記入)</span>
+          },
+        ]
       }
     ];
 
