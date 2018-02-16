@@ -1,5 +1,4 @@
 import React from 'react';
-import request from 'superagent';
 import FontAwesome from 'react-fontawesome';
 import _ from 'lodash';
 import { withRouter } from 'react-router-dom';
@@ -38,18 +37,17 @@ class AdminRoot extends React.Component {
   componentDidMount() {
     this.loadLoginInfo();
 
-    request
-      .get(window.location.origin + '/aqmd3rd.json')
-      .end((err,res) => {
-        let data = JSON.parse(res.text);
+    fetch(window.location.origin + '/aqmd3rd.json', { credentials: 'include' })
+      .then(data => data.json())
+      .then(data => {
         this.setState({ circleList: data.circles, sort_order: data.sort_order, loading: false });
         this.componentWillReceiveProps(this.props);
-      });
+      })
+      .catch(err => console.log);
 
-    request
-      .get(window.location.origin + '/map.json')
-      .end((err,res) => {
-        const data = JSON.parse(res.text);
+    fetch(window.location.origin + '/map.json', { credentials: 'include' })
+      .then(data => data.json())
+      .then(data => {
         const maps = [];
 
         for (const sym of Object.keys(data.positions)) {
@@ -68,7 +66,8 @@ class AdminRoot extends React.Component {
         }
 
         this.setState({ map: maps });
-      });
+      })
+      .catch(err => console.log);
   }
 
   loadLoginInfo() {
