@@ -43,7 +43,7 @@ class MapPane extends React.Component {
             const circle = circleIdx[pos.sym + sprintf('%02d', pos.num)];
 
             if (!circle) {
-              console.log("NOT FOUND", pos.sym, pos.num);
+              //console.log("NOT FOUND", pos.sym, pos.num);
               return null;
             }
 

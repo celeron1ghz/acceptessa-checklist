@@ -25,13 +25,14 @@ class AdminRoot extends React.Component {
         me: null,
     };
 
-    this.BASE_URL       = "https://v7hwasc1o7.execute-api.ap-northeast-1.amazonaws.com/dev";
-    this.openModal      = this.openModal.bind(this);
-    this.closeModal     = this.closeModal.bind(this);
-    this.addFavorite    = this.addFavorite.bind(this);
-    this.removeFavorite = this.removeFavorite.bind(this);
-    this.loginPopup     = this.loginPopup.bind(this);
-    this.logout         = this.logout.bind(this);
+    this.BASE_URL               = "https://v7hwasc1o7.execute-api.ap-northeast-1.amazonaws.com/dev";
+    this.openModal              = this.openModal.bind(this);
+    this.closeModal             = this.closeModal.bind(this);
+    this.addFavorite            = this.addFavorite.bind(this);
+    this.removeFavorite         = this.removeFavorite.bind(this);
+    this.updateFavoriteComment  = this.updateFavoriteComment.bind(this);
+    this.loginPopup             = this.loginPopup.bind(this);
+    this.logout                 = this.logout.bind(this);
   }
 
   componentDidMount() {

@@ -7,21 +7,25 @@ class CircleDescriptionModal extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = { comment: null };
-    this.close = this.close.bind(this);
-    this.updateInput = this.updateInput.bind(this);
-    this.updateComment = this.updateComment.bind(this);
+
+    this.addFavorite    = this.addFavorite.bind(this);
+    this.removeFavorite = this.removeFavorite.bind(this);
+    this.updateComment  = this.updateComment.bind(this);
+    this.close          = this.close.bind(this);
+    this.updateInput    = this.updateInput.bind(this);
+  }
+
+  addFavorite() {
+    this.props.onAddFavorite(this.props.circle);
+  }
+
+  removeFavorite() {
+    this.props.onRemoveFavorite(this.props.circle);
   }
 
   updateComment() {
     this.props.onUpdateComment(this.props.circle, this.state.comment);
-  }
-
-  addFavorite(circle) {
-    this.props.onAddFavorite(circle);
-  }
-
-  removeFavorite(circle) {
-    this.props.onRemoveFavorite(circle);
+    alert("コメントを更新しました");
   }
 
   close() {
@@ -32,8 +36,13 @@ class CircleDescriptionModal extends React.Component {
     this.setState({ comment: e.target.value });
   }
 
+  componentWillReceiveProps(p) {
+    this.setState({ comment: p.favorite ? p.favorite.comment : null });
+  }
+
   render() {
-    const { show, circle, favorite, comment, showChecklistComponent } = this.props;
+    const { show, circle, favorite, showChecklistComponent } = this.props;
+    const { comment } = this.state;
 
     return <Modal show={show} onHide={this.close}>
       <Modal.Header closeButton>
@@ -52,7 +61,7 @@ class CircleDescriptionModal extends React.Component {
         {
           circle && <div>
             <div className="text-center">
-              <Image thumbnail src={circle.circlecut} style={{ border: favorite ? "4px solid aqua" : "4px solid transparent" }}/>
+              <Image src={circle.circlecut} style={{ border: favorite ? "4px solid aqua" : "4px solid transparent" }}/>
             </div>
 
             <br/>
@@ -62,7 +71,7 @@ class CircleDescriptionModal extends React.Component {
                   {
                     favorite
                       ? <div>
-                          <Button block bsStyle="warning" onClick={this.removeFavorite.bind(this,circle)}>
+                          <Button block bsStyle="warning" onClick={this.removeFavorite}>
                             <Glyphicon glyph="remove"/> お気に入りから削除する
                           </Button>
                           <br/>
@@ -81,7 +90,7 @@ class CircleDescriptionModal extends React.Component {
                             </Col>
                           </Row>
                         </div>
-                      : <Button block bsStyle="primary" onClick={this.addFavorite.bind(this,circle)}>
+                      : <Button block bsStyle="primary" onClick={this.addFavorite}>
                           <Glyphicon glyph="plus"/> お気に入りに追加する
                         </Button>
                   }
