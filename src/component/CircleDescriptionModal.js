@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
-import { Button, Glyphicon, Panel, Label, FormControl, Modal, Image } from 'react-bootstrap';
+import { Row, Col, Button, Glyphicon, Panel, Label, FormControl, Modal, Image } from 'react-bootstrap';
 
 class CircleDescriptionModal extends React.Component {
   constructor(props, context) {
@@ -33,7 +33,7 @@ class CircleDescriptionModal extends React.Component {
   }
 
   render() {
-    const { show, circle, favorite, comment } = this.props;
+    const { show, circle, favorite, comment, showChecklistComponent } = this.props;
 
     return <Modal show={show} onHide={this.close}>
       <Modal.Header closeButton>
@@ -57,11 +57,35 @@ class CircleDescriptionModal extends React.Component {
 
             <br/>
             {
-              favorite
-                ? <Button block bsStyle="warning" onClick={this.removeFavorite.bind(this,circle)}><Glyphicon glyph="remove"/> お気に入りから削除する</Button>
-
-                : <Button block bsStyle="primary" onClick={this.addFavorite.bind(this,circle)}><Glyphicon glyph="plus"/> お気に入りに追加する</Button>
-
+              showChecklistComponent &&
+                <div>
+                  {
+                    favorite
+                      ? <div>
+                          <Button block bsStyle="warning" onClick={this.removeFavorite.bind(this,circle)}>
+                            <Glyphicon glyph="remove"/> お気に入りから削除する
+                          </Button>
+                          <br/>
+                          <Row>
+                            <Col xs={6} sm={8} md={8} lg={8}>
+                              <FormControl
+                                componentClass="textarea"
+                                placeholder="(コメントが未記入です)"
+                                value={comment}
+                                onChange={this.updateInput}/>
+                            </Col>
+                            <Col xs={6} sm={4} md={4} lg={4}>
+                              <Button block bsStyle="primary" onClick={this.updateComment} style={{ height: "55px" }}>
+                                <Glyphicon glyph="refresh"/> コメントを更新する
+                              </Button>
+                            </Col>
+                          </Row>
+                        </div>
+                      : <Button block bsStyle="primary" onClick={this.addFavorite.bind(this,circle)}>
+                          <Glyphicon glyph="plus"/> お気に入りに追加する
+                        </Button>
+                  }
+                </div>
             }
             <br/>
 
@@ -102,25 +126,6 @@ class CircleDescriptionModal extends React.Component {
                 }
               </Panel.Body>
             </Panel>
-
-            <h4>自分のコメント</h4>
-            {
-              !favorite &&
-                <div className="text-muted">
-                  <Glyphicon glyph="exclamation-sign"/> ログインしてお気に入りに追加すると、メモを記入できるようになります。
-                </div>
-            }
-            {
-              favorite &&
-                <div>
-                  <FormControl
-                    componentClass="textarea"
-                    placeholder="(コメントが未記入です)"
-                    value={comment}
-                    onChange={this.updateInput}/>
-                  <Button block bsStyle="primary" onClick={this.updateComment}><Glyphicon glyph="refresh"/> コメントを更新する</Button>
-                </div>
-            }
           </div>
         }
       </Modal.Body>
@@ -137,6 +142,7 @@ CircleDescriptionModal.propTypes = {
   onUpdateComment: PropTypes.func.isRequired,
   onAddFavorite: PropTypes.func.isRequired,
   onRemoveFavorite: PropTypes.func.isRequired,
+  showChecklistComponent: PropTypes.bool,
 };
 
 export default CircleDescriptionModal;

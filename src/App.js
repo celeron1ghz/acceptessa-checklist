@@ -220,7 +220,8 @@ class AdminRoot extends React.Component {
         onClose={this.closeModal}
         onUpdateComment={this.updateFavoriteComment}
         onAddFavorite={this.addFavorite}
-        onRemoveFavorite={this.removeFavorite}/>
+        onRemoveFavorite={this.removeFavorite}
+        showChecklistComponent={!!me}/>
 
       {
         this.state.loading &&
