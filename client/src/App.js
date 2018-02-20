@@ -35,8 +35,32 @@ class AdminRoot extends React.Component {
     this.logout                 = this.logout.bind(this);
   }
 
+  callApi(args) {
+    const token = localStorage.getItem("token");
+    if (token) {
+      return fetch("https://orc4t3x8hh.execute-api.ap-northeast-1.amazonaws.com/dev/endpoint", {
+        headers: new Headers({ 'Authorization': "Bearer " + token }),
+        method: 'POST',
+        body: JSON.stringify(args),
+        cors: true,
+      }).then(data => data.json());
+    } else {
+      return Promise.reject("no access token!!");
+    }
+  }
+
   componentDidMount() {
     this.loadLoginInfo();
+    this.callApi({ command: "list", exhibition_id: "aqmd3rd", member_id: "mimin_ga_mi_bot" })
+      .then(data => {
+        console.log("FAVORITE_DATA_OK:", data.length)
+        const favoriteIdx = {};
+        for (const f of data) {
+          favoriteIdx[f.circle_id] = f;
+        }
+        this.setState({ favoriteIdx });
+      })
+      .catch(err => console.log);
 
     fetch(window.location.origin + '/aqmd3rd.json', { credentials: 'include' })
       .then(data => data.json())
@@ -108,15 +132,27 @@ class AdminRoot extends React.Component {
   }
 
   addFavorite(circle) {
-    const { favoriteIdx } = this.state;
-    favoriteIdx[circle.circle_id] = { created_at: new Date().getTime(), comment: null };
-    this.setState({ favoriteIdx });
+    const { favoriteIdx, me } = this.state;
+
+    this.callApi({ command: "add", exhibition_id: "aqmd3rd", circle_id: circle.circle_id, member_id: me.screen_name })
+      .then(data => {
+        console.log("ADD_FAVORITE", data);
+        favoriteIdx[circle.circle_id] = data;
+        this.setState({ favoriteIdx });
+      })
+      .catch(err => console.log);
   }
 
   removeFavorite(circle) {
-    const { favoriteIdx } = this.state;
-    delete favoriteIdx[circle.circle_id];
-    this.setState({ favoriteIdx });
+    const { favoriteIdx, me } = this.state;
+
+    this.callApi({ command: "remove", exhibition_id: "aqmd3rd", circle_id: circle.circle_id, member_id: me.screen_name })
+      .then(data => {
+        console.log("REMOVE_FAVORITE", data);
+        delete favoriteIdx[circle.circle_id];
+        this.setState({ favoriteIdx });
+      })
+      .catch((err,data) => { console.log("hei", err, data) });
   }
 
   updateFavoriteComment(circle,comment) {
