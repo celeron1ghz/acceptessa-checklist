@@ -72,17 +72,29 @@ class AdminRoot extends React.Component {
   }
 
   loadLoginInfo() {
-    fetch(this.BASE_URL + "/me?" + new Date().getTime(), { mode: "cors", credentials: 'include' })
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
+
+    const headers = new Headers();
+    headers.append('Authorization', "Bearer " + token);
+
+    fetch(this.BASE_URL + "/me", { headers: headers, mode: "cors" })
       .then(data => data.json())
-      .then(data => { this.setState({ me: data }) })
-      .catch(err => { this.setState({ me: null }) })
+      .then(data => {
+        console.log("LOGIN_DATA_OK:", data);
+        this.setState({ me: data });
+      })
+      .catch(err => {
+        console.log("LOGIN_DATA_NG:", err);
+        this.setState({ me: null });
+      })
   }
 
   logout() {
-    fetch(this.BASE_URL + "/logout?" + new Date().getTime(), { mode: "cors", credentials: 'include' })
-      .then(data => data.json())
-      .then(data => { this.setState({ me: data }) })
-      .catch(err => { this.setState({ me: null }) })
+    localStorage.clear();
+    this.setState({ me: null });
   }
 
   openModal(selectedCircle) {
@@ -115,13 +127,13 @@ class AdminRoot extends React.Component {
   }
 
   loginPopup() {
-    const popup = window.open(this.BASE_URL + "/auth");
-    const id = setInterval(() => {
-      if (popup.closed) {
-        clearInterval(id);
-        this.loadLoginInfo();
-      }
-    },500);
+    const getJwtToken = event => {
+      localStorage.setItem("token", event.data);
+      this.loadLoginInfo();
+    };
+
+    window.open(this.BASE_URL + "/auth");
+    window.addEventListener('message', getJwtToken, false);
   }
 
   componentWillReceiveProps(props){
