@@ -211,7 +211,7 @@ class AdminRoot extends React.Component {
       this.loadLoginInfo();
     };
 
-    window.open(this.BASE_URL + "/auth");
+    window.open(this.AUTH_ENDPOINT + "/auth");
     window.addEventListener('message', getJwtToken, false);
   }
 
