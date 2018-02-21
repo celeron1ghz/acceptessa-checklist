@@ -75,53 +75,53 @@ const COMMANDS = {
 };
 
 module.exports.endpoint = (event, context, callback) => {
-  vo(function*(){
-    if (!event.headers.Authorization) {
-      throw { code: 400, message: 'INVALID_HEADER' };
-    }
-
-    const token_matched = event.headers.Authorization.match(/^Bearer\s+(\w+\.\w+\.\w+)$/);
-
-    if (!token_matched) {
-      throw { code: 400, message: 'INVALID_HEADER' };
-    }
-
-    const token  = token_matched[1];
-    const secret = (yield ssm.getParameter({ Name: '/twitter_oauth/jwt_token', WithDecryption: true }).promise() ).Parameter.Value;
-    let user;
+  return vo(function*(){
+    let token;
 
     try {
-      const data = jwt.verify(token, secret);
-      const sessid = data.sessid;
+      const token_matched = event.headers.Authorization.match(/^Bearer\s+(\w+\.\w+\.\w+)$/);
+      token = token_matched[1];
+    } catch(e) {
+      throw { code: 400, message: 'INVALID_HEADER' };
+    }
 
+    const secret = (yield ssm.getParameter({ Name: '/twitter_oauth/jwt_token', WithDecryption: true }).promise() ).Parameter.Value;
+    let sess;
+    try {
+      sess = jwt.verify(token, secret);
+    } catch(e) {
+      throw { code: 401, message: 'INVALID_TOKEN' };
+    }
+
+
+    let user;
+    try {
       user = yield dynamodb.get({
         TableName: "twitter_oauth",
-        Key: { "uid": sessid },
+        Key: { "uid": sess.sessid },
         AttributesToGet: ['twitter_id', 'screen_name', 'display_name', 'profile_image_url'],
       }).promise().then(data => data.Item);
-
-      console.log(user);
     } catch(e) {
-      console.log("Error on jwt verify:", e.toString());
-      throw { code: 400, message: 'INVALID_HEADER' };
-    } finally {
-      if (!user) {
-        throw { code: 400, message: 'INVALID_HEADER' };
-      }
+      throw e; // maybe dynamodb's internal error
     }
+
+    if (!user) {
+      throw { code: 401, message: 'EXPIRED' };
+    }
+
 
     let body;
 
     try {
       body = JSON.parse(event.body);
     } catch(e) {
-      throw { code: 401, message: 'INVALID_BODY' };
+      throw { code: 400, message: 'INVALID_BODY' };
     }
 
     const cmd = COMMANDS[body.command];
 
     if (!cmd) {
-      throw { code: 401, message: 'INVALID_BODY' };
+      throw { code: 400, message: 'INVALID_COMMAND' };
     }
 
     try {
@@ -137,7 +137,7 @@ module.exports.endpoint = (event, context, callback) => {
 
     } catch(e) {
       console.log(e);
-      throw { code: 401, message: 'INVALID_BODY' };
+      throw { code: 400, message: 'INVALID_PARAM' };
     }
 
   }).catch(err => {
