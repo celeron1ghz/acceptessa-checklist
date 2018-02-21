@@ -88,14 +88,26 @@ module.exports.endpoint = (event, context, callback) => {
 
     const token  = token_matched[1];
     const secret = (yield ssm.getParameter({ Name: '/twitter_oauth/jwt_token', WithDecryption: true }).promise() ).Parameter.Value;
-    let sessid;
+    let user;
 
     try {
       const data = jwt.verify(token, secret);
-      sessid = data.sessid;
+      const sessid = data.sessid;
+
+      user = yield dynamodb.get({
+        TableName: "twitter_oauth",
+        Key: { "uid": sessid },
+        AttributesToGet: ['twitter_id', 'screen_name', 'display_name', 'profile_image_url'],
+      }).promise().then(data => data.Item);
+
+      console.log(user);
     } catch(e) {
       console.log("Error on jwt verify:", e.toString());
       throw { code: 400, message: 'INVALID_HEADER' };
+    } finally {
+      if (!user) {
+        throw { code: 400, message: 'INVALID_HEADER' };
+      }
     }
 
     let body;
@@ -129,25 +141,22 @@ module.exports.endpoint = (event, context, callback) => {
     }
 
   }).catch(err => {
+    let code;
+
     if (err instanceof Error) {
       console.log("Error on endpoint:", err);
-      return callback(null, {
-        statusCode: 500,
-        headers: {
-          'Access-Control-Allow-Origin': event.headers.origin,
-          'Access-Control-Allow-Credentials': true,
-        },
-        body: JSON.stringify({ error: err.message }),
-      });
+      code = 500;
     } else {
-      return callback(null, {
-        statusCode: err.code,
-        headers: {
-          'Access-Control-Allow-Origin': event.headers.origin,
-          'Access-Control-Allow-Credentials': true,
-        },
-        body: JSON.stringify({ error: err.message }),
-      });
+      code = err.code;
     }
+
+    return callback(null, {
+      statusCode: code,
+      headers: {
+        'Access-Control-Allow-Origin': event.headers.origin,
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify({ error: err.message }),
+    });
   });
 };
