@@ -7,11 +7,11 @@ const ssm = new aws.SSM();
 const dynamodb = new aws.DynamoDB.DocumentClient();
 
 class ListFavoriteCommand {
-  constructor(args){
+  constructor(args,user){
     if (!args.exhibition_id)  { throw new Error("not exhibition_id") }
-    if (!args.member_id)      { throw new Error("not member_id") }
+    if (!user.screen_name)    { throw new Error("not screen_name") }
     this.exhibition_id = args.exhibition_id;
-    this.member_id     = args.member_id;
+    this.member_id     = user.screen_name;
   }
 
   run() {
@@ -25,12 +25,12 @@ class ListFavoriteCommand {
 }
 
 class AddFavoriteCommand {
-  constructor(args){
+  constructor(args,user){
     if (!args.circle_id) { throw new Error("not circle_id") }
-    if (!args.member_id) { throw new Error("not member_id") }
+    if (!user.screen_name) { throw new Error("not screen_name") }
     if (!args.exhibition_id)  { throw new Error("not exhibition_id") }
     this.circle_id = args.circle_id;
-    this.member_id = args.member_id;
+    this.member_id = user.screen_name;
     this.exhibition_id = args.exhibition_id;
   }
 
@@ -48,12 +48,12 @@ class AddFavoriteCommand {
 }
 
 class RemoveFavoriteCommand {
-  constructor(args){
+  constructor(args,user){
     if (!args.circle_id) { throw new Error("not circle_id") }
-    if (!args.member_id) { throw new Error("not member_id") }
+    if (!user.screen_name) { throw new Error("not screen_name") }
     if (!args.exhibition_id)  { throw new Error("not exhibition_id") }
     this.circle_id = args.circle_id;
-    this.member_id = args.member_id;
+    this.member_id = user.screen_name;
     this.exhibition_id = args.exhibition_id;
   }
 
@@ -125,7 +125,7 @@ module.exports.endpoint = (event, context, callback) => {
     }
 
     try {
-      const ret = yield new cmd(body).run();
+      const ret = yield new cmd(body,user).run();
       return callback(null, {
         statusCode: 200,
         headers: {
