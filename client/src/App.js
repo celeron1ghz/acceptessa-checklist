@@ -18,8 +18,8 @@ class AdminRoot extends React.Component {
         circleIdx:   {},
         favoriteIdx: {},
         sort_order:  [],
+        loading:     {},
         map: null,
-        loading: true,
         modalShow: false,
         selectedCircle: null,
         me: null,
@@ -33,6 +33,8 @@ class AdminRoot extends React.Component {
     this.updateFavoriteComment  = this.updateFavoriteComment.bind(this);
     this.loginPopup             = this.loginPopup.bind(this);
     this.logout                 = this.logout.bind(this);
+    this.addLoading             = this.addLoading.bind(this);
+    this.removeLoading          = this.removeLoading.bind(this);
   }
 
   callApi(args) {
@@ -49,10 +51,30 @@ class AdminRoot extends React.Component {
     }
   }
 
+  addLoading(key) {
+    const { loading } = this.state;
+    loading[key] = 1;
+    this.setState({ loading });
+  }
+
+  removeLoading(key) {
+    const { loading } = this.state;
+    delete loading[key];
+    this.setState({ loading });
+  }
+
   componentDidMount() {
     this.loadLoginInfo();
+
+    this.addLoading("circle");
+    this.addLoading("favorite");
+    this.addLoading("map");
+
+
     this.callApi({ command: "list", exhibition_id: "aqmd3rd", member_id: "mimin_ga_mi_bot" })
       .then(data => {
+        this.removeLoading("favorite");
+
         console.log("FAVORITE_DATA_OK:", data.length)
         const favoriteIdx = {};
         for (const f of data) {
@@ -65,7 +87,8 @@ class AdminRoot extends React.Component {
     fetch(window.location.origin + '/aqmd3rd.json', { credentials: 'include' })
       .then(data => data.json())
       .then(data => {
-        this.setState({ circleList: data.circles, sort_order: data.sort_order, loading: false });
+        this.removeLoading("circle");
+        this.setState({ circleList: data.circles, sort_order: data.sort_order });
         this.componentWillReceiveProps(this.props);
       })
       .catch(err => console.log);
@@ -73,6 +96,7 @@ class AdminRoot extends React.Component {
     fetch(window.location.origin + '/map.json', { credentials: 'include' })
       .then(data => data.json())
       .then(data => {
+        this.removeLoading("map");
         const maps = [];
 
         for (const sym of Object.keys(data.positions)) {
@@ -132,27 +156,36 @@ class AdminRoot extends React.Component {
   }
 
   addFavorite(circle) {
-    const { favoriteIdx, me } = this.state;
+    const { favoriteIdx } = this.state;
 
-    this.callApi({ command: "add", exhibition_id: "aqmd3rd", circle_id: circle.circle_id, member_id: me.screen_name })
+    this.addLoading(circle.circle_id);
+    this.callApi({ command: "add", exhibition_id: "aqmd3rd", circle_id: circle.circle_id })
       .then(data => {
-        console.log("ADD_FAVORITE", data);
-        favoriteIdx[circle.circle_id] = data;
-        this.setState({ favoriteIdx });
+        this.removeLoading(circle.circle_id);
+
+        if(data.error) {
+          alert(data.error + ": エラーが発生しました。しばらく経ってもエラーが続く場合は管理者に問い合わせてください。");
+        } else {
+          console.log("ADD_FAVORITE", data);
+          favoriteIdx[circle.circle_id] = data;
+          this.setState({ favoriteIdx });
+        }
       })
       .catch(err => console.log);
   }
 
   removeFavorite(circle) {
-    const { favoriteIdx, me } = this.state;
+    const { favoriteIdx } = this.state;
 
-    this.callApi({ command: "remove", exhibition_id: "aqmd3rd", circle_id: circle.circle_id, member_id: me.screen_name })
+    this.addLoading(circle.circle_id);
+    this.callApi({ command: "remove", exhibition_id: "aqmd3rd", circle_id: circle.circle_id })
       .then(data => {
+        this.removeLoading(circle.circle_id);
         console.log("REMOVE_FAVORITE", data);
         delete favoriteIdx[circle.circle_id];
         this.setState({ favoriteIdx });
       })
-      .catch((err,data) => { console.log("hei", err, data) });
+      .catch(err => console.log);
   }
 
   updateFavoriteComment(circle,comment) {
@@ -185,7 +218,7 @@ class AdminRoot extends React.Component {
   }
 
   render() {
-    const { circleList, favoriteIdx, map, modalShow, selectedCircle, me } = this.state;
+    const { circleList, favoriteIdx, loading, map, modalShow, selectedCircle, me } = this.state;
 
     return <div className="container">
       <br/>
@@ -217,6 +250,15 @@ class AdminRoot extends React.Component {
             <Glyphicon glyph="exclamation-sign"/> ログインを行うことでチェックリストの作成を行うことができます。
           </Alert>
       }
+      {
+        JSON.stringify(this.state.loading)
+      }
+      {/*
+        this.state.loading &&
+          <div className="text-center text-muted">
+            <FontAwesome name="spinner" size="5x" spin pulse={true} /><h3>Loading...</h3>
+          </div>
+      */}
       <Tab.Container id="left-tabs-example" defaultActiveKey="list">
         <div>
           <Nav bsStyle="pills">
@@ -231,6 +273,7 @@ class AdminRoot extends React.Component {
               <CircleListPane
                 circles={circleList}
                 favorites={favoriteIdx}
+                loadings={loading}
                 onRowClick={this.openModal}
                 onAddFavorite={this.addFavorite}
                 onRemoveFavorite={this.removeFavorite}
@@ -271,14 +314,6 @@ class AdminRoot extends React.Component {
         onAddFavorite={this.addFavorite}
         onRemoveFavorite={this.removeFavorite}
         showChecklistComponent={!!me}/>
-
-      {
-        this.state.loading &&
-          <div className="text-center text-muted">
-            <FontAwesome name="spinner" size="5x" spin pulse={true} /><h3>Loading...</h3>
-          </div>
-      }
-      {this.props.children}
     </div>;
   }
 }

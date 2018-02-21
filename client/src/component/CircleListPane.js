@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ReactTable from "react-table";
 import _ from 'lodash';
 import { Glyphicon, Button } from 'react-bootstrap';
+import FontAwesome from 'react-fontawesome';
 
 class CircleListPane extends React.Component {
   constructor(props, context) {
@@ -23,7 +24,7 @@ class CircleListPane extends React.Component {
   }
 
   render() {
-    const { favorites, showChecklistComponent } = this.props;
+    const { favorites, showChecklistComponent, loadings } = this.props;
     const { table } = this.state;
     const circleList = _.cloneDeep(this.props.circles);
 
@@ -138,14 +139,22 @@ class CircleListPane extends React.Component {
           {
             headerStyle: { backgroundColor: "#ddd", fontSize: "12px" },
             accessor: "favorite",
-            width: 70,
+            width: 80,
             resizable: false,
             filterable: false,
             className: "text-center",
             Cell: row => {
-              return row.original.favorite
-                ? <Button bsStyle="danger" bsSize="xs" onClick={e => { e.stopPropagation(); this.removeFavorite(row.original)}}><Glyphicon glyph="minus"/> 削除</Button>
-                : <Button bsStyle="primary" bsSize="xs" onClick={e => { e.stopPropagation(); this.addFavorite(row.original)  }}><Glyphicon glyph="plus"/> 追加</Button>
+              return loadings[row.original.circle_id]
+                ? <Button bsStyle="warning" bsSize="xs" onClick={e => { e.stopPropagation(); }}>
+                    <FontAwesome name="spinner" spin pulse={true} /> 処理中
+                  </Button>
+                : row.original.favorite
+                  ? <Button bsStyle="danger" bsSize="xs" onClick={e => { e.stopPropagation(); this.removeFavorite(row.original)}}>
+                      <Glyphicon glyph="minus"/> 削除
+                    </Button>
+                  : <Button bsStyle="primary" bsSize="xs" onClick={e => { e.stopPropagation(); this.addFavorite(row.original)  }}>
+                      <Glyphicon glyph="plus"/> 追加
+                    </Button>
             },
           },
         ],
@@ -213,6 +222,7 @@ class CircleListPane extends React.Component {
 CircleListPane.propTypes = {
   circles: PropTypes.array.isRequired,
   favorites: PropTypes.object.isRequired,
+  loadings: PropTypes.object.isRequired,
   onRowClick: PropTypes.func.isRequired,
   onAddFavorite: PropTypes.func.isRequired,
   onRemoveFavorite: PropTypes.func.isRequired,
