@@ -25,7 +25,6 @@ class CircleDescriptionModal extends React.Component {
 
   updateComment() {
     this.props.onUpdateComment(this.props.circle, this.state.comment);
-    alert("コメントを更新しました");
   }
 
   close() {

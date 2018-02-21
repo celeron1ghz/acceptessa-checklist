@@ -25,7 +25,9 @@ class AdminRoot extends React.Component {
         me: null,
     };
 
-    this.BASE_URL               = "https://v7hwasc1o7.execute-api.ap-northeast-1.amazonaws.com/dev";
+    this.AUTH_ENDPOINT      = "https://v7hwasc1o7.execute-api.ap-northeast-1.amazonaws.com/dev";
+    this.CHECKLIST_ENDPOINT = "https://orc4t3x8hh.execute-api.ap-northeast-1.amazonaws.com/dev/endpoint";
+
     this.openModal              = this.openModal.bind(this);
     this.closeModal             = this.closeModal.bind(this);
     this.addFavorite            = this.addFavorite.bind(this);
@@ -40,7 +42,7 @@ class AdminRoot extends React.Component {
   callApi(args) {
     const token = localStorage.getItem("token");
     if (token) {
-      return fetch("https://orc4t3x8hh.execute-api.ap-northeast-1.amazonaws.com/dev/endpoint", {
+      return fetch(this.CHECKLIST_ENDPOINT, {
         headers: new Headers({ 'Authorization': "Bearer " + token }),
         method: 'POST',
         body: JSON.stringify(args),
@@ -128,7 +130,7 @@ class AdminRoot extends React.Component {
     const headers = new Headers();
     headers.append('Authorization', "Bearer " + token);
 
-    fetch(this.BASE_URL + "/me", { headers: headers, mode: "cors" })
+    fetch(this.AUTH_ENDPOINT + "/me", { headers: headers, mode: "cors" })
       .then(data => data.json())
       .then(data => {
         console.log("LOGIN_DATA_OK:", data);
@@ -178,7 +180,7 @@ class AdminRoot extends React.Component {
     const { favoriteIdx } = this.state;
 
     this.addLoading(circle.circle_id);
-    this.callApi({ command: "remove", exhibition_id: "aqmd3rd", circle_id: circle.circle_id })
+    this.callApi({ command: "remove", circle_id: circle.circle_id })
       .then(data => {
         this.removeLoading(circle.circle_id);
         console.log("REMOVE_FAVORITE", data);
@@ -190,9 +192,17 @@ class AdminRoot extends React.Component {
 
   updateFavoriteComment(circle,comment) {
     const { favoriteIdx } = this.state;
-    const fav = favoriteIdx[circle.circle_id];
-    fav.comment = comment;
-    this.setState({ favoriteIdx });
+
+    this.addLoading(circle.circle_id);
+    this.callApi({ command: "update", circle_id: circle.circle_id, comment: comment })
+      .then(data => {
+        this.removeLoading(circle.circle_id);
+        console.log("UPDATE_FAVORITE", data);
+        const fav = favoriteIdx[circle.circle_id];
+        fav.comment = comment;
+        this.setState({ favoriteIdx });
+      })
+      .catch(err => console.log);
   }
 
   loginPopup() {
