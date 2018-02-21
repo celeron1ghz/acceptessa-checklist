@@ -283,6 +283,7 @@ class AdminRoot extends React.Component {
               <CirclecutPane
                 circles={circleList}
                 favorites={favoriteIdx}
+                loadings={loading}
                 onImageClick={this.openModal}
                 onAddFavorite={this.addFavorite}
                 onRemoveFavorite={this.removeFavorite}
@@ -309,6 +310,7 @@ class AdminRoot extends React.Component {
         show={modalShow}
         circle={selectedCircle}
         favorite={selectedCircle ? favoriteIdx[selectedCircle.circle_id] : null}
+        loadings={loading}
         onClose={this.closeModal}
         onUpdateComment={this.updateFavoriteComment}
         onAddFavorite={this.addFavorite}

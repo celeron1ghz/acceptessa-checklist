@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Label, Glyphicon, Button, Col, Image } from 'react-bootstrap';
+import FontAwesome from 'react-fontawesome';
 
 class CirclecutPane extends React.Component {
   addFavorite(circle) {
@@ -17,7 +18,7 @@ class CirclecutPane extends React.Component {
   }
 
   render() {
-    const { favorites, showChecklistComponent } = this.props;
+    const { favorites, showChecklistComponent, loadings } = this.props;
     const circleList = _.cloneDeep(this.props.circles);
 
     for (const c of circleList) {
@@ -64,13 +65,17 @@ class CirclecutPane extends React.Component {
                     showChecklistComponent &&
                       <span className="pull-right">
                         {
-                          c.favorite
-                            ? <Button bsStyle="danger" bsSize="xs" onClick={e => { e.stopPropagation(); this.removeFavorite(c) }}>
-                                <Glyphicon glyph="minus"/> 削除
+                          loadings[c.circle_id]
+                            ? <Button bsStyle="warning" bsSize="xs" onClick={e => { e.stopPropagation(); }}>
+                                <FontAwesome name="spinner" spin pulse={true} /> 処理中
                               </Button>
-                            : <Button bsStyle="primary" bsSize="xs" onClick={e => { e.stopPropagation(); this.addFavorite(c) }}>
-                                <Glyphicon glyph="plus"/> 追加
-                              </Button>
+                            : c.favorite
+                              ? <Button bsStyle="danger" bsSize="xs" onClick={e => { e.stopPropagation(); this.removeFavorite(c) }}>
+                                  <Glyphicon glyph="minus"/> 削除
+                                </Button>
+                              : <Button bsStyle="primary" bsSize="xs" onClick={e => { e.stopPropagation(); this.addFavorite(c) }}>
+                                  <Glyphicon glyph="plus"/> 追加
+                                </Button>
                         }
                       </span>
                   }
@@ -87,6 +92,7 @@ class CirclecutPane extends React.Component {
 CirclecutPane.propTypes = {
   circles: PropTypes.array.isRequired,
   favorites: PropTypes.object.isRequired,
+  loadings: PropTypes.object.isRequired,
   onImageClick: PropTypes.func.isRequired,
   onAddFavorite: PropTypes.func.isRequired,
   onRemoveFavorite: PropTypes.func.isRequired,
