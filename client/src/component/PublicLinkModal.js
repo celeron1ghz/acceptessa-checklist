@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FontAwesome from 'react-fontawesome';
 import { Button, Glyphicon, Modal, Panel } from 'react-bootstrap';
 
 class PublicLinkModal extends React.Component {
@@ -20,7 +19,7 @@ class PublicLinkModal extends React.Component {
     return <Modal show={show} onHide={this.close}>
       <Modal.Header closeButton>
         <Modal.Title>
-          チェックリストの公開設定
+          <Glyphicon glyph="link"/> チェックリストの公開設定
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -36,7 +35,7 @@ class PublicLinkModal extends React.Component {
 
         <Panel>
           <Panel.Body>
-            チェックリストの公開URLは <b><a href="#" target="_blank">http://loclahost:5000</a></b> です。
+            チェックリストの公開URLは <b><a href="#/" target="_blank">http://loclahost:5000</a></b> です。
           </Panel.Body>
         </Panel>
 

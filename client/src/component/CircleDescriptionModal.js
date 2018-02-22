@@ -48,7 +48,8 @@ class CircleDescriptionModal extends React.Component {
         <Modal.Title>
           {
             circle && <div>
-              {circle.circle_name}{' '}
+              <Glyphicon glyph="cog"/>
+              {' ' + circle.circle_name + ' '}
               {
                 favorite && <Label bsStyle="warning"><Glyphicon glyph="star"/> お気に入り</Label>
               }
