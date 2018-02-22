@@ -50,7 +50,6 @@ module.exports.endpoint = (event, context, callback) => {
 
 
     let body;
-
     try {
       body = JSON.parse(event.body);
     } catch(e) {
@@ -58,10 +57,10 @@ module.exports.endpoint = (event, context, callback) => {
     }
 
     const cmd = COMMANDS[body.command];
-
     if (!cmd) {
       throw { code: 400, message: 'INVALID_COMMAND' };
     }
+
 
     try {
       const ret = yield new cmd(body,user).run();

@@ -25,6 +25,7 @@ provider:
       Resource:
         - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_favorite"]]
         - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_favorite/index/*"]]
+        - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_config"]]
 
 functions:
   endpoint:
@@ -62,6 +63,18 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 1
               WriteCapacityUnits: 1
+
+    ConfigTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: tessa_config
+        AttributeDefinitions:
+          - { AttributeName: member_id, AttributeType: S }
+        KeySchema:
+          - { AttributeName: member_id, KeyType: HASH }
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
 
     WCUAlarm:
       Type: AWS::CloudWatch::Alarm
