@@ -4,11 +4,13 @@ import _ from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { Image, ButtonToolbar, DropdownButton, MenuItem, Alert, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
 
-import CircleDescriptionModal from './component/CircleDescriptionModal';
-import FavoriteListPane from './component/FavoriteListPane';
-import CircleListPane from './component/CircleListPane';
-import CirclecutPane from './component/CirclecutPane';
 import MapPane from './component/MapPane';
+import CirclecutPane from './component/CirclecutPane';
+import CircleListPane from './component/CircleListPane';
+import FavoriteListPane from './component/FavoriteListPane';
+
+import PublicLinkModal from './component/PublicLinkModal';
+import CircleDescriptionModal from './component/CircleDescriptionModal';
 
 class AdminRoot extends React.Component {
   constructor(props, context) {
@@ -20,7 +22,8 @@ class AdminRoot extends React.Component {
         sort_order:  [],
         loading:     {},
         map: null,
-        modalShow: false,
+        showCircleDescModal: false,
+        showPublicLinkModal: false,
         selectedCircle: null,
         me: null,
     };
@@ -28,8 +31,8 @@ class AdminRoot extends React.Component {
     this.AUTH_ENDPOINT      = "https://v7hwasc1o7.execute-api.ap-northeast-1.amazonaws.com/dev";
     this.CHECKLIST_ENDPOINT = "https://orc4t3x8hh.execute-api.ap-northeast-1.amazonaws.com/dev/endpoint";
 
-    this.openModal              = this.openModal.bind(this);
-    this.closeModal             = this.closeModal.bind(this);
+    this.openCircleDescModal    = this.openCircleDescModal.bind(this);
+    this.closeCircleDescModal   = this.closeCircleDescModal.bind(this);
     this.addFavorite            = this.addFavorite.bind(this);
     this.removeFavorite         = this.removeFavorite.bind(this);
     this.updateFavoriteComment  = this.updateFavoriteComment.bind(this);
@@ -37,6 +40,8 @@ class AdminRoot extends React.Component {
     this.logout                 = this.logout.bind(this);
     this.addLoading             = this.addLoading.bind(this);
     this.removeLoading          = this.removeLoading.bind(this);
+    this.openPublicLinkModal    = this.openPublicLinkModal.bind(this);
+    this.closePublicLinkModal   = this.closePublicLinkModal.bind(this);
   }
 
   callChecklistApi(args) {
@@ -71,9 +76,9 @@ class AdminRoot extends React.Component {
     const circle = this.state.circleList.filter(c => c.circle_id === circle_id)[0]
 
     if (circle) {
-      this.setState({ selectedCircle: circle, modalShow: true });
+      this.setState({ selectedCircle: circle, showCircleDescModal: true });
     } else {
-      this.setState({ modalShow: false });
+      this.setState({ showCircleDescModal: false });
     }
   }
 
@@ -180,14 +185,22 @@ class AdminRoot extends React.Component {
     this.setState({ me: null, favoriteIdx: {} });
   }
 
-  openModal(selectedCircle) {
+  openCircleDescModal(selectedCircle) {
     const param = new URLSearchParams();
     param.append("circle_id", selectedCircle.circle_id);
     this.props.history.push("?" + param.toString());
   }
 
-  closeModal() {
+  closeCircleDescModal() {
     this.props.history.push("?");
+  }
+
+  openPublicLinkModal() {
+    this.setState({ showPublicLinkModal: true });
+  }
+
+  closePublicLinkModal() {
+    this.setState({ showPublicLinkModal: false });
   }
 
   addFavorite(circle) {
@@ -239,7 +252,7 @@ class AdminRoot extends React.Component {
   }
 
   render() {
-    const { circleList, favoriteIdx, loading, map, modalShow, selectedCircle, me } = this.state;
+    const { circleList, favoriteIdx, loading, map, showCircleDescModal, showPublicLinkModal, selectedCircle, me } = this.state;
 
     return <div className="container">
       <br/>
@@ -262,7 +275,7 @@ class AdminRoot extends React.Component {
                       <MenuItem divider />
                       <MenuItem eventKey="3"><Glyphicon glyph="export"/> エクスポート</MenuItem>
                       <MenuItem divider />
-                      <MenuItem eventKey="4"><Glyphicon glyph="link"/> 公開設定</MenuItem>
+                      <MenuItem eventKey="4" onClick={this.openPublicLinkModal}><Glyphicon glyph="link"/> 公開設定</MenuItem>
                   </DropdownButton>
                 </ButtonToolbar>
               : <Button bsStyle="primary" bsSize="xs" onClick={this.login}>
@@ -292,7 +305,7 @@ class AdminRoot extends React.Component {
                 circles={circleList}
                 favorites={favoriteIdx}
                 loadings={loading}
-                onRowClick={this.openModal}
+                onRowClick={this.openCircleDescModal}
                 onAddFavorite={this.addFavorite}
                 onRemoveFavorite={this.removeFavorite}
                 showChecklistComponent={!!me}/>
@@ -302,7 +315,7 @@ class AdminRoot extends React.Component {
                 circles={circleList}
                 favorites={favoriteIdx}
                 loadings={loading}
-                onImageClick={this.openModal}
+                onImageClick={this.openCircleDescModal}
                 onAddFavorite={this.addFavorite}
                 onRemoveFavorite={this.removeFavorite}
                 showChecklistComponent={!!me}/>
@@ -311,29 +324,33 @@ class AdminRoot extends React.Component {
               <FavoriteListPane
                 circles={circleList}
                 favorites={favoriteIdx}
-                onRowClick={this.openModal}/>
+                onRowClick={this.openCircleDescModal}/>
             </Tab.Pane>
             <Tab.Pane eventKey="map">
               <MapPane
                 maps={map}
                 circles={circleList}
                 favorites={favoriteIdx}
-                onCircleClick={this.openModal}/>
+                onCircleClick={this.openCircleDescModal}/>
             </Tab.Pane>
           </Tab.Content>
         </div>
       </Tab.Container>
 
       <CircleDescriptionModal
-        show={modalShow}
+        show={showCircleDescModal}
         circle={selectedCircle}
         favorite={selectedCircle ? favoriteIdx[selectedCircle.circle_id] : null}
         loadings={loading}
-        onClose={this.closeModal}
+        onClose={this.closeCircleDescModal}
         onUpdateComment={this.updateFavoriteComment}
         onAddFavorite={this.addFavorite}
         onRemoveFavorite={this.removeFavorite}
         showChecklistComponent={!!me}/>
+
+      <PublicLinkModal
+        show={showPublicLinkModal}
+        onClose={this.closePublicLinkModal}/>
     </div>;
   }
 }
