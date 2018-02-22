@@ -83,8 +83,8 @@ class AdminRoot extends React.Component {
   }
 
   componentDidMount() {
+    this.getAuthData();
     this.getUserData();
-    this.getFavoriteList();
     this.getCircleList();
     this.getMapData();
   }
@@ -102,7 +102,7 @@ class AdminRoot extends React.Component {
       .catch(err => console.log)
   }
 
-  getFavoriteList() {
+  getUserData() {
     this.addLoading("favorite");
     return this
       .callChecklistApi({ command: "list", exhibition_id: "aqmd3rd" })
@@ -148,7 +148,7 @@ class AdminRoot extends React.Component {
       .catch(err => console.log)
   }
 
-  getUserData() {
+  getAuthData() {
     const token = localStorage.getItem("token");
     if (!token) {
       return;
@@ -172,8 +172,8 @@ class AdminRoot extends React.Component {
   login() {
     const getJwtToken = event => {
       localStorage.setItem("token", event.data);
+      this.getAuthData();
       this.getUserData();
-      this.getFavoriteList();
     };
 
     window.open(this.AUTH_ENDPOINT + "/auth");
