@@ -55,7 +55,6 @@ class PublicLinkModal extends React.Component {
   }
 }
 
-
 PublicLinkModal.propTypes = {
   show: PropTypes.bool,
   //loadings: PropTypes.object.isRequired,

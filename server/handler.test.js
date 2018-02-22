@@ -28,7 +28,7 @@ describe('/me test', () => {
   let proxySSM;
 
   beforeEach(() => {
-    proxyDynamoDB = class { get(){}  query(){}  put(){}  delete(){} };
+    proxyDynamoDB = class { batchGet(){}  get(){}  query(){}  put(){}  delete(){} };
     proxySSM     = class { getParameter () {} };
 
     lambda = proxyquire('./handler', {
@@ -139,9 +139,10 @@ describe('/me test', () => {
 
 
   it('ok on list command', () => {
-    sinon.stub(proxySSM.prototype, 'getParameter').returns({  promise: () => Promise.resolve({ Parameter: { Value: "1" } })  });
-    sinon.stub(proxyDynamoDB.prototype, 'get'    ).returns({  promise: () => Promise.resolve({ Item: {} })  });
-    sinon.stub(proxyDynamoDB.prototype, 'query'  ).returns({  promise: () => Promise.resolve({ Items: [1,2,3,4,5] })  });
+    sinon.stub(proxySSM.prototype, 'getParameter' ).returns({  promise: () => Promise.resolve({ Parameter: { Value: "1" } })  });
+    sinon.stub(proxyDynamoDB.prototype, 'get'     ).returns({  promise: () => Promise.resolve({ Item: { screen_name: 'piyo' } })  });
+    sinon.stub(proxyDynamoDB.prototype, 'batchGet').returns({  promise: () => Promise.resolve({ Responses: { tessa_favorite: [1,2,3,4,5]} })  });
+    sinon.stub(proxyDynamoDB.prototype, 'query'   ).returns({  promise: () => Promise.resolve({ Items: [] })  });
 
     const signed = jwt.sign(JSON.stringify({ sessid: 'mogemogefugafuga' }), "1");
     const event  = { headers: { Authorization: "Bearer " + signed }, body: JSON.stringify({ command: "list", exhibition_id: "mogemoge", member_id: "mem" }) };
@@ -151,10 +152,9 @@ describe('/me test', () => {
     });
   });
 
-
   it('ok on add command', () => {
     sinon.stub(proxySSM.prototype, 'getParameter').returns({  promise: () => Promise.resolve({ Parameter: { Value: "1" } })  });
-    sinon.stub(proxyDynamoDB.prototype, 'get'    ).returns({  promise: () => Promise.resolve({ Item: {} })  });
+    sinon.stub(proxyDynamoDB.prototype, 'get'    ).returns({  promise: () => Promise.resolve({ Item: { screen_name: 'piyo' } })  });
     sinon.stub(proxyDynamoDB.prototype, 'put'    ).returns({  promise: () => Promise.resolve({})  });
 
     const signed = jwt.sign(JSON.stringify({ sessid: 'mogemogefugafuga' }), "1");
@@ -168,7 +168,7 @@ describe('/me test', () => {
 
   it('ok on remove command', () => {
     sinon.stub(proxySSM.prototype, 'getParameter').returns({  promise: () => Promise.resolve({ Parameter: { Value: "1" } })  });
-    sinon.stub(proxyDynamoDB.prototype, 'get'    ).returns({  promise: () => Promise.resolve({ Item: {} })  });
+    sinon.stub(proxyDynamoDB.prototype, 'get'    ).returns({  promise: () => Promise.resolve({ Item: { screen_name: 'piyo' } })  });
     sinon.stub(proxyDynamoDB.prototype, 'delete' ).returns({  promise: () => Promise.resolve({})  });
 
     const signed = jwt.sign(JSON.stringify({ sessid: 'mogemogefugafuga' }), "1");

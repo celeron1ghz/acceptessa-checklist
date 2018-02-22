@@ -105,7 +105,7 @@ class AdminRoot extends React.Component {
   getFavoriteList() {
     this.addLoading("favorite");
     return this
-      .callChecklistApi({ command: "list", exhibition_id: "aqmd3rd", member_id: "mimin_ga_mi_bot" })
+      .callChecklistApi({ command: "list", exhibition_id: "aqmd3rd" })
       .then(data => {
         this.removeLoading("favorite");
 
