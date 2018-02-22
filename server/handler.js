@@ -18,7 +18,7 @@ module.exports.endpoint = (event, context, callback) => {
     let token;
 
     try {
-      const token_matched = event.headers.Authorization.match(/^Bearer\s+(\w+\.\w+\.\w+)$/);
+      const token_matched = event.headers.Authorization.match(/^Bearer\s+(.+?\..+?\..+?)$/);
       token = token_matched[1];
     } catch(e) {
       throw { code: 400, message: 'INVALID_HEADER' };
