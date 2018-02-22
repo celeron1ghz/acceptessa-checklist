@@ -50,16 +50,16 @@ class AdminRoot extends React.Component {
 
   callChecklistApi(args) {
     const token = localStorage.getItem("token");
-    if (token) {
-      return fetch(this.CHECKLIST_ENDPOINT, {
-        headers: new Headers({ 'Authorization': "Bearer " + token }),
-        method: 'POST',
-        body: JSON.stringify(args),
-        cors: true,
-      }).then(data => data.json());
-    } else {
-      return Promise.reject("no access token!!");
+    if (!token) {
+      return Promise.reject("No access_token. Please login!!");
     }
+
+    return fetch(this.CHECKLIST_ENDPOINT, {
+      headers: new Headers({ 'Authorization': "Bearer " + token }),
+      method: 'POST',
+      body: JSON.stringify(args),
+      cors: true,
+    }).then(data => data.json());
   }
 
   addLoading(key) {
@@ -87,10 +87,8 @@ class AdminRoot extends React.Component {
   }
 
   componentDidMount() {
-    this.getAuthData();
-    this.getUserData();
-    this.getCircleList();
-    this.getMapData();
+    this.getAuthData().then(this.getUserData());
+    this.getCircleList().then(this.getMapData());
   }
 
   getCircleList() {
@@ -102,23 +100,6 @@ class AdminRoot extends React.Component {
         console.log("CIRCLE_DATA_OK:", data.circles.length);
         this.setState({ circleList: data.circles, sort_order: data.sort_order });
         this.componentWillReceiveProps(this.props);
-      })
-      .catch(err => console.log)
-  }
-
-  getUserData() {
-    this.addLoading("favorite");
-    return this
-      .callChecklistApi({ command: "list", exhibition_id: "aqmd3rd" })
-      .then(data => {
-        this.removeLoading("favorite");
-
-        console.log("FAVORITE_DATA_OK:", data.length);
-        const favoriteIdx = {};
-        for (const f of data) {
-          favoriteIdx[f.circle_id] = f;
-        }
-        this.setState({ favoriteIdx });
       })
       .catch(err => console.log)
   }
@@ -152,10 +133,34 @@ class AdminRoot extends React.Component {
       .catch(err => console.log)
   }
 
+  getUserData() {
+    this.addLoading("favorite");
+    return this
+      .callChecklistApi({ command: "list", exhibition_id: "aqmd3rd" })
+      .then(data => {
+        if (data.error) {
+          console.error("Error on fetch user data:", data.error)
+          return;
+        }
+
+        this.removeLoading("favorite");
+
+        console.log("FAVORITE_DATA_OK:", data.length);
+        const favoriteIdx = {};
+        for (const f of data) {
+          favoriteIdx[f.circle_id] = f;
+        }
+        this.setState({ favoriteIdx });
+      })
+      .catch(err => {
+        console.error("Error on fetch user data:", err);
+      });
+  }
+
   getAuthData() {
     const token = localStorage.getItem("token");
     if (!token) {
-      return;
+      return Promise.reject("No access_token. Please login!!");
     }
 
     const headers = new Headers();
