@@ -2,7 +2,7 @@ import React from 'react';
 import FontAwesome from 'react-fontawesome';
 import _ from 'lodash';
 import { withRouter } from 'react-router-dom';
-import { ButtonToolbar, DropdownButton, MenuItem, Alert, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
+import { Image, ButtonToolbar, DropdownButton, MenuItem, Alert, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
 
 import CircleDescriptionModal from './component/CircleDescriptionModal';
 import FavoriteListPane from './component/FavoriteListPane';
@@ -254,9 +254,15 @@ class AdminRoot extends React.Component {
                     bsSize="xsmall"
                     id="dropdown-size-extra-small"
                     title={<span><FontAwesome name="twitter"/> {me.screen_name}</span>}>
-                      <MenuItem eventKey="1"><Glyphicon glyph="export"/> エクスポート</MenuItem>
+                      <MenuItem eventKey="1">
+                        {me.display_name + ' '}
+                        <Image circle src={me.profile_image_url} style={{width: "32px", height: "32px", border: "1px solid gray" }}/>
+                      </MenuItem>
+                      <MenuItem eventKey="2" onClick={this.logout}>ログアウト <FontAwesome name="sign-out"/></MenuItem>
                       <MenuItem divider />
-                      <MenuItem eventKey="4" onClick={this.logout}><FontAwesome name="sign-out"/> ログアウト</MenuItem>
+                      <MenuItem eventKey="3"><Glyphicon glyph="export"/> エクスポート</MenuItem>
+                      <MenuItem divider />
+                      <MenuItem eventKey="4"><Glyphicon glyph="link"/> 公開設定</MenuItem>
                   </DropdownButton>
                 </ButtonToolbar>
               : <Button bsStyle="primary" bsSize="xs" onClick={this.login}>
