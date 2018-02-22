@@ -134,7 +134,7 @@ class AdminRoot extends React.Component {
   }
 
   getUserData() {
-    this.addLoading("favorite");
+    this.addLoading("user");
     return this
       .callChecklistApi({ command: "list", exhibition_id: "aqmd3rd" })
       .then(data => {
@@ -143,7 +143,7 @@ class AdminRoot extends React.Component {
           return;
         }
 
-        this.removeLoading("favorite");
+        this.removeLoading("user");
 
         console.log("FAVORITE_DATA_OK:", data.length);
         const favoriteIdx = {};
@@ -166,13 +166,16 @@ class AdminRoot extends React.Component {
     const headers = new Headers();
     headers.append('Authorization', "Bearer " + token);
 
+    this.addLoading("auth");
     return fetch(this.AUTH_ENDPOINT + "/me", { headers: headers, mode: "cors" })
       .then(data => data.json())
       .then(data => {
+        this.removeLoading("auth");
         console.log("LOGIN_DATA_OK:", data);
         this.setState({ me: data });
       })
       .catch(err => {
+        this.removeLoading("auth");
         console.log("LOGIN_DATA_NG:", err);
         this.setState({ me: null });
       })
@@ -276,27 +279,31 @@ class AdminRoot extends React.Component {
         <span>サークル一覧 (アクアマリンドリーム)  <Badge>{circleList.length}</Badge></span>
         <div className="pull-right">
           {
-            me
-              ? <ButtonToolbar>
-                  <DropdownButton
-                    bsStyle="success"
-                    bsSize="xsmall"
-                    id="dropdown-size-extra-small"
-                    title={<span><FontAwesome name="twitter"/> {me.screen_name}</span>}>
-                      <MenuItem eventKey="1">
-                        {me.display_name + ' '}
-                        <Image circle src={me.profile_image_url} style={{width: "32px", height: "32px", border: "1px solid gray" }}/>
-                      </MenuItem>
-                      <MenuItem eventKey="2" onClick={this.logout}>ログアウト <FontAwesome name="sign-out"/></MenuItem>
-                      <MenuItem divider />
-                      <MenuItem eventKey="3" onClick={this.openExportChecklistModal}><Glyphicon glyph="export"/> エクスポート</MenuItem>
-                      <MenuItem divider />
-                      <MenuItem eventKey="4" onClick={this.openPublicLinkModal}><Glyphicon glyph="link"/> 公開設定</MenuItem>
-                  </DropdownButton>
-                </ButtonToolbar>
-              : <Button bsStyle="primary" bsSize="xs" onClick={this.login}>
-                  <FontAwesome name="twitter"/> Login via Twitter
+            loading.auth
+              ? <Button bsStyle="warning" bsSize="xs">
+                  <FontAwesome name="spinner" spin pulse={true} /> 読み込み中...
                 </Button>
+              : me
+                ? <ButtonToolbar>
+                    <DropdownButton
+                      bsStyle="success"
+                      bsSize="xsmall"
+                      id="dropdown-size-extra-small"
+                      title={<span><FontAwesome name="twitter"/> {me.screen_name}</span>}>
+                        <MenuItem eventKey="1">
+                          {me.display_name + ' '}
+                          <Image circle src={me.profile_image_url} style={{width: "32px", height: "32px", border: "1px solid gray" }}/>
+                        </MenuItem>
+                        <MenuItem eventKey="2" onClick={this.logout}>ログアウト <FontAwesome name="sign-out"/></MenuItem>
+                        <MenuItem divider />
+                        <MenuItem eventKey="3" onClick={this.openExportChecklistModal}><Glyphicon glyph="export"/> エクスポート</MenuItem>
+                        <MenuItem divider />
+                        <MenuItem eventKey="4" onClick={this.openPublicLinkModal}><Glyphicon glyph="link"/> 公開設定</MenuItem>
+                    </DropdownButton>
+                  </ButtonToolbar>
+                : <Button bsStyle="primary" bsSize="xs" onClick={this.login}>
+                    <FontAwesome name="twitter"/> Login via Twitter
+                  </Button>
           }
         </div>
       </Well>
