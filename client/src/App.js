@@ -4,14 +4,14 @@ import _ from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { Image, ButtonToolbar, DropdownButton, MenuItem, Alert, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
 
-import MapPane from './component/MapPane';
-import CirclecutPane from './component/CirclecutPane';
-import CircleListPane from './component/CircleListPane';
-import FavoriteListPane from './component/FavoriteListPane';
+import MapPane from './pane/MapPane';
+import CirclecutPane from './pane/CirclecutPane';
+import CircleListPane from './pane/CircleListPane';
+import FavoriteListPane from './pane/FavoriteListPane';
 
-import PublicLinkModal from './component/PublicLinkModal';
-import ExportChecklistModal from './component/ExportChecklistModal';
-import CircleDescriptionModal from './component/CircleDescriptionModal';
+import PublicLinkModal from './modal/PublicLinkModal';
+import ExportChecklistModal from './modal/ExportChecklistModal';
+import CircleDescriptionModal from './modal/CircleDescriptionModal';
 
 class AdminRoot extends React.Component {
   constructor(props, context) {
