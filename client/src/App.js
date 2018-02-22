@@ -79,11 +79,27 @@ class AdminRoot extends React.Component {
 
   componentDidMount() {
     this.getUserData();
-    this.addLoading("circle");
-    this.addLoading("favorite");
-    this.addLoading("map");
+    this.getFavoriteList();
+    this.getCircleList();
+    this.getMapData();
+  }
 
-    this.callChecklistApi({ command: "list", exhibition_id: "aqmd3rd", member_id: "mimin_ga_mi_bot" })
+  getCircleList() {
+    this.addLoading("circle");
+    return fetch(window.location.origin + '/aqmd3rd.json', { credentials: 'include' })
+      .then(data => data.json())
+      .then(data => {
+        this.removeLoading("circle");
+        this.setState({ circleList: data.circles, sort_order: data.sort_order });
+        this.componentWillReceiveProps(this.props);
+      })
+      .catch(err => console.log)
+  }
+
+  getFavoriteList() {
+    this.addLoading("favorite");
+    return this
+      .callChecklistApi({ command: "list", exhibition_id: "aqmd3rd", member_id: "mimin_ga_mi_bot" })
       .then(data => {
         this.removeLoading("favorite");
 
@@ -94,18 +110,12 @@ class AdminRoot extends React.Component {
         }
         this.setState({ favoriteIdx });
       })
-      .catch(err => console.log);
+      .catch(err => console.log)
+  }
 
-    fetch(window.location.origin + '/aqmd3rd.json', { credentials: 'include' })
-      .then(data => data.json())
-      .then(data => {
-        this.removeLoading("circle");
-        this.setState({ circleList: data.circles, sort_order: data.sort_order });
-        this.componentWillReceiveProps(this.props);
-      })
-      .catch(err => console.log);
-
-    fetch(window.location.origin + '/map.json', { credentials: 'include' })
+  getMapData() {
+    this.addLoading("map");
+    return fetch(window.location.origin + '/map.json', { credentials: 'include' })
       .then(data => data.json())
       .then(data => {
         this.removeLoading("map");
@@ -128,7 +138,7 @@ class AdminRoot extends React.Component {
 
         this.setState({ map: maps });
       })
-      .catch(err => console.log);
+      .catch(err => console.log)
   }
 
   getUserData() {
@@ -164,7 +174,7 @@ class AdminRoot extends React.Component {
 
   logout() {
     localStorage.clear();
-    this.setState({ me: null });
+    this.setState({ me: null, favoriteIdx: {} });
   }
 
   openModal(selectedCircle) {
