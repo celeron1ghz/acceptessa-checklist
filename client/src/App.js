@@ -33,13 +33,13 @@ class AdminRoot extends React.Component {
     this.addFavorite            = this.addFavorite.bind(this);
     this.removeFavorite         = this.removeFavorite.bind(this);
     this.updateFavoriteComment  = this.updateFavoriteComment.bind(this);
-    this.loginPopup             = this.loginPopup.bind(this);
+    this.login                  = this.login.bind(this);
     this.logout                 = this.logout.bind(this);
     this.addLoading             = this.addLoading.bind(this);
     this.removeLoading          = this.removeLoading.bind(this);
   }
 
-  callApi(args) {
+  callChecklistApi(args) {
     const token = localStorage.getItem("token");
     if (token) {
       return fetch(this.CHECKLIST_ENDPOINT, {
@@ -65,15 +65,25 @@ class AdminRoot extends React.Component {
     this.setState({ loading });
   }
 
-  componentDidMount() {
-    this.loadLoginInfo();
+  componentWillReceiveProps(props){
+    const param = new URLSearchParams(props.location.search);
+    const circle_id = param.get("circle_id");
+    const circle = this.state.circleList.filter(c => c.circle_id === circle_id)[0]
 
+    if (circle) {
+      this.setState({ selectedCircle: circle, modalShow: true });
+    } else {
+      this.setState({ modalShow: false });
+    }
+  }
+
+  componentDidMount() {
+    this.getUserData();
     this.addLoading("circle");
     this.addLoading("favorite");
     this.addLoading("map");
 
-
-    this.callApi({ command: "list", exhibition_id: "aqmd3rd", member_id: "mimin_ga_mi_bot" })
+    this.callChecklistApi({ command: "list", exhibition_id: "aqmd3rd", member_id: "mimin_ga_mi_bot" })
       .then(data => {
         this.removeLoading("favorite");
 
@@ -121,7 +131,7 @@ class AdminRoot extends React.Component {
       .catch(err => console.log);
   }
 
-  loadLoginInfo() {
+  getUserData() {
     const token = localStorage.getItem("token");
     if (!token) {
       return;
@@ -130,7 +140,7 @@ class AdminRoot extends React.Component {
     const headers = new Headers();
     headers.append('Authorization', "Bearer " + token);
 
-    fetch(this.AUTH_ENDPOINT + "/me", { headers: headers, mode: "cors" })
+    return fetch(this.AUTH_ENDPOINT + "/me", { headers: headers, mode: "cors" })
       .then(data => data.json())
       .then(data => {
         console.log("LOGIN_DATA_OK:", data);
@@ -140,6 +150,16 @@ class AdminRoot extends React.Component {
         console.log("LOGIN_DATA_NG:", err);
         this.setState({ me: null });
       })
+  }
+
+  login() {
+    const getJwtToken = event => {
+      localStorage.setItem("token", event.data);
+      this.getUserData();
+    };
+
+    window.open(this.AUTH_ENDPOINT + "/auth");
+    window.addEventListener('message', getJwtToken, false);
   }
 
   logout() {
@@ -161,7 +181,7 @@ class AdminRoot extends React.Component {
     const { favoriteIdx } = this.state;
 
     this.addLoading(circle.circle_id);
-    this.callApi({ command: "add", exhibition_id: "aqmd3rd", circle_id: circle.circle_id })
+    this.callChecklistApi({ command: "add", exhibition_id: "aqmd3rd", circle_id: circle.circle_id })
       .then(data => {
         this.removeLoading(circle.circle_id);
 
@@ -180,7 +200,7 @@ class AdminRoot extends React.Component {
     const { favoriteIdx } = this.state;
 
     this.addLoading(circle.circle_id);
-    this.callApi({ command: "remove", circle_id: circle.circle_id })
+    this.callChecklistApi({ command: "remove", circle_id: circle.circle_id })
       .then(data => {
         this.removeLoading(circle.circle_id);
         console.log("REMOVE_FAVORITE", data);
@@ -194,7 +214,7 @@ class AdminRoot extends React.Component {
     const { favoriteIdx } = this.state;
 
     this.addLoading(circle.circle_id);
-    this.callApi({ command: "update", circle_id: circle.circle_id, comment: comment })
+    this.callChecklistApi({ command: "update", circle_id: circle.circle_id, comment: comment })
       .then(data => {
         this.removeLoading(circle.circle_id);
         console.log("UPDATE_FAVORITE", data);
@@ -203,28 +223,6 @@ class AdminRoot extends React.Component {
         this.setState({ favoriteIdx });
       })
       .catch(err => console.log);
-  }
-
-  loginPopup() {
-    const getJwtToken = event => {
-      localStorage.setItem("token", event.data);
-      this.loadLoginInfo();
-    };
-
-    window.open(this.AUTH_ENDPOINT + "/auth");
-    window.addEventListener('message', getJwtToken, false);
-  }
-
-  componentWillReceiveProps(props){
-    const param = new URLSearchParams(props.location.search);
-    const circle_id = param.get("circle_id");
-    const circle = this.state.circleList.filter(c => c.circle_id === circle_id)[0]
-
-    if (circle) {
-      this.setState({ selectedCircle: circle, modalShow: true });
-    } else {
-      this.setState({ modalShow: false });
-    }
   }
 
   render() {
@@ -248,7 +246,7 @@ class AdminRoot extends React.Component {
                       <MenuItem eventKey="4" onClick={this.logout}><FontAwesome name="sign-out"/> ログアウト</MenuItem>
                   </DropdownButton>
                 </ButtonToolbar>
-              : <Button bsStyle="primary" bsSize="xs" onClick={this.loginPopup}>
+              : <Button bsStyle="primary" bsSize="xs" onClick={this.login}>
                   <FontAwesome name="twitter"/> Login via Twitter
                 </Button>
           }
