@@ -10,6 +10,7 @@ import CircleListPane from './component/CircleListPane';
 import FavoriteListPane from './component/FavoriteListPane';
 
 import PublicLinkModal from './component/PublicLinkModal';
+import ExportChecklistModal from './component/ExportChecklistModal';
 import CircleDescriptionModal from './component/CircleDescriptionModal';
 
 class AdminRoot extends React.Component {
@@ -24,6 +25,7 @@ class AdminRoot extends React.Component {
         map: null,
         showCircleDescModal: false,
         showPublicLinkModal: false,
+        showExportChecklistModal: false,
         selectedCircle: null,
         me: null,
     };
@@ -40,8 +42,10 @@ class AdminRoot extends React.Component {
     this.logout                 = this.logout.bind(this);
     this.addLoading             = this.addLoading.bind(this);
     this.removeLoading          = this.removeLoading.bind(this);
-    this.openPublicLinkModal    = this.openPublicLinkModal.bind(this);
-    this.closePublicLinkModal   = this.closePublicLinkModal.bind(this);
+    this.openPublicLinkModal        = this.openPublicLinkModal.bind(this);
+    this.closePublicLinkModal       = this.closePublicLinkModal.bind(this);
+    this.openExportChecklistModal   = this.openExportChecklistModal.bind(this);
+    this.closeExportChecklistModal  = this.closeExportChecklistModal.bind(this);
   }
 
   callChecklistApi(args) {
@@ -203,6 +207,13 @@ class AdminRoot extends React.Component {
     this.setState({ showPublicLinkModal: false });
   }
 
+  openExportChecklistModal() {
+    this.setState({ showExportChecklistModal: true });
+  }
+
+  closeExportChecklistModal() {
+    this.setState({ showExportChecklistModal: false });
+  }
   addFavorite(circle) {
     const { favoriteIdx } = this.state;
 
@@ -252,7 +263,7 @@ class AdminRoot extends React.Component {
   }
 
   render() {
-    const { circleList, favoriteIdx, loading, map, showCircleDescModal, showPublicLinkModal, selectedCircle, me } = this.state;
+    const { circleList, favoriteIdx, loading, map, showCircleDescModal, showPublicLinkModal, showExportChecklistModal, selectedCircle, me } = this.state;
 
     return <div className="container">
       <br/>
@@ -273,7 +284,7 @@ class AdminRoot extends React.Component {
                       </MenuItem>
                       <MenuItem eventKey="2" onClick={this.logout}>ログアウト <FontAwesome name="sign-out"/></MenuItem>
                       <MenuItem divider />
-                      <MenuItem eventKey="3"><Glyphicon glyph="export"/> エクスポート</MenuItem>
+                      <MenuItem eventKey="3" onClick={this.openExportChecklistModal}><Glyphicon glyph="export"/> エクスポート</MenuItem>
                       <MenuItem divider />
                       <MenuItem eventKey="4" onClick={this.openPublicLinkModal}><Glyphicon glyph="link"/> 公開設定</MenuItem>
                   </DropdownButton>
@@ -351,6 +362,11 @@ class AdminRoot extends React.Component {
       <PublicLinkModal
         show={showPublicLinkModal}
         onClose={this.closePublicLinkModal}/>
+
+      <ExportChecklistModal
+        show={showExportChecklistModal}
+        onClose={this.closeExportChecklistModal}/>
+
     </div>;
   }
 }
