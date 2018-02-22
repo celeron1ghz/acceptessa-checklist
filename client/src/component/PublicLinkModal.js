@@ -30,7 +30,7 @@ class PublicLinkModal extends React.Component {
 
         <Panel>
           <Panel.Body>
-            現在の共有の状態は 「<b>オフ</b>」 です。。
+            現在の共有の状態は 「<b>オフ</b>」 です。
           </Panel.Body>
         </Panel>
 
@@ -51,6 +51,9 @@ class PublicLinkModal extends React.Component {
           <li>公開したチェックリストを自分以外の人が編集することはできません。</li>
         </ul>
       </Modal.Body>
+      <Modal.Footer>
+        <Button block bsStyle="success" onClick={this.close}>閉じる</Button>
+      </Modal.Footer>
     </Modal>;
   }
 }

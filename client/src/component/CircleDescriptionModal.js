@@ -147,6 +147,9 @@ class CircleDescriptionModal extends React.Component {
           </div>
         }
       </Modal.Body>
+      <Modal.Footer>
+        <Button block bsStyle="success" onClick={this.close}>閉じる</Button>
+      </Modal.Footer>
     </Modal>;
   }
 }
