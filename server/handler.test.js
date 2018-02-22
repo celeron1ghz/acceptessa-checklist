@@ -8,7 +8,6 @@ chai.use(require('chai-as-promised'));
 
 const jwt = require("jsonwebtoken");
 
-
 function res(code,body) {
   return {
     statusCode: code,
@@ -26,16 +25,26 @@ describe('/me test', () => {
   let lambda;
   let proxyDynamoDB;
   let proxySSM;
+  let proxyListCommand;
+  let proxyAddCommand;
+  let proxyRemoveCommand;
 
   beforeEach(() => {
     proxyDynamoDB = class { batchGet(){}  get(){}  query(){}  put(){}  delete(){} };
-    proxySSM     = class { getParameter () {} };
+    proxySSM      = class { getParameter () {} };
+
+    proxyListCommand   = class { constructor(){} run(){ return Promise.resolve([1,2,3,4,5]) } };
+    proxyAddCommand    = class { constructor(){} run(){ return Promise.resolve("hello") } };
+    proxyRemoveCommand = class { constructor(){} run(){ return Promise.resolve("world") } };
 
     lambda = proxyquire('./handler', {
       'aws-sdk': {
         DynamoDB: { DocumentClient: proxyDynamoDB },
         SSM: proxySSM,
       },
+      './src/ListFavoriteCommand':   proxyListCommand,
+      './src/AddFavoriteCommand':    proxyAddCommand,
+      './src/RemoveFavoriteCommand': proxyRemoveCommand,
     });
   });
 
@@ -125,6 +134,7 @@ describe('/me test', () => {
   });
 
 
+/*
   it('errors on command constructor', () => {
     sinon.stub(proxySSM.prototype, 'getParameter').returns({  promise: () => Promise.resolve({ Parameter: { Value: "1" } })  });
     sinon.stub(proxyDynamoDB.prototype, 'get'    ).returns({  promise: () => Promise.resolve({ Item: {} })  });
@@ -136,13 +146,12 @@ describe('/me test', () => {
       expect(result).to.deep.equal( res(400, { error: "INVALID_PARAM" }) );
     });
   });
+*/
 
 
   it('ok on list command', () => {
     sinon.stub(proxySSM.prototype, 'getParameter' ).returns({  promise: () => Promise.resolve({ Parameter: { Value: "1" } })  });
     sinon.stub(proxyDynamoDB.prototype, 'get'     ).returns({  promise: () => Promise.resolve({ Item: { screen_name: 'piyo' } })  });
-    sinon.stub(proxyDynamoDB.prototype, 'batchGet').returns({  promise: () => Promise.resolve({ Responses: { tessa_favorite: [1,2,3,4,5]} })  });
-    sinon.stub(proxyDynamoDB.prototype, 'query'   ).returns({  promise: () => Promise.resolve({ Items: [] })  });
 
     const signed = jwt.sign(JSON.stringify({ sessid: 'mogemogefugafuga' }), "1");
     const event  = { headers: { Authorization: "Bearer " + signed }, body: JSON.stringify({ command: "list", exhibition_id: "mogemoge", member_id: "mem" }) };
@@ -152,16 +161,16 @@ describe('/me test', () => {
     });
   });
 
+
   it('ok on add command', () => {
     sinon.stub(proxySSM.prototype, 'getParameter').returns({  promise: () => Promise.resolve({ Parameter: { Value: "1" } })  });
     sinon.stub(proxyDynamoDB.prototype, 'get'    ).returns({  promise: () => Promise.resolve({ Item: { screen_name: 'piyo' } })  });
-    sinon.stub(proxyDynamoDB.prototype, 'put'    ).returns({  promise: () => Promise.resolve({})  });
 
     const signed = jwt.sign(JSON.stringify({ sessid: 'mogemogefugafuga' }), "1");
     const event  = { headers: { Authorization: "Bearer " + signed }, body: JSON.stringify({ command: "add", circle_id:"aaaaa", exhibition_id: "mogemoge", member_id: "mem" }) };
 
     return expect(lambda.endpoint(event, {}, callback)).to.be.fulfilled.then(result => {
-      expect(result).to.deep.equal( res(200, {}) );
+      expect(result).to.deep.equal( res(200, "hello") );
     });
   });
 
@@ -169,13 +178,12 @@ describe('/me test', () => {
   it('ok on remove command', () => {
     sinon.stub(proxySSM.prototype, 'getParameter').returns({  promise: () => Promise.resolve({ Parameter: { Value: "1" } })  });
     sinon.stub(proxyDynamoDB.prototype, 'get'    ).returns({  promise: () => Promise.resolve({ Item: { screen_name: 'piyo' } })  });
-    sinon.stub(proxyDynamoDB.prototype, 'delete' ).returns({  promise: () => Promise.resolve({})  });
 
     const signed = jwt.sign(JSON.stringify({ sessid: 'mogemogefugafuga' }), "1");
     const event  = { headers: { Authorization: "Bearer " + signed }, body: JSON.stringify({ command: "remove", circle_id:"aaaaa", exhibition_id: "mogemoge", member_id: "mem" }) };
 
     return expect(lambda.endpoint(event, {}, callback)).to.be.fulfilled.then(result => {
-      expect(result).to.deep.equal( res(200, {}) );
+      expect(result).to.deep.equal( res(200, "world") );
     });
   });
 

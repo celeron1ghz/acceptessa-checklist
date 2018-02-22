@@ -6,104 +6,11 @@ const aws = require('aws-sdk');
 const ssm = new aws.SSM();
 const dynamodb = new aws.DynamoDB.DocumentClient({ convertEmptyValues: true });
 
-class ListFavoriteCommand {
-  constructor(args,user){
-    if (!args.exhibition_id)  { throw new Error("not exhibition_id") }
-    if (!user.screen_name)    { throw new Error("not screen_name") }
-    this.exhibition_id = args.exhibition_id;
-    this.member_id     = user.screen_name;
-  }
-
-  run() {
-    return dynamodb.query({
-      TableName: 'tessa_favorite',
-      IndexName: 'tessa_favorite_gsi1',
-      KeyConditionExpression: 'member_id = :member_id and exhibition_id = :exhibition_id',
-      ExpressionAttributeValues: { ':member_id': this.member_id, ':exhibition_id': this.exhibition_id },
-      ProjectionExpression: 'circle_id, member_id',
-    }).promise()
-      .then(data => data.Items)
-      .then(data => {
-        return dynamodb.batchGet({
-          RequestItems: {
-            tessa_favorite: {
-              Keys: data,
-              ProjectionExpression: 'circle_id, #comment',
-              ExpressionAttributeNames: { '#comment': 'comment' },
-            }
-          }
-        }).promise().then(data => data.Responses.tessa_favorite)
-      });
-  }
-}
-
-class AddFavoriteCommand {
-  constructor(args,user){
-    if (!args.circle_id) { throw new Error("not circle_id") }
-    if (!user.screen_name) { throw new Error("not screen_name") }
-    if (!args.exhibition_id)  { throw new Error("not exhibition_id") }
-    this.circle_id = args.circle_id;
-    this.member_id = user.screen_name;
-    this.exhibition_id = args.exhibition_id;
-  }
-
-  run() {
-    return dynamodb.put({
-      TableName: "tessa_favorite",
-      Item: {
-        circle_id: this.circle_id,
-        member_id: this.member_id,
-        exhibition_id: this.exhibition_id,
-        created_at: new Date().getTime() / 1000,
-      },
-    }).promise();
-  }
-}
-
-class RemoveFavoriteCommand {
-  constructor(args,user){
-    if (!args.circle_id) { throw new Error("not circle_id") }
-    if (!user.screen_name) { throw new Error("not screen_name") }
-    this.circle_id = args.circle_id;
-    this.member_id = user.screen_name;
-  }
-
-  run() {
-    return dynamodb.delete({
-      TableName: "tessa_favorite",
-      Key: {
-        circle_id: this.circle_id,
-        member_id: this.member_id,
-      },
-    }).promise();
-  }
-}
-
-class UpdateFavoriteCommand {
-  constructor(args,user){
-    if (!args.circle_id) { throw new Error("not circle_id") }
-    if (!user.screen_name) { throw new Error("not screen_name") }
-    this.circle_id = args.circle_id;
-    this.member_id = user.screen_name;
-    this.comment   = args.comment;
-  }
-
-  run() {
-    return dynamodb.update({
-      TableName: "tessa_favorite",
-      Key: { circle_id: this.circle_id, member_id: this.member_id },
-      UpdateExpression: 'set #comment = :comment',
-      ExpressionAttributeNames: {'#comment' : 'comment'},
-      ExpressionAttributeValues: { ':comment' : this.comment },
-    }).promise();
-  }
-}
-
 const COMMANDS = {
-  list:   ListFavoriteCommand,
-  add:    AddFavoriteCommand,
-  remove: RemoveFavoriteCommand,
-  update: UpdateFavoriteCommand,
+  list:   require('./src/ListFavoriteCommand'),
+  add:    require('./src/AddFavoriteCommand'),
+  remove: require('./src/RemoveFavoriteCommand'),
+  update: require('./src/UpdateFavoriteCommand'),
 };
 
 module.exports.endpoint = (event, context, callback) => {
