@@ -145,14 +145,14 @@ class CircleListPane extends React.Component {
             className: "text-center",
             Cell: row => {
               return loadings[row.original.circle_id]
-                ? <Button bsStyle="warning" bsSize="xs" onClick={e => { e.stopPropagation(); }}>
+                ? <Button bsStyle="warning" bsSize="xs" style={{ width: "65px" }} onClick={e => { e.stopPropagation(); }}>
                     <FontAwesome name="spinner" spin pulse={true} /> 処理中
                   </Button>
                 : row.original.favorite
-                  ? <Button bsStyle="danger" bsSize="xs" onClick={e => { e.stopPropagation(); this.removeFavorite(row.original)}}>
+                  ? <Button bsStyle="danger" bsSize="xs" style={{ width: "65px" }} onClick={e => { e.stopPropagation(); this.removeFavorite(row.original)}}>
                       <Glyphicon glyph="minus"/> 削除
                     </Button>
-                  : <Button bsStyle="primary" bsSize="xs" onClick={e => { e.stopPropagation(); this.addFavorite(row.original)  }}>
+                  : <Button bsStyle="primary" bsSize="xs" style={{ width: "65px" }} onClick={e => { e.stopPropagation(); this.addFavorite(row.original)  }}>
                       <Glyphicon glyph="plus"/> 追加
                     </Button>
             },

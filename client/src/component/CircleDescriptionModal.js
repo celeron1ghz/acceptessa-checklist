@@ -68,34 +68,40 @@ class CircleDescriptionModal extends React.Component {
               showChecklistComponent &&
                 <div>
                   {
-                    loadings[circle.circle_id]
-                      ? <Button block bsStyle="default">
-                          <FontAwesome name="spinner" spin pulse={true} /> 処理中
-                        </Button>
-                      : favorite
-                          ? <div>
-                              <Button block bsStyle="warning" onClick={this.removeFavorite}>
-                                <Glyphicon glyph="remove"/> お気に入りから削除する
-                              </Button>
-                              <br/>
-                              <Row>
-                                <Col xs={6} sm={8} md={8} lg={8}>
-                                  <FormControl
-                                    componentClass="textarea"
-                                    placeholder="(コメントが未記入です)"
-                                    value={comment}
-                                    onChange={this.updateInput}/>
-                                </Col>
-                                <Col xs={6} sm={4} md={4} lg={4}>
-                                  <Button block bsStyle="primary" onClick={this.updateComment} style={{ height: "55px" }}>
-                                    <Glyphicon glyph="refresh"/> コメントを更新する
+                    favorite
+                        ? <div>
+                            {
+                              loadings[circle.circle_id]
+                                ? <Button block bsStyle="warning">
+                                    <FontAwesome name="spinner" spin pulse={true} /> 処理中
                                   </Button>
-                                </Col>
-                              </Row>
-                            </div>
-                          : <Button block bsStyle="primary" onClick={this.addFavorite}>
-                              <Glyphicon glyph="plus"/> お気に入りに追加する
-                            </Button>
+                                : <Button block bsStyle="danger" onClick={this.removeFavorite}>
+                                    <Glyphicon glyph="minus"/> お気に入りから削除する
+                                  </Button>
+                            }
+                            <br/>
+                            <Row>
+                              <Col xs={12} sm={8} md={8} lg={8}>
+                                <FormControl
+                                  componentClass="textarea"
+                                  placeholder="(コメントが未記入です)"
+                                  value={comment}
+                                  onChange={this.updateInput}/>
+                              </Col>
+                              <Col xs={12} sm={4} md={4} lg={4}>
+                                <Button block bsStyle="primary" onClick={this.updateComment} style={{ height: "55px" }}>
+                                  <Glyphicon glyph="refresh"/> コメントを更新する
+                                </Button>
+                              </Col>
+                            </Row>
+                          </div>
+                        : loadings[circle.circle_id]
+                            ? <Button block bsStyle="warning">
+                                <FontAwesome name="spinner" spin pulse={true} /> 処理中
+                              </Button>
+                            : <Button block bsStyle="primary" onClick={this.addFavorite}>
+                                <Glyphicon glyph="plus"/> お気に入りに追加する
+                              </Button>
                   }
                 </div>
             }

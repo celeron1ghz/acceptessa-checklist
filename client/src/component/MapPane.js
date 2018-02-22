@@ -48,10 +48,10 @@ class MapPane extends React.Component {
             }
 
             const bgColor = circle && favorites[circle.circle_id]
-              ? "rgba(255,255,0,0.3)"
+              ? "rgba(255,0,0,0.3)"
               : circle
-                ? "rgba(255,0,0,0.3)"
-                : "rgba(0,0,255,0.3)";
+                ? "rgba(128,128,128,0.7)"
+                : "rgba(64,64,64,0.3)";
 
             return <OverlayTrigger
               placement="left"

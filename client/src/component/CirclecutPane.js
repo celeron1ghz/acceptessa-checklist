@@ -66,14 +66,14 @@ class CirclecutPane extends React.Component {
                       <span className="pull-right">
                         {
                           loadings[c.circle_id]
-                            ? <Button bsStyle="warning" bsSize="xs" onClick={e => { e.stopPropagation(); }}>
+                            ? <Button bsStyle="warning" bsSize="xs" style={{ width: "65px" }} onClick={e => { e.stopPropagation(); }}>
                                 <FontAwesome name="spinner" spin pulse={true} /> 処理中
                               </Button>
                             : c.favorite
-                              ? <Button bsStyle="danger" bsSize="xs" onClick={e => { e.stopPropagation(); this.removeFavorite(c) }}>
+                              ? <Button bsStyle="danger" bsSize="xs" style={{ width: "65px" }} onClick={e => { e.stopPropagation(); this.removeFavorite(c) }}>
                                   <Glyphicon glyph="minus"/> 削除
                                 </Button>
-                              : <Button bsStyle="primary" bsSize="xs" onClick={e => { e.stopPropagation(); this.addFavorite(c) }}>
+                              : <Button bsStyle="primary" bsSize="xs" style={{ width: "65px" }} onClick={e => { e.stopPropagation(); this.addFavorite(c) }}>
                                   <Glyphicon glyph="plus"/> 追加
                                 </Button>
                         }

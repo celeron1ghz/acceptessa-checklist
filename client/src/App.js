@@ -90,6 +90,7 @@ class AdminRoot extends React.Component {
       .then(data => data.json())
       .then(data => {
         this.removeLoading("circle");
+        console.log("CIRCLE_DATA_OK:", data.circles.length);
         this.setState({ circleList: data.circles, sort_order: data.sort_order });
         this.componentWillReceiveProps(this.props);
       })
@@ -103,7 +104,7 @@ class AdminRoot extends React.Component {
       .then(data => {
         this.removeLoading("favorite");
 
-        console.log("FAVORITE_DATA_OK:", data.length)
+        console.log("FAVORITE_DATA_OK:", data.length);
         const favoriteIdx = {};
         for (const f of data) {
           favoriteIdx[f.circle_id] = f;
@@ -119,6 +120,7 @@ class AdminRoot extends React.Component {
       .then(data => data.json())
       .then(data => {
         this.removeLoading("map");
+        console.log("MAP_DATA_OK");
         const maps = [];
 
         for (const sym of Object.keys(data.positions)) {
@@ -166,6 +168,7 @@ class AdminRoot extends React.Component {
     const getJwtToken = event => {
       localStorage.setItem("token", event.data);
       this.getUserData();
+      this.getFavoriteList();
     };
 
     window.open(this.AUTH_ENDPOINT + "/auth");
@@ -268,15 +271,6 @@ class AdminRoot extends React.Component {
             <Glyphicon glyph="exclamation-sign"/> ログインを行うことでチェックリストの作成を行うことができます。
           </Alert>
       }
-      {
-        JSON.stringify(this.state.loading)
-      }
-      {/*
-        this.state.loading &&
-          <div className="text-center text-muted">
-            <FontAwesome name="spinner" size="5x" spin pulse={true} /><h3>Loading...</h3>
-          </div>
-      */}
       <Tab.Container id="left-tabs-example" defaultActiveKey="list">
         <div>
           <Nav bsStyle="pills">
