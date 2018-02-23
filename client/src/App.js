@@ -32,7 +32,7 @@ class AdminRoot extends React.Component {
     };
 
     this.AUTH_ENDPOINT      = "https://auth.familiar-life.info";
-    this.CHECKLIST_ENDPOINT = "https://bt68jbe0eg.execute-api.ap-northeast-1.amazonaws.com/dev/endpoint";
+    this.CHECKLIST_ENDPOINT = "https://rh035x8hs0.execute-api.ap-northeast-1.amazonaws.com/dev/";
 
     this.openCircleDescModal      = this.openCircleDescModal.bind(this);
     this.closeCircleDescModal     = this.closeCircleDescModal.bind(this);
