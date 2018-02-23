@@ -19,15 +19,30 @@ class ListFavoriteCommand {
     }).promise()
       .then(data => data.Items)
       .then(data => {
-        return dynamodb.batchGet({
-          RequestItems: {
-            tessa_favorite: {
-              Keys: data,
-              ProjectionExpression: 'circle_id, #comment',
-              ExpressionAttributeNames: { '#comment': 'comment' },
+        return Promise.all([
+          dynamodb.batchGet({
+            RequestItems: {
+              tessa_favorite: {
+                Keys: data,
+                ProjectionExpression: 'circle_id, #comment',
+                ExpressionAttributeNames: { '#comment': 'comment' },
+              }
             }
-          }
-        }).promise().then(data => data.Responses.tessa_favorite)
+          }).promise(),
+
+          dynamodb.get({
+            TableName : 'tessa_config',
+            Key: { member_id: this.member_id, exhibition_id: this.exhibition_id },
+          }).promise(),
+        ])
+        .then(data => {
+          return {
+            favorite: data[0].Responses.tessa_favorite,
+            config: {
+              public: data[1].Item ? true : false,
+            }
+　        };
+        });
       });
   }
 }

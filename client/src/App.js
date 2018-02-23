@@ -28,10 +28,11 @@ class AdminRoot extends React.Component {
         showExportChecklistModal: false,
         selectedCircle: null,
         me: null,
+        config: null,
     };
 
     this.AUTH_ENDPOINT      = "https://v7hwasc1o7.execute-api.ap-northeast-1.amazonaws.com/dev";
-    this.CHECKLIST_ENDPOINT = "https://orc4t3x8hh.execute-api.ap-northeast-1.amazonaws.com/dev/endpoint";
+    this.CHECKLIST_ENDPOINT = "https://bt68jbe0eg.execute-api.ap-northeast-1.amazonaws.com/dev/endpoint";
 
     this.openCircleDescModal    = this.openCircleDescModal.bind(this);
     this.closeCircleDescModal   = this.closeCircleDescModal.bind(this);
@@ -147,10 +148,10 @@ class AdminRoot extends React.Component {
 
         console.log("FAVORITE_DATA_OK:", data.length);
         const favoriteIdx = {};
-        for (const f of data) {
+        for (const f of data.favorite) {
           favoriteIdx[f.circle_id] = f;
         }
-        this.setState({ favoriteIdx });
+        this.setState({ favoriteIdx, config: data.config });
       })
       .catch(err => {
         console.error("Error on fetch user data:", err);
@@ -271,7 +272,7 @@ class AdminRoot extends React.Component {
   }
 
   render() {
-    const { circleList, favoriteIdx, loading, map, showCircleDescModal, showPublicLinkModal, showExportChecklistModal, selectedCircle, me } = this.state;
+    const { circleList, favoriteIdx, loading, map, showCircleDescModal, showPublicLinkModal, showExportChecklistModal, selectedCircle, me, config } = this.state;
 
     return <div className="container">
       <br/>
@@ -373,6 +374,7 @@ class AdminRoot extends React.Component {
 
       <PublicLinkModal
         show={showPublicLinkModal}
+        config={config}
         onClose={this.closePublicLinkModal}/>
 
       <ExportChecklistModal

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Glyphicon, Modal, Panel } from 'react-bootstrap';
+import { Button, Glyphicon, Modal } from 'react-bootstrap';
 
 class ExportChecklistModal extends React.Component {
   constructor(props, context) {

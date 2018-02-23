@@ -11,6 +11,7 @@ const COMMANDS = {
   add:    require('./src/AddFavoriteCommand'),
   remove: require('./src/RemoveFavoriteCommand'),
   update: require('./src/UpdateFavoriteCommand'),
+  public: require('./src/PublicLinkCommand'),
 };
 
 module.exports.endpoint = (event, context, callback) => {

@@ -18,6 +18,7 @@ provider:
     - Effect: Allow
       Action:
         - dynamodb:Query
+        - dynamodb:GetItem
         - dynamodb:BatchGetItem
         - dynamodb:PutItem
         - dynamodb:UpdateItem
@@ -69,9 +70,11 @@ resources:
       Properties:
         TableName: tessa_config
         AttributeDefinitions:
-          - { AttributeName: member_id, AttributeType: S }
+          - { AttributeName: member_id,     AttributeType: S }
+          - { AttributeName: exhibition_id, AttributeType: S }
         KeySchema:
-          - { AttributeName: member_id, KeyType: HASH }
+          - { AttributeName: member_id,     KeyType: HASH }
+          - { AttributeName: exhibition_id, KeyType: RANGE }
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
