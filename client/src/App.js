@@ -95,7 +95,7 @@ class AdminRoot extends React.Component {
   componentWillReceiveProps(props){
     const param = new URLSearchParams(props.location.search);
     const circle_id = param.get("circle_id");
-    const circle = this.state.circleList.filter(c => c.circle_id === circle_id)[0]
+    const circle = this.state.circleList.filter(c => c.circle_id === circle_id)[0];
 
     if (circle) {
       this.setState({ selectedCircle: circle, showCircleDescModal: true });
@@ -152,7 +152,7 @@ class AdminRoot extends React.Component {
   }
 
   getUserData() {
-    return this.callChecklistApi({ command: "list", exhibition_id: "aqmd3rd" }).then(data => {
+    return this.callChecklistApi({ command: "list", exhibition_id: "aqmd3rd" }, "user").then(data => {
       if (!data) return;
       console.log("FAVORITE_DATA_OK:", data.favorite.length);
 
@@ -186,7 +186,7 @@ class AdminRoot extends React.Component {
         this.removeLoading("auth");
         console.log("LOGIN_DATA_NG:", err);
         this.setState({ me: null });
-      })
+      });
   }
 
   login() {
@@ -234,58 +234,47 @@ class AdminRoot extends React.Component {
   addFavorite(circle) {
     const { favoriteIdx } = this.state;
 
-    this.addLoading(circle.circle_id);
-    this.callChecklistApi({ command: "add", exhibition_id: "aqmd3rd", circle_id: circle.circle_id })
-      .then(data => {
-        this.removeLoading(circle.circle_id);
+    return this.callChecklistApi({ command: "add", exhibition_id: "aqmd3rd", circle_id: circle.circle_id }, circle.circle_id).then(data => {
+      if (!data) return;
 
-        if(data.error) {
-          alert(data.error + ": エラーが発生しました。しばらく経ってもエラーが続く場合は管理者に問い合わせてください。");
-        } else {
-          console.log("ADD_FAVORITE", data);
-          favoriteIdx[circle.circle_id] = data;
-          this.setState({ favoriteIdx });
-        }
-      })
-      .catch(err => console.log);
+      console.log("ADD_FAVORITE", data);
+      favoriteIdx[circle.circle_id] = data;
+      this.setState({ favoriteIdx });
+    });
   }
 
   removeFavorite(circle) {
     const { favoriteIdx } = this.state;
 
-    this.addLoading(circle.circle_id);
-    this.callChecklistApi({ command: "remove", circle_id: circle.circle_id })
-      .then(data => {
-        this.removeLoading(circle.circle_id);
-        console.log("REMOVE_FAVORITE", data);
-        delete favoriteIdx[circle.circle_id];
-        this.setState({ favoriteIdx });
-      })
-      .catch(err => console.log);
+    this.callChecklistApi({ command: "remove_", circle_id: circle.circle_id }, circle.circle_id).then(data => {
+      if (!data) return;
+
+      console.log("REMOVE_FAVORITE", data);
+      delete favoriteIdx[circle.circle_id];
+      this.setState({ favoriteIdx });
+    });
   }
 
   updateFavoriteComment(circle,comment) {
     const { favoriteIdx } = this.state;
 
-    this.addLoading(circle.circle_id);
-    this.callChecklistApi({ command: "update", circle_id: circle.circle_id, comment: comment })
-      .then(data => {
-        this.removeLoading(circle.circle_id);
-        console.log("UPDATE_FAVORITE", data);
-        const fav = favoriteIdx[circle.circle_id];
-        fav.comment = comment;
-        this.setState({ favoriteIdx });
-      })
-      .catch(err => console.log);
+    this.callChecklistApi({ command: "update", circle_id: circle.circle_id, comment: comment }, circle.circle_id).then(data => {
+      if (!data) return;
+
+      console.log("UPDATE_FAVORITE", data);
+      const fav = favoriteIdx[circle.circle_id];
+      fav.comment = comment;
+      this.setState({ favoriteIdx });
+    });
   }
 
   updatePublicLinkSetting(isPublic) {
-    this.callChecklistApi({ command: "public", exhibition_id: "aqmd3rd", public: isPublic })
-      .then(data => {
-        console.log("UPDATE_PUBLIC_LINK", data);
-        this.setState({ config: { public: isPublic } });
-      })
-      .catch(err => console.log);
+    this.callChecklistApi({ command: "public", exhibition_id: "aqmd3rd", public: isPublic }).then(data => {
+      if (!data) return;
+
+      console.log("UPDATE_PUBLIC_LINK", data);
+      this.setState({ config: { public: isPublic } });
+    });
   }
 
   render() {

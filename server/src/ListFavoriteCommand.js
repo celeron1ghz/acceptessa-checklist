@@ -39,7 +39,7 @@ class ListFavoriteCommand {
         ])
         .then(data => {
           return {
-            favorite: data[0] ? [0].Responses.tessa_favorite : [],
+            favorite: data[0] ? data[0].Responses.tessa_favorite : [],
             config: {
               public: (data[1].Item && data[1].Item.public ) ? true : false,
             }
