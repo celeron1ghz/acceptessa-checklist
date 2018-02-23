@@ -50,18 +50,34 @@ class AdminRoot extends React.Component {
     this.closeExportChecklistModal  = this.closeExportChecklistModal.bind(this);
   }
 
-  callChecklistApi(args) {
+  callChecklistApi(args, load_type) {
     const token = localStorage.getItem("token");
-    if (!token) {
-      return Promise.reject("No access_token. Please login!!");
-    }
+
+    if (!token) return Promise.reject("No access_token. Please login!!");
+
+    if (load_type) this.addLoading(load_type);
 
     return fetch(this.CHECKLIST_ENDPOINT, {
       headers: new Headers({ 'Authorization': "Bearer " + token }),
       method: 'POST',
       body: JSON.stringify(args),
       cors: true,
-    }).then(data => data.json());
+    })
+    .then(data => data.json())
+    .catch(err => {
+      alert(`サーバでエラーが発生しました。しばらく経ってもエラーが続く場合は管理者にお問い合わせください。(${err})`);
+      return;
+    })
+    .then(data => {
+      if (load_type) this.removeLoading(load_type);
+
+      if (data && data.error) {
+        alert(`リクエストでエラーが発生しました。しばらく経ってもエラーが続く場合は管理者にお問い合わせください。(${args.command}: ${data.error})`);
+        return;
+      }
+
+      return data;
+    });
   }
 
   addLoading(key) {
@@ -136,27 +152,17 @@ class AdminRoot extends React.Component {
   }
 
   getUserData() {
-    this.addLoading("user");
-    return this
-      .callChecklistApi({ command: "list", exhibition_id: "aqmd3rd" })
-      .then(data => {
-        if (data.error) {
-          console.error("Error on fetch user data:", data.error)
-          return;
-        }
+    return this.callChecklistApi({ command: "list", exhibition_id: "aqmd3rd" }).then(data => {
+      if (!data) return;
+      console.log("FAVORITE_DATA_OK:", data.favorite.length);
 
-        this.removeLoading("user");
+      const favoriteIdx = {};
+      for (const f of data.favorite) {
+        favoriteIdx[f.circle_id] = f;
+      }
 
-        console.log("FAVORITE_DATA_OK:", data.length);
-        const favoriteIdx = {};
-        for (const f of data.favorite) {
-          favoriteIdx[f.circle_id] = f;
-        }
-        this.setState({ favoriteIdx, config: data.config });
-      })
-      .catch(err => {
-        console.error("Error on fetch user data:", err);
-      });
+      this.setState({ favoriteIdx, config: data.config });
+    });
   }
 
   getAuthData() {
