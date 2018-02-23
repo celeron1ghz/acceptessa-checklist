@@ -34,15 +34,16 @@ class AdminRoot extends React.Component {
     this.AUTH_ENDPOINT      = "https://v7hwasc1o7.execute-api.ap-northeast-1.amazonaws.com/dev";
     this.CHECKLIST_ENDPOINT = "https://bt68jbe0eg.execute-api.ap-northeast-1.amazonaws.com/dev/endpoint";
 
-    this.openCircleDescModal    = this.openCircleDescModal.bind(this);
-    this.closeCircleDescModal   = this.closeCircleDescModal.bind(this);
-    this.addFavorite            = this.addFavorite.bind(this);
-    this.removeFavorite         = this.removeFavorite.bind(this);
-    this.updateFavoriteComment  = this.updateFavoriteComment.bind(this);
-    this.login                  = this.login.bind(this);
-    this.logout                 = this.logout.bind(this);
-    this.addLoading             = this.addLoading.bind(this);
-    this.removeLoading          = this.removeLoading.bind(this);
+    this.openCircleDescModal      = this.openCircleDescModal.bind(this);
+    this.closeCircleDescModal     = this.closeCircleDescModal.bind(this);
+    this.addFavorite              = this.addFavorite.bind(this);
+    this.removeFavorite           = this.removeFavorite.bind(this);
+    this.updateFavoriteComment    = this.updateFavoriteComment.bind(this);
+    this.updatePublicLinkSetting  = this.updatePublicLinkSetting.bind(this);
+    this.login                    = this.login.bind(this);
+    this.logout                   = this.logout.bind(this);
+    this.addLoading               = this.addLoading.bind(this);
+    this.removeLoading            = this.removeLoading.bind(this);
     this.openPublicLinkModal        = this.openPublicLinkModal.bind(this);
     this.closePublicLinkModal       = this.closePublicLinkModal.bind(this);
     this.openExportChecklistModal   = this.openExportChecklistModal.bind(this);
@@ -223,6 +224,7 @@ class AdminRoot extends React.Component {
   closeExportChecklistModal() {
     this.setState({ showExportChecklistModal: false });
   }
+
   addFavorite(circle) {
     const { favoriteIdx } = this.state;
 
@@ -267,6 +269,15 @@ class AdminRoot extends React.Component {
         const fav = favoriteIdx[circle.circle_id];
         fav.comment = comment;
         this.setState({ favoriteIdx });
+      })
+      .catch(err => console.log);
+  }
+
+  updatePublicLinkSetting(isPublic) {
+    this.callChecklistApi({ command: "public", exhibition_id: "aqmd3rd", public: isPublic })
+      .then(data => {
+        console.log("UPDATE_PUBLIC_LINK", data);
+        this.setState({ config: { public: isPublic } });
       })
       .catch(err => console.log);
   }
@@ -375,6 +386,7 @@ class AdminRoot extends React.Component {
       <PublicLinkModal
         show={showPublicLinkModal}
         config={config}
+        onPublicLinkClick={this.updatePublicLinkSetting}
         onClose={this.closePublicLinkModal}/>
 
       <ExportChecklistModal

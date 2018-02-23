@@ -39,7 +39,7 @@ class ListFavoriteCommand {
           return {
             favorite: data[0].Responses.tessa_favorite,
             config: {
-              public: data[1].Item ? true : false,
+              public: (data[1].Item && data[1].Item.public ) ? true : false,
             }
 　        };
         });

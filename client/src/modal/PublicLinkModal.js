@@ -9,6 +9,10 @@ class PublicLinkModal extends React.Component {
     this.close = this.close.bind(this);
   }
 
+  publicLinkClick(isPublic) {
+    this.props.onPublicLinkClick(isPublic);
+  }
+
   close() {
     this.props.onClose();
   }
@@ -38,7 +42,7 @@ class PublicLinkModal extends React.Component {
                     チェックリストの公開URLは <b><a href="#/" target="_blank">http://loclahost:5000</a></b> です。
                   </Panel.Body>
                 </Panel>
-                <Button block bsStyle="primary"　bsSize="lg">
+                <Button block bsStyle="primary"　bsSize="lg" onClick={this.publicLinkClick.bind(this,false)}>
                   <Glyphicon glyph="link"/> チェックリストを非公開にする
                 </Button>
               </div>
@@ -46,7 +50,7 @@ class PublicLinkModal extends React.Component {
                 <Alert bsStyle="info">
                     現在の共有の状態は 「<b>オフ</b>」 です。
                 </Alert>
-                <Button block bsStyle="warning"　bsSize="lg">
+                <Button block bsStyle="warning"　bsSize="lg" onClick={this.publicLinkClick.bind(this,true)}>
                   <Glyphicon glyph="link"/> チェックリストを公開にする
                 </Button>
                 <br/>
@@ -67,8 +71,9 @@ class PublicLinkModal extends React.Component {
 
 PublicLinkModal.propTypes = {
   show: PropTypes.bool,
-  config: PropTypes.object.isRequired,
+  config: PropTypes.object,
   //loadings: PropTypes.object.isRequired,
+  onPublicLinkClick: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
