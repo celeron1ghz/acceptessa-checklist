@@ -54,6 +54,7 @@ class MapPane extends React.Component {
                 : "rgba(64,64,64,0.3)";
 
             return <OverlayTrigger
+              key={pos.sym + pos.num}
               placement="left"
               overlay={
                 <Tooltip id="tooltip">
@@ -61,7 +62,6 @@ class MapPane extends React.Component {
                 </Tooltip>
               }>
                 <CirclePositionElement
-                  key={pos.sym + pos.num}
                   top={pos.top}
                   left={pos.left}
                   bgColor={bgColor}
