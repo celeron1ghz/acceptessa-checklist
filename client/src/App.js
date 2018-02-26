@@ -22,6 +22,7 @@ class AdminRoot extends React.Component {
         favoriteIdx: {},
         sort_order:  [],
         loading:     {},
+        exhibition:  null,
         map: null,
         showCircleDescModal: false,
         showPublicLinkModal: false,
@@ -48,6 +49,11 @@ class AdminRoot extends React.Component {
     this.closePublicLinkModal       = this.closePublicLinkModal.bind(this);
     this.openExportChecklistModal   = this.openExportChecklistModal.bind(this);
     this.closeExportChecklistModal  = this.closeExportChecklistModal.bind(this);
+
+    this.getAuthData    = this.getAuthData.bind(this);
+    this.getCircleList  = this.getCircleList.bind(this);
+    this.getMapData     = this.getMapData.bind(this);
+    this.getUserData    = this.getUserData.bind(this);
   }
 
   callChecklistApi(args, load_type) {
@@ -105,8 +111,10 @@ class AdminRoot extends React.Component {
   }
 
   componentDidMount() {
-    this.getAuthData().then(this.getUserData());
-    this.getCircleList().then(this.getMapData());
+    this.getCircleList()
+      .then(this.getAuthData)
+      .then(this.getUserData)
+      .then(this.getMapData);
   }
 
   getCircleList() {
@@ -116,7 +124,7 @@ class AdminRoot extends React.Component {
       .then(data => {
         this.removeLoading("circle");
         console.log("CIRCLE_DATA_OK:", data.circles.length);
-        this.setState({ circleList: data.circles, sort_order: data.sort_order });
+        this.setState({ circleList: data.circles, sort_order: data.sort_order, exhibition: data.exhibition });
         this.componentWillReceiveProps(this.props);
       })
       .catch(err => console.log)
@@ -152,7 +160,9 @@ class AdminRoot extends React.Component {
   }
 
   getUserData() {
-    return this.callChecklistApi({ command: "list", exhibition_id: "aqmd3rd" }, "user").then(data => {
+    const { exhibition } = this.state;
+
+    return this.callChecklistApi({ command: "list", exhibition_id: exhibition.id }, "user").then(data => {
       if (!data) return;
       console.log("FAVORITE_DATA_OK:", data.favorite.length);
 
@@ -179,12 +189,12 @@ class AdminRoot extends React.Component {
       .then(data => data.json())
       .then(data => {
         this.removeLoading("auth");
-        console.log("LOGIN_DATA_OK:", data);
+        console.log("AUTH_DATA_OK:", data);
         this.setState({ me: data });
       })
       .catch(err => {
         this.removeLoading("auth");
-        console.log("LOGIN_DATA_NG:", err);
+        console.log("AUTH_DATA_NG:", err);
         this.setState({ me: null });
       });
   }
@@ -192,8 +202,7 @@ class AdminRoot extends React.Component {
   login() {
     const getJwtToken = event => {
       localStorage.setItem("token", event.data);
-      this.getAuthData();
-      this.getUserData();
+      this.getAuthData().then(this.getUserData);
     };
 
     window.open(this.AUTH_ENDPOINT + "/auth");
@@ -232,9 +241,9 @@ class AdminRoot extends React.Component {
   }
 
   addFavorite(circle) {
-    const { favoriteIdx } = this.state;
+    const { favoriteIdx, exhibition } = this.state;
 
-    return this.callChecklistApi({ command: "add", exhibition_id: "aqmd3rd", circle_id: circle.circle_id }, circle.circle_id).then(data => {
+    return this.callChecklistApi({ command: "add", exhibition_id: exhibition.id, circle_id: circle.circle_id }, circle.circle_id).then(data => {
       if (!data) return;
 
       console.log("ADD_FAVORITE", data);
@@ -246,7 +255,7 @@ class AdminRoot extends React.Component {
   removeFavorite(circle) {
     const { favoriteIdx } = this.state;
 
-    this.callChecklistApi({ command: "remove_", circle_id: circle.circle_id }, circle.circle_id).then(data => {
+    this.callChecklistApi({ command: "remove", circle_id: circle.circle_id }, circle.circle_id).then(data => {
       if (!data) return;
 
       console.log("REMOVE_FAVORITE", data);
@@ -269,7 +278,9 @@ class AdminRoot extends React.Component {
   }
 
   updatePublicLinkSetting(isPublic) {
-    this.callChecklistApi({ command: "public", exhibition_id: "aqmd3rd", public: isPublic }).then(data => {
+    const { exhibition } = this.state;
+
+    this.callChecklistApi({ command: "public", exhibition_id: exhibition.id, public: isPublic }).then(data => {
       if (!data) return;
 
       console.log("UPDATE_PUBLIC_LINK", data);
@@ -278,12 +289,23 @@ class AdminRoot extends React.Component {
   }
 
   render() {
-    const { circleList, favoriteIdx, loading, map, showCircleDescModal, showPublicLinkModal, showExportChecklistModal, selectedCircle, me, config } = this.state;
+    const {
+      circleList, favoriteIdx, loading, map,
+      showCircleDescModal, showPublicLinkModal, showExportChecklistModal,
+      selectedCircle, me, config, exhibition,
+    } = this.state;
 
     return <div className="container">
       <br/>
       <Well bsSize="small" className="clearfix">
-        <span>サークル一覧 (アクアマリンドリーム)  <Badge>{circleList.length}</Badge></span>
+        <span>
+          サークル一覧
+          {
+            exhibition
+              ? <span> ({exhibition.exhibition_name}) <Badge>{circleList.length}</Badge></span>
+              : ' '
+          }
+        </span>
         <div className="pull-right">
           {
             loading.auth
