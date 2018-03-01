@@ -12,26 +12,15 @@ class ListFavoriteCommand {
   run() {
     return dynamodb.query({
       TableName: 'tessa_favorite',
-      IndexName: 'tessa_favorite_gsi1',
+      IndexName: 'tessa_favorite_gsi',
       KeyConditionExpression: 'member_id = :member_id and exhibition_id = :exhibition_id',
       ExpressionAttributeValues: { ':member_id': this.member_id, ':exhibition_id': this.exhibition_id },
-      ProjectionExpression: 'circle_id, member_id',
+      //ProjectionExpression: 'circle_id, member_id',
     }).promise()
       .then(data => data.Items)
       .then(data => {
         return Promise.all([
-          data.length === 0
-            ? Promise.resolve(null)
-            : dynamodb.batchGet({
-                RequestItems: {
-                  tessa_favorite: {
-                    Keys: data,
-                    ProjectionExpression: 'circle_id, #comment',
-                    ExpressionAttributeNames: { '#comment': 'comment' },
-                  }
-                }
-              }).promise(),
-
+          Promise.resolve(data),
           dynamodb.get({
             TableName : 'tessa_config',
             Key: { member_id: this.member_id, exhibition_id: this.exhibition_id },
@@ -39,7 +28,7 @@ class ListFavoriteCommand {
         ])
         .then(data => {
           return {
-            favorite: data[0] ? data[0].Responses.tessa_favorite : [],
+            favorite: data[0],
             config: {
               public: (data[1].Item && data[1].Item.public ) ? true : false,
             }

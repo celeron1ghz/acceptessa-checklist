@@ -125,5 +125,6 @@ module.exports.public = (event, context, callback) => {
       headers: { 'Access-Control-Allow-Origin': event.headers.origin },
       body: JSON.stringify({ error: err.message }),
     });
+
   });
 };
