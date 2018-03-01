@@ -25,15 +25,12 @@ class ListFavoriteCommand {
           dynamodb.get({
             TableName : 'tessa_config',
             Key: { member_id: this.member_id, exhibition_id: this.exhibition_id },
-          }).promise(),
+            ProjectionExpression: 'member_id, #public',
+            ExpressionAttributeNames: { '#public': 'public' },
+          }).promise().then(data => data.Item || {}),
         ])
         .then(data => {
-          return {
-            favorite: data[0],
-            config: {
-              public: (data[1].Item && data[1].Item.public ) ? true : false,
-            }
-　        };
+          return { favorite: data[0], config: data[1] };
         });
       });
   }

@@ -104,20 +104,20 @@ module.exports.public = (event, context, callback) => {
       Key: { member_id: member_id, exhibition_id: exhibition_id },
     }).promise().then(data => data.Item);
 
-    console.log(member_id, exhibition_id, config);
-    console.log(JSON.stringify(event,null,2));
+    if (!config || !config.public) {
+      return callback(null, {
+        statusCode: 401,
+        headers: { 'Access-Control-Allow-Origin': event.headers.origin },
+        body: JSON.stringify({}),
+      });
+    }
 
-    return config
-      ? callback(null, {
-          statusCode: 200,
-          headers: { 'Access-Control-Allow-Origin': event.headers.origin },
-          body: JSON.stringify(config),
-        })
-      : callback(null, {
-          statusCode: 401,
-          headers: { 'Access-Control-Allow-Origin': event.headers.origin },
-          body: JSON.stringify({}),
-        });
+    const ret = yield new COMMANDS.list({ exhibition_id }, { screen_name: member_id }).run();
+    return callback(null, {
+      statusCode: 200,
+      headers: { 'Access-Control-Allow-Origin': event.headers.origin },
+      body: JSON.stringify(ret),
+    })
 
   }).catch(err => {
     return callback(null, {

@@ -121,9 +121,6 @@ class AdminRoot extends React.Component {
         .then(this.getUserData)
         .then(this.getMapData)
         .then(this.getShareChecklist)
-        .then(data => {
-          this.setState({ publicChecklist: {} })
-        })
     } else {
       this.getCircleList()
         .then(this.getAuthData)
@@ -138,7 +135,18 @@ class AdminRoot extends React.Component {
     return fetch(`${this.CHECKLIST_ENDPOINT}public/${exhibition.id}/?mid=mimin_ga_mi_bot`, { cors: true })
       .then(data => data.json())
       .then(data => {
-        console.log(data);
+        if (!data.favorite) {
+          alert("チェックリストが公開されていません。");
+          return;
+        }
+
+        const idx = {}
+        ;
+        for (const f of data.favorite) {
+          idx[f.circle_id] = f;
+        }
+
+        this.setState({ publicChecklist: { idx, config: data.config } });
       })
       .catch(err => {
         console.log("Error on fetch public checklist:", err);

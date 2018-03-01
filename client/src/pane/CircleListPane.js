@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTable from "react-table";
 import _ from 'lodash';
-import { Alert, Glyphicon, Button } from 'react-bootstrap';
+import { Badge, Alert, Glyphicon, Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 
 class CircleListPane extends React.Component {
@@ -31,6 +31,10 @@ class CircleListPane extends React.Component {
     for (const c of circleList) {
       if (favorites[c.circle_id]) {
         c.favorite = favorites[c.circle_id];
+      }
+
+      if (publicChecklist && publicChecklist.idx[c.circle_id]) {
+        c.publicChecklist = publicChecklist.idx[c.circle_id];
       }
     }
 
@@ -194,7 +198,12 @@ class CircleListPane extends React.Component {
     return <div>
       {
         publicChecklist &&
-          <Alert bsStyle="success">リストを読んでるよ！！</Alert>
+          <Alert bsStyle="success">
+            <a href={"https://twitte.com/" + publicChecklist.config.member_id} target="_blank">
+              @{publicChecklist.config.member_id} さん
+            </a>
+            のチェックリスト <Badge>{Object.keys(publicChecklist.idx).length}</Badge> を読み込んでいます。
+          </Alert>
       }
       {
         table && <div>
