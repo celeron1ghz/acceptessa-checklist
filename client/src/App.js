@@ -113,7 +113,7 @@ class AdminRoot extends React.Component {
   componentDidMount() {
     const param = new URLSearchParams(window.location.search);
     if ( param.get("id") ) {
-
+      this.getShareChecklist();
     } else {
       this.getCircleList()
         .then(this.getAuthData)
@@ -123,12 +123,14 @@ class AdminRoot extends React.Component {
   }
 
   getShareChecklist() {
-    return fetch(this.CHECKLIST_ENDPOINT,{
-      method: 'POST',
-      body: JSON.stringify({}),
-      cors: true,
-    })
-    .then(data => data.json())
+    return fetch(this.CHECKLIST_ENDPOINT + "public/aqmd3rd/?mid=mimin_ga_mi_bot", { cors: true })
+      .then(data => data.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch(err => {
+        console.log("Error on fetch public checklist:", err);
+      })
   }
 
   getCircleList() {

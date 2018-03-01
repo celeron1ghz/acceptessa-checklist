@@ -67,10 +67,7 @@ module.exports.endpoint = (event, context, callback) => {
       const ret = yield new cmd(body,user).run();
       return callback(null, {
         statusCode: 200,
-        headers: {
-          'Access-Control-Allow-Origin': event.headers.origin,
-          'Access-Control-Allow-Credentials': true,
-        },
+        headers: { 'Access-Control-Allow-Origin': event.headers.origin },
         body: JSON.stringify(ret),
       });
 
@@ -91,22 +88,42 @@ module.exports.endpoint = (event, context, callback) => {
 
     return callback(null, {
       statusCode: code,
-      headers: {
-        'Access-Control-Allow-Origin': event.headers.origin,
-        'Access-Control-Allow-Credentials': true,
-      },
+      headers: { 'Access-Control-Allow-Origin': event.headers.origin },
       body: JSON.stringify({ error: err.message }),
     });
   });
 };
 
 module.exports.public = (event, context, callback) => {
+  return vo(function*(){
+    const member_id     = event.queryStringParameters.mid;
+    const exhibition_id = event.pathParameters.eid;
+
+    const config = yield dynamodb.get({
+      TableName: "tessa_config",
+      Key: { member_id: member_id, exhibition_id: exhibition_id },
+    }).promise().then(data => data.Item);
+
+    console.log(member_id, exhibition_id, config);
+    console.log(JSON.stringify(event,null,2));
+
+    return config
+      ? callback(null, {
+          statusCode: 200,
+          headers: { 'Access-Control-Allow-Origin': event.headers.origin },
+          body: JSON.stringify(config),
+        })
+      : callback(null, {
+          statusCode: 401,
+          headers: { 'Access-Control-Allow-Origin': event.headers.origin },
+          body: JSON.stringify({}),
+        });
+
+  }).catch(err => {
     return callback(null, {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': event.headers.origin,
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify({ 1:1 }),
+      statusCode: 500,
+      headers: { 'Access-Control-Allow-Origin': event.headers.origin },
+      body: JSON.stringify({ error: err.message }),
     });
+  });
 };

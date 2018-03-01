@@ -42,8 +42,8 @@ functions:
     handler: handler.public
     events:
       - http:
-          path: /public/{id}
-          method: post
+          path: /public/{eid}/
+          method: get
           cors: true
 
 resources:
