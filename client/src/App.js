@@ -45,15 +45,17 @@ class AdminRoot extends React.Component {
     this.logout                   = this.logout.bind(this);
     this.addLoading               = this.addLoading.bind(this);
     this.removeLoading            = this.removeLoading.bind(this);
+
     this.openPublicLinkModal        = this.openPublicLinkModal.bind(this);
     this.closePublicLinkModal       = this.closePublicLinkModal.bind(this);
     this.openExportChecklistModal   = this.openExportChecklistModal.bind(this);
     this.closeExportChecklistModal  = this.closeExportChecklistModal.bind(this);
 
-    this.getAuthData    = this.getAuthData.bind(this);
-    this.getCircleList  = this.getCircleList.bind(this);
-    this.getMapData     = this.getMapData.bind(this);
-    this.getUserData    = this.getUserData.bind(this);
+    this.getAuthData        = this.getAuthData.bind(this);
+    this.getCircleList      = this.getCircleList.bind(this);
+    this.getMapData         = this.getMapData.bind(this);
+    this.getUserData        = this.getUserData.bind(this);
+    this.getShareChecklist  = this.getShareChecklist.bind(this);
   }
 
   callChecklistApi(args, load_type) {
@@ -113,7 +115,11 @@ class AdminRoot extends React.Component {
   componentDidMount() {
     const param = new URLSearchParams(window.location.search);
     if ( param.get("id") ) {
-      this.getShareChecklist();
+      this.getCircleList()
+        .then(this.getAuthData)
+        .then(this.getUserData)
+        .then(this.getMapData)
+        .then(this.getShareChecklist);
     } else {
       this.getCircleList()
         .then(this.getAuthData)
@@ -123,7 +129,9 @@ class AdminRoot extends React.Component {
   }
 
   getShareChecklist() {
-    return fetch(this.CHECKLIST_ENDPOINT + "public/aqmd3rd/?mid=mimin_ga_mi_bot", { cors: true })
+    const { exhibition } = this.state;
+
+    return fetch(`${this.CHECKLIST_ENDPOINT}public/${exhibition.id}/?mid=mimin_ga_mi_bot`, { cors: true })
       .then(data => data.json())
       .then(data => {
         console.log(data);

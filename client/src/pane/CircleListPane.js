@@ -144,7 +144,7 @@ class CircleListPane extends React.Component {
             filterable: false,
             className: "text-center",
             Cell: row => {
-              return loadings[row.original.circle_id]
+              return loadings[row.original.circle_id] || loadings.user
                 ? <Button bsStyle="warning" bsSize="xs" style={{ width: "65px" }} onClick={e => { e.stopPropagation(); }}>
                     <FontAwesome name="spinner" spin pulse={true} /> 処理中
                   </Button>
