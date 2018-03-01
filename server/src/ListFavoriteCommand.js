@@ -14,8 +14,9 @@ class ListFavoriteCommand {
       TableName: 'tessa_favorite',
       IndexName: 'tessa_favorite_gsi',
       KeyConditionExpression: 'member_id = :member_id and exhibition_id = :exhibition_id',
+      ProjectionExpression: 'circle_id, #comment',
+      ExpressionAttributeNames: { '#comment': 'comment' },
       ExpressionAttributeValues: { ':member_id': this.member_id, ':exhibition_id': this.exhibition_id },
-      //ProjectionExpression: 'circle_id, member_id',
     }).promise()
       .then(data => data.Items)
       .then(data => {
