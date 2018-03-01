@@ -38,6 +38,13 @@ functions:
           path: /
           method: post
           cors: true
+  public:
+    handler: handler.public
+    events:
+      - http:
+          path: /public/{id}
+          method: post
+          cors: true
 
 resources:
   Description: Acceptessa checklist api

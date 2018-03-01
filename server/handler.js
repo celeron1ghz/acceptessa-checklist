@@ -99,3 +99,14 @@ module.exports.endpoint = (event, context, callback) => {
     });
   });
 };
+
+module.exports.public = (event, context, callback) => {
+    return callback(null, {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': event.headers.origin,
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify({ 1:1 }),
+    });
+};

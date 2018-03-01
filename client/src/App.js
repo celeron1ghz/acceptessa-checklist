@@ -111,10 +111,24 @@ class AdminRoot extends React.Component {
   }
 
   componentDidMount() {
-    this.getCircleList()
-      .then(this.getAuthData)
-      .then(this.getUserData)
-      .then(this.getMapData);
+    const param = new URLSearchParams(window.location.search);
+    if ( param.get("id") ) {
+
+    } else {
+      this.getCircleList()
+        .then(this.getAuthData)
+        .then(this.getUserData)
+        .then(this.getMapData);
+    }
+  }
+
+  getShareChecklist() {
+    return fetch(this.CHECKLIST_ENDPOINT,{
+      method: 'POST',
+      body: JSON.stringify({}),
+      cors: true,
+    })
+    .then(data => data.json())
   }
 
   getCircleList() {
