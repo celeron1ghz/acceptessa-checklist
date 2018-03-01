@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTable from "react-table";
 import _ from 'lodash';
-import { Glyphicon, Button } from 'react-bootstrap';
+import { Alert, Glyphicon, Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 
 class CircleListPane extends React.Component {
@@ -24,7 +24,7 @@ class CircleListPane extends React.Component {
   }
 
   render() {
-    const { favorites, showChecklistComponent, loadings } = this.props;
+    const { favorites, showChecklistComponent, loadings, publicChecklist } = this.props;
     const { table } = this.state;
     const circleList = _.cloneDeep(this.props.circles);
 
@@ -161,6 +161,27 @@ class CircleListPane extends React.Component {
       });
     }
 
+    if (publicChecklist) {
+      columns.unshift({
+        Header: "レ",
+        headerStyle: { backgroundColor: "#dff", fontSize: "12px" },
+        columns: [
+          {
+            headerStyle: { backgroundColor: "#ddd", fontSize: "12px" },
+            accessor: "publicChecklist",
+            width: 30,
+            resizable: false,
+            filterable: false,
+            className: "text-center",
+            Cell: row => row.value
+                ? <Glyphicon glyph="ok"/>
+                : ""
+            ,
+          },
+        ],
+      });
+    }
+
     const jp = {
       circle_name: "サークル名",
       penname:     "作者",
@@ -171,6 +192,10 @@ class CircleListPane extends React.Component {
     };
 
     return <div>
+      {
+        publicChecklist &&
+          <Alert bsStyle="success">リストを読んでるよ！！</Alert>
+      }
       {
         table && <div>
           {
@@ -222,6 +247,7 @@ class CircleListPane extends React.Component {
 CircleListPane.propTypes = {
   circles: PropTypes.array.isRequired,
   favorites: PropTypes.object.isRequired,
+  publicChecklist: PropTypes.object,
   loadings: PropTypes.object.isRequired,
   onRowClick: PropTypes.func.isRequired,
   onAddFavorite: PropTypes.func.isRequired,

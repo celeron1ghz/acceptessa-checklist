@@ -22,6 +22,7 @@ class AdminRoot extends React.Component {
         favoriteIdx: {},
         sort_order:  [],
         loading:     {},
+        publicChecklist: null,
         exhibition:  null,
         map: null,
         showCircleDescModal: false,
@@ -119,7 +120,10 @@ class AdminRoot extends React.Component {
         .then(this.getAuthData)
         .then(this.getUserData)
         .then(this.getMapData)
-        .then(this.getShareChecklist);
+        .then(this.getShareChecklist)
+        .then(data => {
+          this.setState({ publicChecklist: {} })
+        })
     } else {
       this.getCircleList()
         .then(this.getAuthData)
@@ -315,7 +319,7 @@ class AdminRoot extends React.Component {
   render() {
     const {
       circleList, favoriteIdx, loading, map,
-      showCircleDescModal, showPublicLinkModal, showExportChecklistModal,
+      showCircleDescModal, showPublicLinkModal, showExportChecklistModal, publicChecklist,
       selectedCircle, me, config, exhibition,
     } = this.state;
 
@@ -380,6 +384,7 @@ class AdminRoot extends React.Component {
               <CircleListPane
                 circles={circleList}
                 favorites={favoriteIdx}
+                publicChecklist={publicChecklist}
                 loadings={loading}
                 onRowClick={this.openCircleDescModal}
                 onAddFavorite={this.addFavorite}
