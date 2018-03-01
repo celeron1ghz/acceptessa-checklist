@@ -117,10 +117,10 @@ class AdminRoot extends React.Component {
     const param = new URLSearchParams(window.location.search);
     if ( param.get("id") ) {
       this.getCircleList()
+        .then(this.getShareChecklist)
         .then(this.getAuthData)
         .then(this.getUserData)
         .then(this.getMapData)
-        .then(this.getShareChecklist)
     } else {
       this.getCircleList()
         .then(this.getAuthData)
@@ -132,7 +132,7 @@ class AdminRoot extends React.Component {
   getShareChecklist() {
     const { exhibition } = this.state;
 
-    return fetch(`${this.CHECKLIST_ENDPOINT}public/${exhibition.id}/?mid=mimin_ga_mi_bot`, { cors: true })
+    return fetch(`${this.CHECKLIST_ENDPOINT}public/${exhibition.id}/?mid=celeron1ghz`, { cors: true })
       .then(data => data.json())
       .then(data => {
         if (!data.favorite) {
