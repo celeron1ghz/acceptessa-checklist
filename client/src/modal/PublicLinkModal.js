@@ -24,6 +24,8 @@ class PublicLinkModal extends React.Component {
       return <div/>;
     }
 
+    const publicUrl = window.location.origin + (window.location.path || '') + "?id=" + config.member_id;
+
     return <Modal show={show} onHide={this.close}>
       <Modal.Header closeButton>
         <Modal.Title>
@@ -39,7 +41,9 @@ class PublicLinkModal extends React.Component {
                 </Alert>
                 <Panel>
                   <Panel.Body>
-                    チェックリストの公開URLは <b><a href="#/" target="_blank">http://loclahost:5000</a></b> です。
+                    チェックリストの公開URLは
+                    <b><a href={publicUrl} target="_blank">{publicUrl}</a></b>
+                    です。
                   </Panel.Body>
                 </Panel>
                 <Button block bsStyle="primary"　bsSize="lg" onClick={this.publicLinkClick.bind(this,false)}>
