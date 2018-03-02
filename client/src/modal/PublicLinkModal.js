@@ -19,13 +19,13 @@ class PublicLinkModal extends React.Component {
   }
 
   render() {
-    const { show, config } = this.props;
+    const { show, config, me } = this.props;
 
     if (!config) {
       return <div/>;
     }
 
-    const publicUrl = window.location.origin + (window.location.path || '') + "?id=" + config.member_id;
+    const publicUrl = window.location.origin + (window.location.path || '') + "?id=" + me.screen_name;
 
     return <Modal show={show} onHide={this.close}>
       <Modal.Header closeButton>
@@ -77,6 +77,7 @@ class PublicLinkModal extends React.Component {
 
 PublicLinkModal.propTypes = {
   show: PropTypes.bool,
+  me: PropTypes.object,
   config: PropTypes.object,
   //loadings: PropTypes.object.isRequired,
   onPublicLinkClick: PropTypes.func.isRequired,

@@ -446,6 +446,7 @@ class AdminRoot extends React.Component {
 
       <PublicLinkModal
         show={showPublicLinkModal}
+        me={me}
         config={config}
         onPublicLinkClick={this.updatePublicLinkSetting}
         onClose={this.closePublicLinkModal}/>
