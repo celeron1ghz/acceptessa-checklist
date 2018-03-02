@@ -11,9 +11,7 @@ const jwt = require("jsonwebtoken");
 function res(code,body) {
   return {
     statusCode: code,
-    "headers": {
-      "Access-Control-Allow-Origin": undefined,
-    },
+    headers: { "Access-Control-Allow-Origin": '*' },
     body: JSON.stringify(body),
   }
 }

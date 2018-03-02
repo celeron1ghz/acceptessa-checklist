@@ -67,7 +67,7 @@ module.exports.endpoint = (event, context, callback) => {
       const ret = yield new cmd(body,user).run();
       return callback(null, {
         statusCode: 200,
-        headers: { 'Access-Control-Allow-Origin': event.headers.origin },
+        headers: { 'Access-Control-Allow-Origin': '*' },
         body: JSON.stringify(ret),
       });
 
@@ -88,7 +88,7 @@ module.exports.endpoint = (event, context, callback) => {
 
     return callback(null, {
       statusCode: code,
-      headers: { 'Access-Control-Allow-Origin': event.headers.origin },
+      headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify({ error: err.message }),
     });
   });
@@ -107,7 +107,7 @@ module.exports.public = (event, context, callback) => {
     if (!config || !config.public) {
       return callback(null, {
         statusCode: 401,
-        headers: { 'Access-Control-Allow-Origin': event.headers.origin },
+        headers: { 'Access-Control-Allow-Origin': '*' },
         body: JSON.stringify({}),
       });
     }
@@ -115,14 +115,14 @@ module.exports.public = (event, context, callback) => {
     const ret = yield new COMMANDS.list({ exhibition_id }, { screen_name: member_id }).run();
     return callback(null, {
       statusCode: 200,
-      headers: { 'Access-Control-Allow-Origin': event.headers.origin },
+      headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify(ret),
     })
 
   }).catch(err => {
     return callback(null, {
       statusCode: 500,
-      headers: { 'Access-Control-Allow-Origin': event.headers.origin },
+      headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify({ error: err.message }),
     });
 
