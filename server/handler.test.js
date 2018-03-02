@@ -12,7 +12,6 @@ function res(code,body) {
   return {
     statusCode: code,
     "headers": {
-      "Access-Control-Allow-Credentials": true,
       "Access-Control-Allow-Origin": undefined,
     },
     body: JSON.stringify(body),
