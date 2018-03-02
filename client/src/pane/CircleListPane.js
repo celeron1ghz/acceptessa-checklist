@@ -23,6 +23,10 @@ class CircleListPane extends React.Component {
     this.props.onRowClick(circle);
   }
 
+  removePublicChecklist() {
+    this.props.onRemovePublicChecklist();
+  }
+
   render() {
     const { favorites, showChecklistComponent, loadings, publicChecklist } = this.props;
     const { table } = this.state;
@@ -202,7 +206,14 @@ class CircleListPane extends React.Component {
             <a href={"https://twitte.com/" + publicChecklist.config.member_id} target="_blank">
               @{publicChecklist.config.member_id} さん
             </a>
-            のチェックリスト <Badge>{Object.keys(publicChecklist.idx).length}</Badge> を読み込んでいます。
+            のチェックリスト
+            <Badge>{Object.keys(publicChecklist.idx).length}</Badge>&nbsp;
+            を「<Glyphicon glyph="ok"/>」で表示しています。
+            <div className="pull-right">
+              <Button bsStyle="success" bsSize="xs" onClick={this.removePublicChecklist.bind(this)}>
+                <Glyphicon glyph="remove"/> 非表示にする
+              </Button>
+            </div>
           </Alert>
       }
       {
@@ -261,6 +272,7 @@ CircleListPane.propTypes = {
   onRowClick: PropTypes.func.isRequired,
   onAddFavorite: PropTypes.func.isRequired,
   onRemoveFavorite: PropTypes.func.isRequired,
+  onRemovePublicChecklist: PropTypes.func.isRequired,
   showChecklistComponent: PropTypes.bool,
 };
 

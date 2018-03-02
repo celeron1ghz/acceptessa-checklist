@@ -5191,6 +5191,13 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-bootstrap-toggle@^2.2.6:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/react-bootstrap-toggle/-/react-bootstrap-toggle-2.2.6.tgz#5cc1bad71b565c8d10b2958dd655834400f81726"
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.5.10"
+
 react-bootstrap@^0.32.1:
   version "0.32.1"
   resolved "https://registry.yarnpkg.com/react-bootstrap/-/react-bootstrap-0.32.1.tgz#60624c1b48a39d773ef6cce6421a4f33ecc166bb"

@@ -47,10 +47,11 @@ class AdminRoot extends React.Component {
     this.addLoading               = this.addLoading.bind(this);
     this.removeLoading            = this.removeLoading.bind(this);
 
-    this.openPublicLinkModal        = this.openPublicLinkModal.bind(this);
-    this.closePublicLinkModal       = this.closePublicLinkModal.bind(this);
-    this.openExportChecklistModal   = this.openExportChecklistModal.bind(this);
-    this.closeExportChecklistModal  = this.closeExportChecklistModal.bind(this);
+    this.openPublicLinkModal          = this.openPublicLinkModal.bind(this);
+    this.closePublicLinkModal         = this.closePublicLinkModal.bind(this);
+    this.openExportChecklistModal     = this.openExportChecklistModal.bind(this);
+    this.closeExportChecklistModal    = this.closeExportChecklistModal.bind(this);
+    this.removePublicChecklistDisplay = this.removePublicChecklistDisplay.bind(this);
 
     this.getAuthData        = this.getAuthData.bind(this);
     this.getCircleList      = this.getCircleList.bind(this);
@@ -325,6 +326,10 @@ class AdminRoot extends React.Component {
     });
   }
 
+  removePublicChecklistDisplay() {
+    this.setState({ publicChecklist: null });
+  }
+
   render() {
     const {
       circleList, favoriteIdx, loading, map,
@@ -398,6 +403,7 @@ class AdminRoot extends React.Component {
                 onRowClick={this.openCircleDescModal}
                 onAddFavorite={this.addFavorite}
                 onRemoveFavorite={this.removeFavorite}
+                onRemovePublicChecklist={this.removePublicChecklistDisplay}
                 showChecklistComponent={!!me}/>
             </Tab.Pane>
             <Tab.Pane eventKey="circlecut">

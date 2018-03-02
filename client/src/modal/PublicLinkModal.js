@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Alert, Button, Glyphicon, Modal, Panel } from 'react-bootstrap';
+import { Label, Button, Glyphicon, Modal, Panel } from 'react-bootstrap';
+import Toggle from 'react-bootstrap-toggle';
 
 class PublicLinkModal extends React.Component {
   constructor(props, context) {
@@ -33,38 +34,39 @@ class PublicLinkModal extends React.Component {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {
-          config.public
-            ? <div>
-                <Alert bsStyle="warning">
-                    現在の共有の状態は 「<b>オン</b>」 です。
-                </Alert>
-                <Panel>
-                  <Panel.Body>
-                    チェックリストの公開URLは
-                    <b><a href={publicUrl} target="_blank">{publicUrl}</a></b>
-                    です。
-                  </Panel.Body>
-                </Panel>
-                <Button block bsStyle="primary"　bsSize="lg" onClick={this.publicLinkClick.bind(this,false)}>
-                  <Glyphicon glyph="link"/> チェックリストを非公開にする
-                </Button>
-              </div>
-            : <div>
-                <Alert bsStyle="info">
-                    現在の共有の状態は 「<b>オフ</b>」 です。
-                </Alert>
-                <Button block bsStyle="warning"　bsSize="lg" onClick={this.publicLinkClick.bind(this,true)}>
-                  <Glyphicon glyph="link"/> チェックリストを公開にする
-                </Button>
-                <br/>
-                <ul>
-                  <li>上のボタンを押すことで共有・非共有が設定されます。共有ボタンを押していない場合は公開されません。</li>
-                  <li>公開状態から非公開状態に戻すことも可能です。</li>
-                  <li>公開したチェックリストを自分以外の人が編集することはできません。</li>
-                </ul>
-              </div>
-        }
+        <Panel>
+          <Panel.Body>
+            <div>
+              チェックリストの共有
+              &nbsp;&nbsp;
+              <Toggle
+                width={120}
+                height={30}
+                on={<span>公開する</span>}
+                off={<span>公開しない</span>}
+                active={config.public}
+                onClick={this.publicLinkClick.bind(this,!config.public)}/>
+            </div>
+            <hr/>
+            <div>
+              {
+                config.public
+                  ? <span>
+                      チェックリストは <Label bsStyle="primary">公開</Label> に設定されています。
+                      <br/><br/>
+                      チェックリストの公開URL：
+                      <b><a href={publicUrl} target="_blank">{publicUrl}</a></b>
+                    </span>
+                  : <span>チェックリストは <Label>非公開</Label> に設定されています。</span>
+              }
+            </div>
+          </Panel.Body>
+        </Panel>
+        <ul>
+          <li>上のボタンを押すことで共有・非共有が設定されます。共有ボタンを押していない場合は公開されません。</li>
+          <li>公開状態から非公開状態に戻すことも可能です。</li>
+          <li>公開したチェックリストを自分以外の人が編集することはできません。</li>
+        </ul>
       </Modal.Body>
       <Modal.Footer>
         <Button block bsStyle="success" onClick={this.close}>閉じる</Button>
