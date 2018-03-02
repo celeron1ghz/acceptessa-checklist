@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Label, Button, Glyphicon, Modal, Panel } from 'react-bootstrap';
 import Toggle from 'react-bootstrap-toggle';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 class PublicLinkModal extends React.Component {
   constructor(props, context) {
@@ -40,7 +41,7 @@ class PublicLinkModal extends React.Component {
               チェックリストの共有
               &nbsp;&nbsp;
               <Toggle
-                width={120}
+                width={110}
                 height={30}
                 on={<span>公開する</span>}
                 off={<span>公開しない</span>}
@@ -54,7 +55,12 @@ class PublicLinkModal extends React.Component {
                   ? <span>
                       チェックリストは <Label bsStyle="primary">公開</Label> に設定されています。
                       <br/><br/>
-                      チェックリストの公開URL：
+                      <h4>
+                        チェックリストの公開URL&nbsp;
+                        <CopyToClipboard text={publicUrl}>
+                          <Button bsStyle="success" bsSize="xs"><Glyphicon glyph="copy"/> クリップボードにコピー</Button>
+                        </CopyToClipboard>
+                      </h4>
                       <b><a href={publicUrl} target="_blank">{publicUrl}</a></b>
                     </span>
                   : <span>チェックリストは <Label>非公開</Label> に設定されています。</span>
