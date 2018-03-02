@@ -63,8 +63,18 @@ module.exports.endpoint = (event, context, callback) => {
     }
 
 
+    let obj;
     try {
-      const ret = yield new cmd(body,user).run();
+      obj = new cmd(body,user);
+    } catch(e) {
+      console.log(e);
+      throw { code: 400, message: 'INVALID_PARAM' };
+    }
+
+
+    try {
+      const ret = yield obj.run();
+
       return callback(null, {
         statusCode: 200,
         headers: { 'Access-Control-Allow-Origin': '*' },
@@ -73,7 +83,7 @@ module.exports.endpoint = (event, context, callback) => {
 
     } catch(e) {
       console.log(e);
-      throw { code: 400, message: 'INVALID_PARAM' };
+      throw { code: 400, message: 'INTERNAL_ERROR' };
     }
 
   }).catch(err => {

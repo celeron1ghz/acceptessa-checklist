@@ -31,8 +31,8 @@ describe('/me test', () => {
     proxySSM      = class { getParameter () {} };
 
     proxyListCommand   = class { constructor(){} run(){ return Promise.resolve([1,2,3,4,5]) } };
-    proxyAddCommand    = class { constructor(){} run(){ return Promise.resolve("hello") } };
-    proxyRemoveCommand = class { constructor(){} run(){ return Promise.resolve("world") } };
+    proxyAddCommand    = class { constructor(){ throw new Error("error! error!") } run(){ return Promise.resolve("hello") } };
+    proxyRemoveCommand = class { constructor(){} run(){ throw new Error("error! error! error!") } };
 
     lambda = proxyquire('./handler', {
       'aws-sdk': {
@@ -131,22 +131,33 @@ describe('/me test', () => {
   });
 
 
-/*
   it('errors on command constructor', () => {
     sinon.stub(proxySSM.prototype, 'getParameter').returns({  promise: () => Promise.resolve({ Parameter: { Value: "1" } })  });
     sinon.stub(proxyDynamoDB.prototype, 'get'    ).returns({  promise: () => Promise.resolve({ Item: {} })  });
 
     const signed = jwt.sign(JSON.stringify({ sessid: 'mogemogefugafuga' }), "1");
-    const event  = { headers: { Authorization: "Bearer " + signed }, body: JSON.stringify({ command: "list" }) };
+    const event  = { headers: { Authorization: "Bearer " + signed }, body: JSON.stringify({ command: "add" }) };
 
     return expect(lambda.endpoint(event, {}, callback)).to.be.fulfilled.then(result => {
       expect(result).to.deep.equal( res(400, { error: "INVALID_PARAM" }) );
     });
   });
-*/
 
 
-  it('ok on list command', () => {
+  it('errors on command run() method', () => {
+    sinon.stub(proxySSM.prototype, 'getParameter').returns({  promise: () => Promise.resolve({ Parameter: { Value: "1" } })  });
+    sinon.stub(proxyDynamoDB.prototype, 'get'    ).returns({  promise: () => Promise.resolve({ Item: {} })  });
+
+    const signed = jwt.sign(JSON.stringify({ sessid: 'mogemogefugafuga' }), "1");
+    const event  = { headers: { Authorization: "Bearer " + signed }, body: JSON.stringify({ command: "remove" }) };
+
+    return expect(lambda.endpoint(event, {}, callback)).to.be.fulfilled.then(result => {
+      expect(result).to.deep.equal( res(400, { error: "INTERNAL_ERROR" }) );
+    });
+  });
+
+
+  it('ok on running command', () => {
     sinon.stub(proxySSM.prototype, 'getParameter' ).returns({  promise: () => Promise.resolve({ Parameter: { Value: "1" } })  });
     sinon.stub(proxyDynamoDB.prototype, 'get'     ).returns({  promise: () => Promise.resolve({ Item: { screen_name: 'piyo' } })  });
 
@@ -157,33 +168,6 @@ describe('/me test', () => {
       expect(result).to.deep.equal( res(200, [1,2,3,4,5]) );
     });
   });
-
-
-  it('ok on add command', () => {
-    sinon.stub(proxySSM.prototype, 'getParameter').returns({  promise: () => Promise.resolve({ Parameter: { Value: "1" } })  });
-    sinon.stub(proxyDynamoDB.prototype, 'get'    ).returns({  promise: () => Promise.resolve({ Item: { screen_name: 'piyo' } })  });
-
-    const signed = jwt.sign(JSON.stringify({ sessid: 'mogemogefugafuga' }), "1");
-    const event  = { headers: { Authorization: "Bearer " + signed }, body: JSON.stringify({ command: "add", circle_id:"aaaaa", exhibition_id: "mogemoge", member_id: "mem" }) };
-
-    return expect(lambda.endpoint(event, {}, callback)).to.be.fulfilled.then(result => {
-      expect(result).to.deep.equal( res(200, "hello") );
-    });
-  });
-
-
-  it('ok on remove command', () => {
-    sinon.stub(proxySSM.prototype, 'getParameter').returns({  promise: () => Promise.resolve({ Parameter: { Value: "1" } })  });
-    sinon.stub(proxyDynamoDB.prototype, 'get'    ).returns({  promise: () => Promise.resolve({ Item: { screen_name: 'piyo' } })  });
-
-    const signed = jwt.sign(JSON.stringify({ sessid: 'mogemogefugafuga' }), "1");
-    const event  = { headers: { Authorization: "Bearer " + signed }, body: JSON.stringify({ command: "remove", circle_id:"aaaaa", exhibition_id: "mogemoge", member_id: "mem" }) };
-
-    return expect(lambda.endpoint(event, {}, callback)).to.be.fulfilled.then(result => {
-      expect(result).to.deep.equal( res(200, "world") );
-    });
-  });
-
 
   afterEach(() => {
     //proxyDynamoDB.prototype.get.restore();
