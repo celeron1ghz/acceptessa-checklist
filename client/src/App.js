@@ -117,7 +117,7 @@ class AdminRoot extends React.Component {
     const param = new URLSearchParams(window.location.search);
     if ( param.get("id") ) {
       this.getCircleList()
-        .then(this.getShareChecklist)
+        .then(this.getShareChecklist.bind(this,param.get("id")))
         .then(this.getAuthData)
         .then(this.getUserData)
         .then(this.getMapData)
@@ -129,19 +129,20 @@ class AdminRoot extends React.Component {
     }
   }
 
-  getShareChecklist() {
+  getShareChecklist(member_id) {
     const { exhibition } = this.state;
 
-    return fetch(`${this.CHECKLIST_ENDPOINT}public/${exhibition.id}/?mid=celeron1ghz`, { cors: true })
+    return fetch(`${this.CHECKLIST_ENDPOINT}public/${exhibition.id}/?mid=${member_id}`, { cors: true })
       .then(data => data.json())
       .then(data => {
         if (!data.favorite) {
-          alert("チェックリストが公開されていません。");
+          console.log("PUBLIC_CHECKLIST_DATA_NG", member_id);
+          alert(`${member_id} さんのチェックリストは存在しないか、公開設定になっていません。`);
           return;
         }
 
-        const idx = {}
-        ;
+        console.log("PUBLIC_CHECKLIST_DATA_OK", member_id, data.favorite.length);
+        const idx = {};
         for (const f of data.favorite) {
           idx[f.circle_id] = f;
         }
