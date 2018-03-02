@@ -67,7 +67,6 @@ module.exports.endpoint = (event, context, callback) => {
     try {
       obj = new cmd(body,user);
     } catch(e) {
-      console.log(e);
       throw { code: 400, message: 'INVALID_PARAM' };
     }
 
@@ -82,24 +81,27 @@ module.exports.endpoint = (event, context, callback) => {
       });
 
     } catch(e) {
-      console.log(e);
       throw { code: 400, message: 'INTERNAL_ERROR' };
     }
 
   }).catch(err => {
     let code;
+    let mess;
 
     if (err instanceof Error) {
-      console.log("Error on endpoint:", err);
+      console.log("Unknown error on endpoint:", err);
       code = 500;
+      mess = "INTERNAL_ERROR";
     } else {
+      console.log("ValidationError:", err.message);
       code = err.code;
+      mess = err.message;
     }
 
     return callback(null, {
       statusCode: code,
       headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ error: err.message }),
+      body: JSON.stringify({ error: mess }),
     });
   });
 };

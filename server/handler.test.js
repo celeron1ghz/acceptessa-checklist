@@ -71,12 +71,12 @@ describe('/me test', () => {
 
   it('errors on dynamodb internal at fetching user info', () => {
     sinon.stub(proxySSM.prototype, 'getParameter').returns({  promise: () => Promise.resolve({ Parameter: { Value: "1" } })  });
-    sinon.stub(proxyDynamoDB.prototype, 'get'    ).returns({  promise: () => Promise.reject(new Error("not found"))  });
+    sinon.stub(proxyDynamoDB.prototype, 'get'    ).returns({  promise: () => Promise.reject(new Error("dynamodb error test"))  });
 
     const signed = jwt.sign(JSON.stringify({ sessid: 'mogemogefugafuga' }), "1");
 
     return expect(lambda.endpoint({ headers: { Authorization: "Bearer " + signed }}, {}, callback)).to.be.fulfilled.then(result => {
-      expect(result).to.deep.equal( res(500, { error: "not found" }) );
+      expect(result).to.deep.equal( res(500, { error: "INTERNAL_ERROR" }) );
     });
   });
 
