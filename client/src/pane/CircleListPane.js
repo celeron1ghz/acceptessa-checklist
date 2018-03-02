@@ -202,12 +202,12 @@ class CircleListPane extends React.Component {
     return <div>
       {
         publicChecklist &&
-          <Alert bsStyle="success">
+          <Alert bsStyle="success" className="clearfix">
             <a href={"https://twitte.com/" + publicChecklist.config.member_id} target="_blank">
-              @{publicChecklist.config.member_id} さん
+              <FontAwesome name="twitter" size=""/>{publicChecklist.config.member_id}
             </a>
-            のチェックリスト
-            <Badge>{Object.keys(publicChecklist.idx).length}</Badge>&nbsp;
+            &nbsp;さんのチェックリスト
+            &nbsp;<Badge>{Object.keys(publicChecklist.idx).length}</Badge>&nbsp;
             を「<Glyphicon glyph="ok"/>」で表示しています。
             <div className="pull-right">
               <Button bsStyle="success" bsSize="xs" onClick={this.removePublicChecklist.bind(this)}>

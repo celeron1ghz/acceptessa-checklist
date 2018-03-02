@@ -25,7 +25,7 @@ class PublicLinkModal extends React.Component {
       return <div/>;
     }
 
-    const publicUrl = window.location.origin + (window.location.path || '') + "?id=" + me.screen_name;
+    const publicUrl = window.location.origin + (window.location.path || '') + "?id=" + (me ? me.screen_name : "");
 
     return <Modal show={show} onHide={this.close}>
       <Modal.Header closeButton>

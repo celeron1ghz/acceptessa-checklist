@@ -2,7 +2,7 @@ import React from 'react';
 import FontAwesome from 'react-fontawesome';
 import _ from 'lodash';
 import { withRouter } from 'react-router-dom';
-import { Image, ButtonToolbar, DropdownButton, MenuItem, Alert, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
+import { Image, ButtonToolbar, DropdownButton, MenuItem, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
 
 import MapPane from './pane/MapPane';
 import CirclecutPane from './pane/CirclecutPane';
@@ -386,9 +386,11 @@ class AdminRoot extends React.Component {
       </Well>
       {
         !me &&
-          <Alert>
+          <div className="text-info">
             <Glyphicon glyph="exclamation-sign"/> ログインを行うことでチェックリストの作成を行うことができます。
-          </Alert>
+            <br/>
+            <br/>
+          </div>
       }
       <Tab.Container id="left-tabs-example" defaultActiveKey="list">
         <div>
