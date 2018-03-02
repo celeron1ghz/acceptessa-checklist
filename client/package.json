@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "babel-polyfill": "^6.26.0",
+    "bootstrap": "3.3.7",
+    "font-awesome": "^4.7.0",
     "react": "^16.2.0",
     "react-bootstrap": "^0.32.1",
     "react-bootstrap-toggle": "^2.2.6",

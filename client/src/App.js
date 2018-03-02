@@ -13,6 +13,12 @@ import PublicLinkModal from './modal/PublicLinkModal';
 import ExportChecklistModal from './modal/ExportChecklistModal';
 import CircleDescriptionModal from './modal/CircleDescriptionModal';
 
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import '../node_modules/bootstrap/dist/css/bootstrap-theme.min.css';
+import '../node_modules/react-table/react-table.css';
+import '../node_modules/react-bootstrap-toggle/dist/bootstrap2-toggle.css';
+import '../node_modules/font-awesome/css/font-awesome.min.css';
+
 class AdminRoot extends React.Component {
   constructor(props, context) {
     super(props, context);
