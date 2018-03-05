@@ -59,7 +59,6 @@ class AdminRoot extends React.Component {
     this.closeExportChecklistModal    = this.closeExportChecklistModal.bind(this);
     this.removePublicChecklistDisplay = this.removePublicChecklistDisplay.bind(this);
 
-    this.getAuthData        = this.getAuthData.bind(this);
     this.getCircleList      = this.getCircleList.bind(this);
     this.getMapData         = this.getMapData.bind(this);
     this.getUserData        = this.getUserData.bind(this);
@@ -86,6 +85,10 @@ class AdminRoot extends React.Component {
     })
     .then(data => {
       if (load_type) this.removeLoading(load_type);
+
+      if (data && data.error && data.error === "EXPIRED") {
+        return;
+      }
 
       if (data && data.error) {
         alert(`リクエストでエラーが発生しました。しばらく経ってもエラーが続く場合は管理者にお問い合わせください。(${args.command}: ${data.error})`);
@@ -125,12 +128,10 @@ class AdminRoot extends React.Component {
     if ( param.get("id") ) {
       this.getCircleList()
         .then(this.getShareChecklist.bind(this,param.get("id")))
-        .then(this.getAuthData)
         .then(this.getUserData)
         .then(this.getMapData)
     } else {
       this.getCircleList()
-        .then(this.getAuthData)
         .then(this.getUserData)
         .then(this.getMapData);
     }
@@ -215,38 +216,14 @@ class AdminRoot extends React.Component {
         favoriteIdx[f.circle_id] = f;
       }
 
-      this.setState({ favoriteIdx, config: data.config });
+      this.setState({ favoriteIdx, config: data.config, me: data.user });
     });
-  }
-
-  getAuthData() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      return Promise.reject("No access_token. Please login!!");
-    }
-
-    const headers = new Headers();
-    headers.append('Authorization', "Bearer " + token);
-
-    this.addLoading("auth");
-    return fetch(this.AUTH_ENDPOINT + "/me", { headers: headers, mode: "cors" })
-      .then(data => data.json())
-      .then(data => {
-        this.removeLoading("auth");
-        console.log("AUTH_DATA_OK:", data);
-        this.setState({ me: data });
-      })
-      .catch(err => {
-        this.removeLoading("auth");
-        console.log("AUTH_DATA_NG:", err);
-        this.setState({ me: null });
-      });
   }
 
   login() {
     const getJwtToken = event => {
       localStorage.setItem("token", event.data);
-      this.getAuthData().then(this.getUserData);
+      this.getUserData();
     };
 
     window.open(this.AUTH_ENDPOINT + "/auth");

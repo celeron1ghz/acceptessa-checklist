@@ -7,6 +7,7 @@ class ListFavoriteCommand {
     if (!user.screen_name)    { throw new Error("not screen_name") }
     this.exhibition_id = args.exhibition_id;
     this.member_id     = user.screen_name;
+    this.user          = user;
   }
 
   run() {
@@ -18,21 +19,21 @@ class ListFavoriteCommand {
       ExpressionAttributeNames: { '#comment': 'comment' },
       ExpressionAttributeValues: { ':member_id': this.member_id, ':exhibition_id': this.exhibition_id },
     }).promise()
-      .then(data => data.Items)
-      .then(data => {
-        return Promise.all([
-          Promise.resolve(data),
-          dynamodb.get({
-            TableName : 'tessa_config',
-            Key: { member_id: this.member_id, exhibition_id: this.exhibition_id },
-            ProjectionExpression: 'member_id, #public',
-            ExpressionAttributeNames: { '#public': 'public' },
-          }).promise().then(data => data.Item || {}),
-        ])
-        .then(data => {
-          return { favorite: data[0], config: data[1] };
-        });
-      });
+    .then(data => data.Items)
+    .then(data =>
+      Promise.all([
+        Promise.resolve(data),
+        dynamodb.get({
+          TableName : 'tessa_config',
+          Key: { member_id: this.member_id, exhibition_id: this.exhibition_id },
+          ProjectionExpression: 'member_id, #public',
+          ExpressionAttributeNames: { '#public': 'public' },
+        }).promise().then(data => data.Item || {}),
+      ])
+    )
+    .then(data => {
+      return { favorite: data[0], config: data[1], user: this.user };
+    });
   }
 }
 
