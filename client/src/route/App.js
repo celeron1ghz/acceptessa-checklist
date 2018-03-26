@@ -4,20 +4,20 @@ import _ from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { Image, ButtonToolbar, DropdownButton, MenuItem, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
 
-import MapPane from './pane/MapPane';
-import CirclecutPane from './pane/CirclecutPane';
-import CircleListPane from './pane/CircleListPane';
-import FavoriteListPane from './pane/FavoriteListPane';
+import MapPane from '../pane/MapPane';
+import CirclecutPane from '../pane/CirclecutPane';
+import CircleListPane from '../pane/CircleListPane';
+import FavoriteListPane from '../pane/FavoriteListPane';
 
-import PublicLinkModal from './modal/PublicLinkModal';
-import ExportChecklistModal from './modal/ExportChecklistModal';
-import CircleDescriptionModal from './modal/CircleDescriptionModal';
+import PublicLinkModal from '../modal/PublicLinkModal';
+import ExportChecklistModal from '../modal/ExportChecklistModal';
+import CircleDescriptionModal from '../modal/CircleDescriptionModal';
 
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import '../node_modules/bootstrap/dist/css/bootstrap-theme.min.css';
-import '../node_modules/react-table/react-table.css';
-import '../node_modules/react-bootstrap-toggle/dist/bootstrap2-toggle.css';
-import '../node_modules/font-awesome/css/font-awesome.min.css';
+import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import '../../node_modules/bootstrap/dist/css/bootstrap-theme.min.css';
+import '../../node_modules/react-table/react-table.css';
+import '../../node_modules/react-bootstrap-toggle/dist/bootstrap2-toggle.css';
+import '../../node_modules/font-awesome/css/font-awesome.min.css';
 
 class AdminRoot extends React.Component {
   constructor(props, context) {
