@@ -393,7 +393,10 @@ class AdminRoot extends React.Component {
           <Nav bsStyle="pills">
             <NavItem eventKey="list"><Glyphicon glyph="th-list"/> リスト表示</NavItem>
             <NavItem eventKey="circlecut"><Glyphicon glyph="picture"/> サークルカット</NavItem>
-            <NavItem eventKey="map"><Glyphicon glyph="map-marker"/> マップ</NavItem>
+            {
+              map &&
+                <NavItem eventKey="map"><Glyphicon glyph="map-marker"/> マップ</NavItem>
+            }
             <NavItem eventKey="favorite"><Glyphicon glyph="star"/> お気に入り済み <Badge>{Object.keys(favoriteIdx).length}</Badge></NavItem>
           </Nav>
           <br/>
@@ -426,13 +429,16 @@ class AdminRoot extends React.Component {
                 favorites={favoriteIdx}
                 onRowClick={this.openCircleDescModal}/>
             </Tab.Pane>
-            <Tab.Pane eventKey="map">
-              <MapPane
-                maps={map}
-                circles={circleList}
-                favorites={favoriteIdx}
-                onCircleClick={this.openCircleDescModal}/>
-            </Tab.Pane>
+            {
+              map &&
+                <Tab.Pane eventKey="map">
+                  <MapPane
+                    maps={map}
+                    circles={circleList}
+                    favorites={favoriteIdx}
+                    onCircleClick={this.openCircleDescModal}/>
+                </Tab.Pane>
+            }
           </Tab.Content>
         </div>
       </Tab.Container>
