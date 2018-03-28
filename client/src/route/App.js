@@ -165,7 +165,8 @@ class AdminRoot extends React.Component {
   getCircleList() {
     const exhibition = window.location.search.replace('?','');
     this.addLoading("circle");
-    return fetch('https://data.familiar-life.info/' + exhibition + '.json', { mode: 'cors' })
+    return fetch('https://data.familiar-life.info/' + exhibition + '.json')
+      .then(data => data.ok ? data : Promise.reject(data))
       .then(data => data.json())
       .then(data => {
         this.removeLoading("circle");
@@ -174,9 +175,9 @@ class AdminRoot extends React.Component {
         this.componentWillReceiveProps(this.props);
       })
       .catch(err => {
-        alert(`即売会のデータが存在しません。(eid=${exhibition})`);
-        console.log("ERR", err);
-        return Promise.reject(err);
+        //alert(`即売会のデータが存在しません。(eid=${exhibition})`);
+        this.setState({ circleList: null });
+        console.error("ERROR:", exhibition + '.json', err.status);
       });
   }
 
@@ -324,6 +325,20 @@ class AdminRoot extends React.Component {
       showCircleDescModal, showPublicLinkModal, showExportChecklistModal, publicChecklist,
       selectedCircle, me, config, exhibition,
     } = this.state;
+
+    if (circleList instanceof Array && circleList.length === 0) {
+      return <div className="container text-center">
+        <h3>サークルデータを読み込んでいます...</h3>
+      </div>;
+    }
+
+    if (!circleList) {
+      return <div className="container text-center">
+        <h2>404 Not Found</h2>
+        <br/>
+        <h4>サークルのデータが見つかりません</h4>
+      </div>;
+    }
 
     return <div className="container">
       <br/>
