@@ -35,16 +35,19 @@ class CirclecutPane extends React.Component {
         circleList.map(c => {
           const s = c.space_count === "1"
             ? { xs: 12, sm: 6,  md: 4, lg: 3, width: "255px" }
-            : { xs: 12, sm: 12, md: 8, lg: 6, Wwidth: "510px" };
+            : { xs: 12, sm: 12, md: 8, lg: 6, width: "510px" };
 
           return <Col key={c.circlecut || c.circle_id} xs={s.xs} sm={s.sm} md={s.md} lg={s.lg}>
-            <div style={{ minWidth: s.width, maxWidth: s.width }} onClick={this.imageClick.bind(this,c)}>
+            <div
+              style={{ minWidth: s.width, maxWidth: s.width }}
+              onClick={this.imageClick.bind(this,c)}>
               <Image
                 responsive
                 src={c.circlecut}
                 style={{
                   display: "inline-block",
-                  height: "100%",
+                  height: "200px",
+                  width: s.width,
                   border: c.favorite ? "4px solid aqua" : "4px solid black",
                 }}/>
               <div className="clearfix" style={{
