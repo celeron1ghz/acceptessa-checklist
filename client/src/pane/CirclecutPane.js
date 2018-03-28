@@ -37,7 +37,7 @@ class CirclecutPane extends React.Component {
             ? { xs: 12, sm: 6,  md: 4, lg: 3, width: "255px" }
             : { xs: 12, sm: 12, md: 8, lg: 6, Wwidth: "510px" };
 
-          return <Col key={c.circlecut} xs={s.xs} sm={s.sm} md={s.md} lg={s.lg}>
+          return <Col key={c.circlecut || c.circle_id} xs={s.xs} sm={s.sm} md={s.md} lg={s.lg}>
             <div style={{ minWidth: s.width, maxWidth: s.width }} onClick={this.imageClick.bind(this,c)}>
               <Image
                 responsive
