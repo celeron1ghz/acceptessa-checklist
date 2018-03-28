@@ -163,8 +163,9 @@ class AdminRoot extends React.Component {
   }
 
   getCircleList() {
+    const exhibition = window.location.search.replace('?','');
     this.addLoading("circle");
-    return fetch(window.location.origin + '/aqmd3rd.json', { credentials: 'include' })
+    return fetch('https://data.familiar-life.info/' + exhibition + '.json', { mode: 'cors' })
       .then(data => data.json())
       .then(data => {
         this.removeLoading("circle");
@@ -172,7 +173,11 @@ class AdminRoot extends React.Component {
         this.setState({ circleList: data.circles, sort_order: data.sort_order, exhibition: data.exhibition });
         this.componentWillReceiveProps(this.props);
       })
-      .catch(err => console.log)
+      .catch(err => {
+        alert(`即売会のデータが存在しません。(eid=${exhibition})`);
+        console.log("ERR", err);
+        return Promise.reject(err);
+      });
   }
 
   getMapData() {

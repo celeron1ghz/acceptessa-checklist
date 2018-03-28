@@ -8,8 +8,7 @@ class Router extends React.Component {
     return <HashRouter>
       <div>
         <Switch>
-          <Route exact path="/" component={Error}/>
-          <Route exact path="/:exhibition" component={App}/>
+          <Route exact path="/" component={App}/>
           <Route component={Error}/>
         </Switch>
       </div>
