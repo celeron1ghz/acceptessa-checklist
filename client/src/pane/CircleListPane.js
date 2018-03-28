@@ -28,7 +28,7 @@ class CircleListPane extends React.Component {
   }
 
   render() {
-    const { favorites, showChecklistComponent, loadings, publicChecklist } = this.props;
+    const { favorites, showChecklistComponent, loadings, publicChecklist, enableChecklist } = this.props;
     const { table } = this.state;
     const circleList = _.cloneDeep(this.props.circles);
 
@@ -64,6 +64,7 @@ class CircleListPane extends React.Component {
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "space_sym",
             width: 100,
+            show: enableChecklist,
             resizable: false,
             className: "text-center",
             Filter: ({ filter, onChange }) =>
@@ -78,18 +79,19 @@ class CircleListPane extends React.Component {
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "space_num",
             width: 55,
+            show: enableChecklist,
             resizable: false,
             className: "text-center",
             Filter: makePlaceholderFilter("(数)"),
           },{
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "circle_name",
-            width: 250,
+            width: enableChecklist ? 280 : 650,
             Filter: makePlaceholderFilter("(サークル名を検索)"),
           },{
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "penname",
-            width: 150,
+            width: enableChecklist ? 150 : 500,
             Filter: makePlaceholderFilter("(作者を検索)"),
           }
         ]
@@ -102,6 +104,7 @@ class CircleListPane extends React.Component {
             accessor: "circle_link",
             className: "text-center",
             width: 75,
+            show: enableChecklist,
             resizable: false,
             Cell: row => row.value
               ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><Glyphicon glyph="link"/></a>
@@ -130,6 +133,7 @@ class CircleListPane extends React.Component {
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "circle_comment",
             width: 490,
+            show: enableChecklist,
             Filter: makePlaceholderFilter("(お品書きを検索)"),
             Cell: row => row.value
               ? row.value
@@ -274,6 +278,7 @@ CircleListPane.propTypes = {
   onRemoveFavorite: PropTypes.func.isRequired,
   onRemovePublicChecklist: PropTypes.func.isRequired,
   showChecklistComponent: PropTypes.bool,
+  enableChecklist: PropTypes.bool,
 };
 
 export default CircleListPane;

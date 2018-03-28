@@ -124,13 +124,21 @@ class AdminRoot extends React.Component {
   }
 
   componentDidMount() {
+    const { enableChecklist } = this.state;
     const param = new URLSearchParams(window.location.search);
+    const chain = this.getCircleList().then(data => {
+      console.log(this.state)
+      return data;
+    });
+
+    console.log(enableChecklist)
+
     if ( param.get("id") ) {
-      this.getCircleList()
+      chain
         .then(this.getShareChecklist.bind(this,param.get("id")))
         .then(this.getUserData)
     } else {
-      this.getCircleList()
+      chain
         .then(this.getUserData)
     }
   }
@@ -342,7 +350,6 @@ class AdminRoot extends React.Component {
       </div>;
     }
 
-console.log(enableChecklist)
     return <div className="container">
       <br/>
       <Well bsSize="small" className="clearfix">
@@ -421,7 +428,8 @@ console.log(enableChecklist)
                 onAddFavorite={this.addFavorite}
                 onRemoveFavorite={this.removeFavorite}
                 onRemovePublicChecklist={this.removePublicChecklistDisplay}
-                showChecklistComponent={!!me}/>
+                showChecklistComponent={!!me}
+                enableChecklist={enableChecklist}/>
             </Tab.Pane>
             <Tab.Pane eventKey="circlecut">
               <CirclecutPane
