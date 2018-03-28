@@ -60,7 +60,7 @@ class AdminRoot extends React.Component {
     this.removePublicChecklistDisplay = this.removePublicChecklistDisplay.bind(this);
 
     this.getCircleList      = this.getCircleList.bind(this);
-    this.getMapData         = this.getMapData.bind(this);
+    //this.getMapData         = this.getMapData.bind(this);
     this.getUserData        = this.getUserData.bind(this);
     this.getShareChecklist  = this.getShareChecklist.bind(this);
   }
@@ -129,11 +129,9 @@ class AdminRoot extends React.Component {
       this.getCircleList()
         .then(this.getShareChecklist.bind(this,param.get("id")))
         .then(this.getUserData)
-        .then(this.getMapData)
     } else {
       this.getCircleList()
         .then(this.getUserData)
-        .then(this.getMapData);
     }
   }
 
@@ -171,7 +169,12 @@ class AdminRoot extends React.Component {
       .then(data => {
         this.removeLoading("circle");
         console.log("CIRCLE_DATA_OK:", data.circles.length);
-        this.setState({ circleList: data.circles, sort_order: data.sort_order, exhibition: data.exhibition });
+        this.setState({
+          circleList: data.circles,
+          sort_order: data.sort_order,
+          exhibition: data.exhibition,
+          map: data.map,
+        });
         this.componentWillReceiveProps(this.props);
       })
       .catch(err => {
@@ -179,13 +182,8 @@ class AdminRoot extends React.Component {
         this.setState({ circleList: null });
         console.error("ERROR:", exhibition + '.json', err.status);
       });
-  }
 
-  getMapData() {
-    this.addLoading("map");
-    return fetch(window.location.origin + '/map.json', { credentials: 'include' })
-      .then(data => data.json())
-      .then(data => {
+/*
         this.removeLoading("map");
         console.log("MAP_DATA_OK");
         const maps = [];
@@ -208,6 +206,7 @@ class AdminRoot extends React.Component {
         this.setState({ map: maps });
       })
       .catch(err => console.log)
+*/
   }
 
   getUserData() {
