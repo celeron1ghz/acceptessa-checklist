@@ -1,6 +1,5 @@
 import React from 'react';
 import FontAwesome from 'react-fontawesome';
-import _ from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { Image, ButtonToolbar, DropdownButton, MenuItem, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
 
@@ -37,6 +36,7 @@ class AdminRoot extends React.Component {
         selectedCircle: null,
         me: null,
         config: null,
+        enableChecklist: false,
     };
 
     this.AUTH_ENDPOINT      = "https://auth.familiar-life.info";
@@ -169,11 +169,14 @@ class AdminRoot extends React.Component {
       .then(data => {
         this.removeLoading("circle");
         console.log("CIRCLE_DATA_OK:", data.circles.length);
+        const enableChecklist = data.circles.filter(c => c.space_sym && c.space_num).length !== 0;
+
         this.setState({
           circleList: data.circles,
           sort_order: data.sort_order,
           exhibition: data.exhibition,
           map: data.map,
+          enableChecklist,
         });
         this.componentWillReceiveProps(this.props);
       })
@@ -322,7 +325,7 @@ class AdminRoot extends React.Component {
     const {
       circleList, favoriteIdx, loading, map,
       showCircleDescModal, showPublicLinkModal, showExportChecklistModal, publicChecklist,
-      selectedCircle, me, config, exhibition,
+      selectedCircle, me, config, exhibition, enableChecklist,
     } = this.state;
 
     if (circleList instanceof Array && circleList.length === 0) {
@@ -339,6 +342,7 @@ class AdminRoot extends React.Component {
       </div>;
     }
 
+console.log(enableChecklist)
     return <div className="container">
       <br/>
       <Well bsSize="small" className="clearfix">
@@ -350,38 +354,41 @@ class AdminRoot extends React.Component {
               : ' '
           }
         </span>
-        <div className="pull-right">
-          {
-            loading.auth
-              ? <Button bsStyle="warning" bsSize="xs">
-                  <FontAwesome name="spinner" spin pulse={true} /> 読み込み中...
-                </Button>
-              : me
-                ? <ButtonToolbar>
-                    <DropdownButton
-                      bsStyle="success"
-                      bsSize="xsmall"
-                      id="dropdown-size-extra-small"
-                      title={<span><FontAwesome name="twitter"/> {me.screen_name}</span>}>
-                        <MenuItem eventKey="1">
-                          {me.display_name + ' '}
-                          <Image circle src={me.profile_image_url} style={{width: "32px", height: "32px", border: "1px solid gray" }}/>
-                        </MenuItem>
-                        <MenuItem eventKey="2" onClick={this.logout}>ログアウト <FontAwesome name="sign-out"/></MenuItem>
-                        <MenuItem divider />
-                        <MenuItem eventKey="3" onClick={this.openExportChecklistModal}><Glyphicon glyph="export"/> エクスポート</MenuItem>
-                        <MenuItem divider />
-                        <MenuItem eventKey="4" onClick={this.openPublicLinkModal}><Glyphicon glyph="link"/> 公開設定</MenuItem>
-                    </DropdownButton>
-                  </ButtonToolbar>
-                : <Button bsStyle="primary" bsSize="xs" onClick={this.login}>
-                    <FontAwesome name="twitter"/> Login via Twitter
-                  </Button>
-          }
-        </div>
+        {
+          enableChecklist &&
+            <div className="pull-right">
+              {
+                loading.auth
+                  ? <Button bsStyle="warning" bsSize="xs">
+                      <FontAwesome name="spinner" spin pulse={true} /> 読み込み中...
+                    </Button>
+                  : me
+                    ? <ButtonToolbar>
+                        <DropdownButton
+                          bsStyle="success"
+                          bsSize="xsmall"
+                          id="dropdown-size-extra-small"
+                          title={<span><FontAwesome name="twitter"/> {me.screen_name}</span>}>
+                            <MenuItem eventKey="1">
+                              {me.display_name + ' '}
+                              <Image circle src={me.profile_image_url} style={{width: "32px", height: "32px", border: "1px solid gray" }}/>
+                            </MenuItem>
+                            <MenuItem eventKey="2" onClick={this.logout}>ログアウト <FontAwesome name="sign-out"/></MenuItem>
+                            <MenuItem divider />
+                            <MenuItem eventKey="3" onClick={this.openExportChecklistModal}><Glyphicon glyph="export"/> エクスポート</MenuItem>
+                            <MenuItem divider />
+                            <MenuItem eventKey="4" onClick={this.openPublicLinkModal}><Glyphicon glyph="link"/> 公開設定</MenuItem>
+                        </DropdownButton>
+                      </ButtonToolbar>
+                    : <Button bsStyle="primary" bsSize="xs" onClick={this.login}>
+                        <FontAwesome name="twitter"/> Login via Twitter
+                      </Button>
+              }
+            </div>
+        }
       </Well>
       {
-        !me &&
+        (enableChecklist && !me) &&
           <div className="text-info">
             <Glyphicon glyph="exclamation-sign"/> ログインを行うことでチェックリストの作成を行うことができます。
             <br/>
@@ -397,7 +404,10 @@ class AdminRoot extends React.Component {
               map &&
                 <NavItem eventKey="map"><Glyphicon glyph="map-marker"/> マップ</NavItem>
             }
-            <NavItem eventKey="favorite"><Glyphicon glyph="star"/> お気に入り済み <Badge>{Object.keys(favoriteIdx).length}</Badge></NavItem>
+            {
+              enableChecklist &&
+                <NavItem eventKey="favorite"><Glyphicon glyph="star"/> お気に入り済み <Badge>{Object.keys(favoriteIdx).length}</Badge></NavItem>
+            }
           </Nav>
           <br/>
           <Tab.Content>
@@ -423,12 +433,15 @@ class AdminRoot extends React.Component {
                 onRemoveFavorite={this.removeFavorite}
                 showChecklistComponent={!!me}/>
             </Tab.Pane>
-            <Tab.Pane eventKey="favorite">
-              <FavoriteListPane
-                circles={circleList}
-                favorites={favoriteIdx}
-                onRowClick={this.openCircleDescModal}/>
-            </Tab.Pane>
+            {
+              enableChecklist &&
+                <Tab.Pane eventKey="favorite">
+                  <FavoriteListPane
+                    circles={circleList}
+                    favorites={favoriteIdx}
+                    onRowClick={this.openCircleDescModal}/>
+                </Tab.Pane>
+            }
             {
               map &&
                 <Tab.Pane eventKey="map">
