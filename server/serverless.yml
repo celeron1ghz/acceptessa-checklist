@@ -45,6 +45,9 @@ functions:
           path: /public/{eid}/
           method: get
           cors: true
+  auth:
+    handler: handler.auth
+    events: [{ http: { path: "/auth/{action}", method: get, cors: true } }]
 
 resources:
   Description: Acceptessa checklist api
