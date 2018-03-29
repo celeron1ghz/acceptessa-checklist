@@ -73,7 +73,7 @@ class TwitterOAuth {
   }
 }
 
-const SESSION_TABLE           = 'gomi_session2';
+const SESSION_TABLE           = 'tessa_session';
 const SSM_KEY_JWT_SECRET      = '/gomitter/jwt_token';
 const SSM_KEY_CONSUMER_KEY    = '/gomitter/twitter_consumer_key';
 const SSM_KEY_CONSUMER_SECRET = '/gomitter/twitter_consumer_secret';

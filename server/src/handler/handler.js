@@ -25,7 +25,7 @@ module.exports.endpoint = (event, context, callback) => {
       throw { code: 400, message: 'INVALID_HEADER' };
     }
 
-    const secret = yield ssm.getParameter({ Name: '/twitter_oauth/jwt_token', WithDecryption: true }).promise().then(d => d.Parameter.Value);
+    const secret = yield ssm.getParameter({ Name: '/gomitter/jwt_token', WithDecryption: true }).promise().then(d => d.Parameter.Value);
     let sess;
     try {
       sess = jwt.verify(token, secret);
@@ -37,7 +37,7 @@ module.exports.endpoint = (event, context, callback) => {
     let user;
     try {
       user = yield dynamodb.get({
-        TableName: "twitter_oauth",
+        TableName: "tessa_session",
         Key: { "uid": sess.sessid },
         AttributesToGet: ['twitter_id', 'screen_name', 'display_name', 'profile_image_url'],
       }).promise().then(data => data.Item);

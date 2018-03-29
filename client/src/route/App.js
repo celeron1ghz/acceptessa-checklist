@@ -39,7 +39,7 @@ class AdminRoot extends React.Component {
         enableChecklist: false,
     };
 
-    this.AUTH_ENDPOINT      = "https://auth.familiar-life.info";
+    this.AUTH_ENDPOINT      = "https://9l0aadde83.execute-api.ap-northeast-1.amazonaws.com/dev";
     this.CHECKLIST_ENDPOINT = "https://9l0aadde83.execute-api.ap-northeast-1.amazonaws.com/dev/";
 
     this.openCircleDescModal      = this.openCircleDescModal.bind(this);
@@ -240,7 +240,7 @@ class AdminRoot extends React.Component {
       this.getUserData();
     };
 
-    window.open(this.AUTH_ENDPOINT + "/auth");
+    window.open(this.AUTH_ENDPOINT + "/auth/start");
     window.addEventListener('message', getJwtToken, false);
   }
 
