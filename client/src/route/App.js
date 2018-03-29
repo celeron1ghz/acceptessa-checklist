@@ -21,6 +21,7 @@ import '../../node_modules/font-awesome/css/font-awesome.min.css';
 class AdminRoot extends React.Component {
   constructor(props, context) {
     super(props, context);
+
     this.state = {
         circleList:  [],
         circleIdx:   {},
@@ -39,8 +40,7 @@ class AdminRoot extends React.Component {
         enableChecklist: false,
     };
 
-    this.AUTH_ENDPOINT      = "https://9l0aadde83.execute-api.ap-northeast-1.amazonaws.com/dev";
-    this.CHECKLIST_ENDPOINT = "https://9l0aadde83.execute-api.ap-northeast-1.amazonaws.com/dev/";
+    this.ENDPOINT = "https://api.familiar-life.info";
 
     this.openCircleDescModal      = this.openCircleDescModal.bind(this);
     this.closeCircleDescModal     = this.closeCircleDescModal.bind(this);
@@ -72,7 +72,7 @@ class AdminRoot extends React.Component {
 
     if (load_type) this.addLoading(load_type);
 
-    return fetch(this.CHECKLIST_ENDPOINT, {
+    return fetch(this.ENDPOINT, {
       headers: new Headers({ 'Authorization': "Bearer " + token }),
       method: 'POST',
       body: JSON.stringify(args),
@@ -144,7 +144,7 @@ class AdminRoot extends React.Component {
   getShareChecklist(member_id) {
     const { exhibition } = this.state;
 
-    return fetch(`${this.CHECKLIST_ENDPOINT}public/${exhibition.id}/?mid=${member_id}`, { cors: true })
+    return fetch(`${this.ENDPOINT}/public/${exhibition.id}/?mid=${member_id}`, { cors: true })
       .then(data => data.json())
       .then(data => {
         if (!data.favorite) {
@@ -240,7 +240,7 @@ class AdminRoot extends React.Component {
       this.getUserData();
     };
 
-    window.open(this.AUTH_ENDPOINT + "/auth/start");
+    window.open(this.ENDPOINT + "/auth/start");
     window.addEventListener('message', getJwtToken, false);
   }
 

@@ -52,6 +52,7 @@ functions:
 resources:
   Description: Acceptessa checklist api
   Resources:
+    ## tables
     FavoriteTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -91,7 +92,6 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
 
-    ## tables
     SessionTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -107,6 +107,7 @@ resources:
           AttributeName: ttl
           Enabled: true
 
+    ## alarms
     WCUAlarm:
       Type: AWS::CloudWatch::Alarm
       Properties:
@@ -146,3 +147,27 @@ resources:
           - Fn::Join: [ ":", ["arn:aws:sns", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "aws-slack-notifier"]]
         OKActions:
           - Fn::Join: [ ":", ["arn:aws:sns", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "aws-slack-notifier"]]
+
+    ## domain setting
+    Domain:
+      Type: AWS::ApiGateway::DomainName
+      Properties:
+        CertificateArn: "${ssm:/tessa_checklist/acm_cert_arn~true}"
+        DomainName: "api.familiar-life.info"
+
+    Mapping:
+      Type: AWS::ApiGateway::BasePathMapping
+      Properties:
+        DomainName: { Ref: Domain }
+        RestApiId:  { Ref: ApiGatewayRestApi }
+        Stage: dev
+
+    RecordSetOfAPI:
+      Type: AWS::Route53::RecordSet
+      Properties:
+        Name: "api.familiar-life.info"
+        Type: A
+        HostedZoneName: "familiar-life.info."
+        AliasTarget:
+          DNSName: { Fn::GetAtt: [Domain, DistributionDomainName] }
+          HostedZoneId: Z2FDTNDATAQYW2
