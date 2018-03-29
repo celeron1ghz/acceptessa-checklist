@@ -86,7 +86,7 @@ class AdminRoot extends React.Component {
     .then(data => {
       if (load_type) this.removeLoading(load_type);
 
-      if (data && data.error && data.error === "EXPIRED") {
+      if (data && data.error && (data.error === "EXPIRED" || data.error === "INVALID_TOKEN")) {
         return;
       }
 
@@ -124,23 +124,21 @@ class AdminRoot extends React.Component {
   }
 
   componentDidMount() {
-    const { enableChecklist } = this.state;
-    const param = new URLSearchParams(window.location.search);
-    const chain = this.getCircleList().then(data => {
-      console.log(this.state)
-      return data;
+    this.getCircleList().then(data => {
+      if (!this.state.enableChecklist) {
+        console.log("list mode");
+        return;
+      }
+
+      const param = new URLSearchParams(window.location.search);
+
+      if ( param.get("id") ) {
+        return this.getShareChecklist.bind(this,param.get("id"))
+          .then(this.getUserData())
+      } else {
+        return this.getUserData();
+      }
     });
-
-    console.log(enableChecklist)
-
-    if ( param.get("id") ) {
-      chain
-        .then(this.getShareChecklist.bind(this,param.get("id")))
-        .then(this.getUserData)
-    } else {
-      chain
-        .then(this.getUserData)
-    }
   }
 
   getShareChecklist(member_id) {
