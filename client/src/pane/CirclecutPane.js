@@ -43,7 +43,7 @@ class CirclecutPane extends React.Component {
               onClick={this.imageClick.bind(this,c)}>
               <Image
                 responsive
-                src={c.circlecut}
+                src={c.circlecut ? c.circlecut.replace('http:', 'https:') : null}
                 style={{
                   display: "inline-block",
                   height: "200px",
