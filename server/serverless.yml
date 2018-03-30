@@ -33,6 +33,7 @@ provider:
 functions:
   endpoint:
     handler: handler.endpoint
+    description: tessa checklist application
     events:
       - http:
           path: /
@@ -40,6 +41,7 @@ functions:
           cors: true
   public:
     handler: handler.public
+    description: tessa checklist public endpoint
     events:
       - http:
           path: /public/{eid}/
@@ -47,6 +49,7 @@ functions:
           cors: true
   auth:
     handler: handler.auth
+    description: tessa checklist authentication
     events: [{ http: { path: "/auth/{action}", method: get, cors: true } }]
 
 resources:
@@ -224,7 +227,7 @@ resources:
       Properties:
         Name: "checklist.familiar-life.info"
         Type: A
-        HostedZoneName: "checklist.familiar-life.info."
+        HostedZoneName: "familiar-life.info."
         AliasTarget:
           DNSName: { Fn::GetAtt: [Cloudfront, DomainName] }
           HostedZoneId: Z2FDTNDATAQYW2
