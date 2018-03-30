@@ -133,8 +133,9 @@ class AdminRoot extends React.Component {
       const param = new window.URLSearchParams(window.location.search);
 
       if ( param.get("id") ) {
-        return this.getShareChecklist.bind(this,param.get("id"))
-          .then(this.getUserData())
+        return Promise.resolve(param.get("id"))
+          .then(this.getShareChecklist)
+          .then(this.getUserData);
       } else {
         return this.getUserData();
       }
@@ -142,6 +143,7 @@ class AdminRoot extends React.Component {
   }
 
   getShareChecklist(member_id) {
+console.log(member_id)
     const { exhibition } = this.state;
 
     return window.fetch(`${this.ENDPOINT}/public/${exhibition.id}/?mid=${member_id}`, { cors: true })

@@ -213,7 +213,7 @@ class CircleListPane extends React.Component {
       {
         publicChecklist &&
           <Alert bsStyle="success" className="clearfix">
-            <a href={"https://twitte.com/" + publicChecklist.config.member_id} target="_blank">
+            <a href={"https://twitter.com/" + publicChecklist.config.member_id} target="_blank">
               <FontAwesome name="twitter"/>{publicChecklist.config.member_id}
             </a>
             &nbsp;さんのチェックリスト
