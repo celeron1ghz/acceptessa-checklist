@@ -67,6 +67,7 @@ class CircleListPane extends React.Component {
             show: enableChecklist,
             resizable: false,
             className: "text-center",
+            Header: "記号",
             Filter: ({ filter, onChange }) =>
               <select
                 onChange={event => onChange(event.target.value)}
@@ -82,17 +83,20 @@ class CircleListPane extends React.Component {
             show: enableChecklist,
             resizable: false,
             className: "text-center",
+            Header: "番号",
             Filter: makePlaceholderFilter("(数)"),
           },{
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "circle_name",
             width: enableChecklist ? 280 : 650,
-            Filter: makePlaceholderFilter("(サークル名を検索)"),
+            Header: "サークル名",
+            Filter: makePlaceholderFilter("(検索)"),
           },{
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "penname",
             width: enableChecklist ? 150 : 500,
-            Filter: makePlaceholderFilter("(作者を検索)"),
+            Header: "作者",
+            Filter: makePlaceholderFilter("(検索)"),
           }
         ]
       },{
@@ -106,6 +110,7 @@ class CircleListPane extends React.Component {
             width: 75,
             show: enableChecklist,
             resizable: false,
+            Header: "リンク",
             Cell: row => row.value
               ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><Glyphicon glyph="link"/></a>
               : "",
@@ -134,7 +139,8 @@ class CircleListPane extends React.Component {
             accessor: "circle_comment",
             width: 490,
             show: enableChecklist,
-            Filter: makePlaceholderFilter("(お品書きを検索)"),
+            Header: "お品書き",
+            Filter: makePlaceholderFilter("(検索)"),
             Cell: row => row.value
               ? row.value
               : <span style={{ color: "#ccc" }}>(未記入)</span>

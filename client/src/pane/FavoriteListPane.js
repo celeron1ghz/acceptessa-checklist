@@ -44,6 +44,7 @@ class FavoriteListPane extends React.Component {
             width: 100,
             resizable: false,
             className: "text-center",
+            Header: "記号",
             Filter: ({ filter, onChange }) =>
               <select
                 onChange={event => onChange(event.target.value)}
@@ -58,12 +59,14 @@ class FavoriteListPane extends React.Component {
             width: 55,
             resizable: false,
             className: "text-center",
+            Header: "番号",
             Filter: makePlaceholderFilter("(数)"),
           },{
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "circle_name",
             width: 250,
-            Filter: makePlaceholderFilter("(サークル名を検索)"),
+            Header: "サークル名",
+            Filter: makePlaceholderFilter("(検索)"),
           }
         ]
       },{
@@ -76,6 +79,7 @@ class FavoriteListPane extends React.Component {
             className: "text-center",
             width: 75,
             resizable: false,
+            Header: "リンク",
             Cell: row => row.value
               ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><Glyphicon glyph="link"/></a>
               : "",
@@ -103,7 +107,8 @@ class FavoriteListPane extends React.Component {
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "circle_comment",
             width: 490,
-            Filter: makePlaceholderFilter("(お品書きを検索)"),
+            Header: "お品書き",
+            Filter: makePlaceholderFilter("(検索)"),
             Cell: row => row.value
               ? row.value
               : <span style={{ color: "#ccc" }}>(未記入)</span>
@@ -118,6 +123,7 @@ class FavoriteListPane extends React.Component {
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "favorite.comment",
             width: 300,
+            Filter: makePlaceholderFilter("(検索)"),
             Cell: row => row.value
               ? row.value
               : <span style={{ color: "#ccc" }}>(未記入)</span>
