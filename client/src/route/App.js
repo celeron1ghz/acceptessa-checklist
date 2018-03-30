@@ -167,7 +167,8 @@ class AdminRoot extends React.Component {
   }
 
   getCircleList() {
-    const exhibition = window.location.search.replace('?','');
+    const param = new window.URLSearchParams(window.location.search);
+    const exhibition = param.get('e');
     this.addLoading("circle");
     return window.fetch('https://data.familiar-life.info/' + exhibition + '.json')
       .then(data => data.ok ? data : Promise.reject(data))
@@ -250,13 +251,15 @@ class AdminRoot extends React.Component {
   }
 
   openCircleDescModal(selectedCircle) {
-    const param = new window.URLSearchParams();
+    const param = new window.URLSearchParams(window.location.search);
     param.append("circle_id", selectedCircle.circle_id);
     this.props.history.push("?" + param.toString());
   }
 
   closeCircleDescModal() {
-    this.props.history.push("?");
+    const param = new window.URLSearchParams(window.location.search);
+    param.delete("circle_id");
+    this.props.history.push("?" + param.toString());
   }
 
   openPublicLinkModal() {
