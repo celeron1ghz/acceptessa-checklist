@@ -34,14 +34,17 @@ functions:
   endpoint:
     handler: handler.endpoint
     description: tessa checklist application
+    tags: { Application: AcceptessaChecklist }
     events: [{ http: { path: "/", method: post, cors: true } }]
   public:
     handler: handler.public
     description: tessa checklist public endpoint
+    tags: { Application: AcceptessaChecklist }
     events: [{ http: { path: "/public/{eid}/", method: get, cors: true } }]
   auth:
     handler: handler.auth
     description: tessa checklist authentication
+    tags: { Application: AcceptessaChecklist }
     events: [{ http: { path: "/auth/{action}", method: get, cors: true } }]
 
 resources:
@@ -72,6 +75,7 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 1
               WriteCapacityUnits: 1
+        Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     ConfigTable:
       Type: AWS::DynamoDB::Table
@@ -86,6 +90,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     SessionTable:
       Type: AWS::DynamoDB::Table
@@ -101,6 +106,7 @@ resources:
         TimeToLiveSpecification:
           AttributeName: ttl
           Enabled: true
+        Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     ## alarms
     WCUAlarm:
@@ -172,6 +178,7 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
        BucketName: "acceptessa-checklist-assets"
+       Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     BucketPolicy:
       Type: AWS::S3::BucketPolicy
@@ -213,6 +220,7 @@ resources:
               DomainName: "acceptessa-checklist-assets.s3.amazonaws.com"
               S3OriginConfig:
                 OriginAccessIdentity: "origin-access-identity/cloudfront/${ssm:/tessa_checklist/oai_id~true}"
+        Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     RecordSetOfAssets:
       Type: AWS::Route53::RecordSet
