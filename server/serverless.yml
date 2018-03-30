@@ -148,7 +148,7 @@ resources:
         OKActions:
           - Fn::Join: [ ":", ["arn:aws:sns", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "aws-slack-notifier"]]
 
-    ## domain setting
+    ## api domain setting
     Domain:
       Type: AWS::ApiGateway::DomainName
       Properties:
@@ -170,4 +170,61 @@ resources:
         HostedZoneName: "familiar-life.info."
         AliasTarget:
           DNSName: { Fn::GetAtt: [Domain, DistributionDomainName] }
+          HostedZoneId: Z2FDTNDATAQYW2
+
+    ## static file domain setting
+    Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+       BucketName: "acceptessa-checklist-assets"
+
+    BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: { Ref: Bucket }
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: s3:GetObject
+              Principal:
+                AWS: "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${ssm:/tessa_checklist/oai_id~true}"
+              Resource:
+                Fn::Join: [ "/", [ { Fn::GetAtt: [ Bucket, Arn ] }, "*" ] ]
+
+    Cloudfront:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Comment: acceptessa checklist
+          Aliases: ["checklist.familiar-life.info"]
+          HttpVersion: http2
+          ViewerCertificate:
+            AcmCertificateArn: "${ssm:/tessa_checklist/acm_cert_arn~true}"
+            SslSupportMethod: sni-only
+          DefaultRootObject: index.html
+          DefaultCacheBehavior:
+            TargetOriginId: AcceptessaChecklistWebAssets
+            ViewerProtocolPolicy: redirect-to-https
+            ForwardedValues:
+              QueryString: true
+              Headers: ["Origin"]
+            MinTTL: 8640000
+            MaxTTL: 8640000
+            DefaultTTL: 8640000
+          Enabled: true
+          Origins:
+            - Id: AcceptessaChecklistWebAssets
+              DomainName: "acceptessa-checklist-assets.s3.amazonaws.com"
+              S3OriginConfig:
+                OriginAccessIdentity: "origin-access-identity/cloudfront/${ssm:/tessa_checklist/oai_id~true}"
+
+    RecordSetOfAssets:
+      Type: AWS::Route53::RecordSet
+      Properties:
+        Name: "checklist.familiar-life.info"
+        Type: A
+        HostedZoneName: "checklist.familiar-life.info."
+        AliasTarget:
+          DNSName: { Fn::GetAtt: [Cloudfront, DomainName] }
           HostedZoneId: Z2FDTNDATAQYW2
