@@ -1,4 +1,4 @@
-service: acceptessa-checklist-api
+service: acceptessa-checklist
 provider:
   name: aws
   runtime: nodejs6.10
@@ -34,19 +34,11 @@ functions:
   endpoint:
     handler: handler.endpoint
     description: tessa checklist application
-    events:
-      - http:
-          path: /
-          method: post
-          cors: true
+    events: [{ http: { path: "/", method: post, cors: true } }]
   public:
     handler: handler.public
     description: tessa checklist public endpoint
-    events:
-      - http:
-          path: /public/{eid}/
-          method: get
-          cors: true
+    events: [{ http: { path: "/public/{eid}/", method: get, cors: true } }]
   auth:
     handler: handler.auth
     description: tessa checklist authentication
