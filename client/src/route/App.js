@@ -66,14 +66,14 @@ class AdminRoot extends React.Component {
   }
 
   callChecklistApi(args, load_type) {
-    const token = localStorage.getItem("token");
+    const token = window.localStorage.getItem("token");
 
     if (!token) return Promise.reject("No access_token. Please login!!");
 
     if (load_type) this.addLoading(load_type);
 
-    return fetch(this.ENDPOINT, {
-      headers: new Headers({ 'Authorization': "Bearer " + token }),
+    return window.fetch(this.ENDPOINT, {
+      headers: new window.Headers({ 'Authorization': "Bearer " + token }),
       method: 'POST',
       body: JSON.stringify(args),
       cors: true,
@@ -112,7 +112,7 @@ class AdminRoot extends React.Component {
   }
 
   componentWillReceiveProps(props){
-    const param = new URLSearchParams(props.location.search);
+    const param = new window.URLSearchParams(props.location.search);
     const circle_id = param.get("circle_id");
     const circle = this.state.circleList.filter(c => c.circle_id === circle_id)[0];
 
@@ -130,7 +130,7 @@ class AdminRoot extends React.Component {
         return;
       }
 
-      const param = new URLSearchParams(window.location.search);
+      const param = new window.URLSearchParams(window.location.search);
 
       if ( param.get("id") ) {
         return this.getShareChecklist.bind(this,param.get("id"))
@@ -144,7 +144,7 @@ class AdminRoot extends React.Component {
   getShareChecklist(member_id) {
     const { exhibition } = this.state;
 
-    return fetch(`${this.ENDPOINT}/public/${exhibition.id}/?mid=${member_id}`, { cors: true })
+    return window.fetch(`${this.ENDPOINT}/public/${exhibition.id}/?mid=${member_id}`, { cors: true })
       .then(data => data.json())
       .then(data => {
         if (!data.favorite) {
@@ -163,13 +163,13 @@ class AdminRoot extends React.Component {
       })
       .catch(err => {
         console.log("Error on fetch public checklist:", err);
-      })
+      });
   }
 
   getCircleList() {
     const exhibition = window.location.search.replace('?','');
     this.addLoading("circle");
-    return fetch('https://data.familiar-life.info/' + exhibition + '.json')
+    return window.fetch('https://data.familiar-life.info/' + exhibition + '.json')
       .then(data => data.ok ? data : Promise.reject(data))
       .then(data => data.json())
       .then(data => {
@@ -236,7 +236,7 @@ class AdminRoot extends React.Component {
 
   login() {
     const getJwtToken = event => {
-      localStorage.setItem("token", event.data);
+      window.localStorage.setItem("token", event.data);
       this.getUserData();
     };
 
@@ -245,12 +245,12 @@ class AdminRoot extends React.Component {
   }
 
   logout() {
-    localStorage.clear();
+    window.localStorage.clear();
     this.setState({ me: null, favoriteIdx: {} });
   }
 
   openCircleDescModal(selectedCircle) {
-    const param = new URLSearchParams();
+    const param = new window.URLSearchParams();
     param.append("circle_id", selectedCircle.circle_id);
     this.props.history.push("?" + param.toString());
   }
