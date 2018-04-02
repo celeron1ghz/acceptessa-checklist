@@ -3,6 +3,8 @@ import FontAwesome from 'react-fontawesome';
 import { withRouter } from 'react-router-dom';
 import { Image, ButtonToolbar, DropdownButton, MenuItem, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
 
+import _ from 'lodash';
+
 import MapPane from '../pane/MapPane';
 import CirclecutPane from '../pane/CirclecutPane';
 import CircleListPane from '../pane/CircleListPane';
@@ -26,8 +28,8 @@ class AdminRoot extends React.Component {
         circleList:  [],
         circleIdx:   {},
         favoriteIdx: {},
-        sort_order:  [],
         loading:     {},
+        spaceSymSorter: null,
         publicChecklist: null,
         exhibition:  null,
         map: null,
@@ -143,7 +145,6 @@ class AdminRoot extends React.Component {
   }
 
   getShareChecklist(member_id) {
-console.log(member_id)
     const { exhibition } = this.state;
 
     return window.fetch(`${this.ENDPOINT}/public/${exhibition.id}/?mid=${member_id}`, { cors: true })
@@ -180,9 +181,23 @@ console.log(member_id)
         console.log("CIRCLE_DATA_OK:", data.circles.length);
         const enableChecklist = data.circles.filter(c => c.space_sym && c.space_num).length !== 0;
 
+        let sorter;
+        if (data.sort_order) {
+          const sortMap = _.zipObject(data.sort_order, _.range(data.sort_order.length));
+          sorter = (a,b) => {
+            if (sortMap[a] > sortMap[b]) {
+              return 1;
+            }
+            if (sortMap[a] < sortMap[b]) {
+              return -1;
+            }
+            return 0;
+          };
+        }
+
         this.setState({
           circleList: data.circles,
-          sort_order: data.sort_order,
+          spaceSymSorter: sorter,
           exhibition: data.exhibition,
           map: data.map,
           enableChecklist,
@@ -336,7 +351,7 @@ console.log(member_id)
     const {
       circleList, favoriteIdx, loading, map,
       showCircleDescModal, showPublicLinkModal, showExportChecklistModal, publicChecklist,
-      selectedCircle, me, config, exhibition, enableChecklist,
+      selectedCircle, me, config, exhibition, enableChecklist, spaceSymSorter,
     } = this.state;
 
     if (circleList instanceof Array && circleList.length === 0) {
@@ -432,7 +447,8 @@ console.log(member_id)
                 onRemoveFavorite={this.removeFavorite}
                 onRemovePublicChecklist={this.removePublicChecklistDisplay}
                 showChecklistComponent={!!me}
-                enableChecklist={enableChecklist}/>
+                enableChecklist={enableChecklist}
+                spaceSymSorter={spaceSymSorter}/>
             </Tab.Pane>
             <Tab.Pane eventKey="circlecut">
               <CirclecutPane

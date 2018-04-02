@@ -28,7 +28,7 @@ class CircleListPane extends React.Component {
   }
 
   render() {
-    const { favorites, showChecklistComponent, loadings, publicChecklist, enableChecklist } = this.props;
+    const { favorites, showChecklistComponent, loadings, publicChecklist, enableChecklist, spaceSymSorter } = this.props;
     const { table } = this.state;
     const circleList = _.cloneDeep(this.props.circles);
 
@@ -68,6 +68,7 @@ class CircleListPane extends React.Component {
             resizable: false,
             className: "text-center",
             Header: "記号",
+            sortMethod: spaceSymSorter,
             Filter: ({ filter, onChange }) =>
               <select
                 onChange={event => onChange(event.target.value)}
@@ -250,7 +251,7 @@ class CircleListPane extends React.Component {
         loading={circleList.length === "0"}
         columns={columns}
         data={circleList}
-        Filter={1}
+        defaultSorted={[ { id: 'space_sym' } ]}
         defaultFilterMethod={(filter, row, column) => {
           const id = filter.pivotId || filter.id;
           return row[id] !== undefined ? String(row[id]).indexOf(filter.value) !== -1 : false;
@@ -285,6 +286,7 @@ CircleListPane.propTypes = {
   onRemovePublicChecklist: PropTypes.func.isRequired,
   showChecklistComponent: PropTypes.bool,
   enableChecklist: PropTypes.bool,
+  spaceSymSorter: PropTypes.func,
 };
 
 export default CircleListPane;
