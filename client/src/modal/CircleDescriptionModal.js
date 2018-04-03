@@ -145,6 +145,23 @@ class CircleDescriptionModal extends React.Component {
                 }
               </Panel.Body>
             </Panel>
+            {
+              circle && <p>
+                <Button
+                  bsStyle="primary"
+                  bsSize="large"
+                  href={
+                    'https://twitter.com/intent/tweet'
+                      + '?text=' + encodeURIComponent(
+                        "【" + circle.space_sym + "-" + circle.space_num + "】 " + circle.circle_name + " のサークル情報です"
+                      )
+                      + '&url='  + encodeURIComponent(window.location.href)
+                  }
+                  target="_blank">
+                    <FontAwesome name="twitter" size="2x"/>
+                </Button>
+              </p>
+            }
           </div>
         }
       </Modal.Body>
