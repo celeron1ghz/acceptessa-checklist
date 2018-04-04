@@ -251,7 +251,7 @@ class CircleListPane extends React.Component {
         loading={circleList.length === "0"}
         columns={columns}
         data={circleList}
-        defaultSorted={[ { id: 'space_sym' } ]}
+        defaultSorted={[ { id: 'space_sym' }, { id: 'space_num' } ]}
         defaultFilterMethod={(filter, row, column) => {
           const id = filter.pivotId || filter.id;
           return row[id] !== undefined ? String(row[id]).indexOf(filter.value) !== -1 : false;

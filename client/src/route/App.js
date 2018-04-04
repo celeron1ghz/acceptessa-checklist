@@ -181,6 +181,7 @@ class AdminRoot extends React.Component {
         console.log("CIRCLE_DATA_OK:", data.circles.length);
         const enableChecklist = data.circles.filter(c => c.space_sym && c.space_num).length !== 0;
 
+        let circleList = data.circles;
         let sorter;
         if (data.sort_order) {
           const sortMap = _.zipObject(data.sort_order, _.range(data.sort_order.length));
@@ -193,10 +194,12 @@ class AdminRoot extends React.Component {
             }
             return 0;
           };
+
+          circleList = circleList.sort((a,b) => sorter(a.space_sym, b.space_sym));
         }
 
         this.setState({
-          circleList: data.circles,
+          circleList,
           spaceSymSorter: sorter,
           exhibition: data.exhibition,
           map: data.map,
@@ -458,7 +461,8 @@ class AdminRoot extends React.Component {
                 onImageClick={this.openCircleDescModal}
                 onAddFavorite={this.addFavorite}
                 onRemoveFavorite={this.removeFavorite}
-                showChecklistComponent={!!me}/>
+                showChecklistComponent={!!me}
+                spaceSymSorter={spaceSymSorter}/>
             </Tab.Pane>
             {
               enableChecklist &&
@@ -466,7 +470,8 @@ class AdminRoot extends React.Component {
                   <FavoriteListPane
                     circles={circleList}
                     favorites={favoriteIdx}
-                    onRowClick={this.openCircleDescModal}/>
+                    onRowClick={this.openCircleDescModal}
+                    spaceSymSorter={spaceSymSorter}/>
                 </Tab.Pane>
             }
             {

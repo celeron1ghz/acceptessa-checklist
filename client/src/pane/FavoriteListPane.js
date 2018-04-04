@@ -10,7 +10,7 @@ class FavoriteListPane extends React.Component {
   }
 
   render() {
-    const { favorites } = this.props;
+    const { favorites, spaceSymSorter } = this.props;
     const circleList = _.cloneDeep(this.props.circles);
 
     for (const c of circleList) {
@@ -45,6 +45,7 @@ class FavoriteListPane extends React.Component {
             resizable: false,
             className: "text-center",
             Header: "記号",
+            sortMethod: spaceSymSorter,
             Filter: ({ filter, onChange }) =>
               <select
                 onChange={event => onChange(event.target.value)}
@@ -146,7 +147,7 @@ class FavoriteListPane extends React.Component {
         loading={circleList.length === "0"}
         columns={columns}
         data={filtered}
-        Filter={1}
+        defaultSorted={[ { id: 'space_sym' }, { id: 'space_num' } ]}
         defaultFilterMethod={(filter, row, column) => {
           const id = filter.pivotId || filter.id;
           return row[id] !== undefined ? String(row[id]).indexOf(filter.value) !== -1 : false;
@@ -171,6 +172,7 @@ FavoriteListPane.propTypes = {
   circles: PropTypes.array.isRequired,
   favorites: PropTypes.object.isRequired,
   onRowClick: PropTypes.func.isRequired,
+  spaceSymSorter: PropTypes.func,
 };
 
 export default FavoriteListPane;
