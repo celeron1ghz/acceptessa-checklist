@@ -29,16 +29,20 @@ class AdminRoot extends React.Component {
         circleIdx:   {},
         favoriteIdx: {},
         loading:     {},
-        spaceSymSorter: null,
-        publicChecklist: null,
-        exhibition:  null,
-        map: null,
+
         showCircleDescModal: false,
         showPublicLinkModal: false,
         showExportChecklistModal: false,
-        selectedCircle: null,
+
+        exhibition:  null,
         me: null,
         config: null,
+        param: null,
+
+        spaceSymSorter: null,
+        publicChecklist: null,
+        map: null,
+        selectedCircle: null,
         enableChecklist: false,
     };
 
@@ -62,7 +66,6 @@ class AdminRoot extends React.Component {
     this.removePublicChecklistDisplay = this.removePublicChecklistDisplay.bind(this);
 
     this.getCircleList      = this.getCircleList.bind(this);
-    //this.getMapData         = this.getMapData.bind(this);
     this.getUserData        = this.getUserData.bind(this);
     this.getShareChecklist  = this.getShareChecklist.bind(this);
   }
@@ -126,22 +129,31 @@ class AdminRoot extends React.Component {
   }
 
   componentDidMount() {
-    this.getCircleList().then(data => {
-      if (!this.state.enableChecklist) {
-        console.log("list mode");
-        return;
-      }
+    const param = new window.URLSearchParams(window.location.search);
+    const exhibition = param.get('e');
 
-      const param = new window.URLSearchParams(window.location.search);
+    window.fetch(`${window.location.origin}/${exhibition}.json`, { credentials: 'include' })
+      .then(data => data.json())
+      .then(data => {
+        this.setState({ param: data });
+      })
+      .then(this.getCircleList)
+      .then(data => {
+        if (!this.state.enableChecklist) {
+          console.log("list mode");
+          return;
+        }
 
-      if ( param.get("id") ) {
-        return Promise.resolve(param.get("id"))
-          .then(this.getShareChecklist)
-          .then(this.getUserData);
-      } else {
-        return this.getUserData();
-      }
-    });
+        const param = new window.URLSearchParams(window.location.search);
+
+        if ( param.get("id") ) {
+          return Promise.resolve(param.get("id"))
+            .then(this.getShareChecklist)
+            .then(this.getUserData);
+        } else {
+          return this.getUserData();
+        }
+      });
   }
 
   getShareChecklist(member_id) {
@@ -182,6 +194,14 @@ class AdminRoot extends React.Component {
         const enableChecklist = data.circles.filter(c => c.space_sym && c.space_num).length !== 0;
 
         let circleList = data.circles;
+
+        // for circle of not upload circlecut, padding not uploaded image.
+        for (const c of circleList) {
+          if (!c.circlecut) {
+            c.circlecut = this.state.param.not_uploaded_image + "?_=" + c.circle_id;
+          }
+        }
+
         let sorter;
         if (data.sort_order) {
           const sortMap = _.zipObject(data.sort_order, _.range(data.sort_order.length));
@@ -195,7 +215,18 @@ class AdminRoot extends React.Component {
             return 0;
           };
 
-          circleList = circleList.sort((a,b) => sorter(a.space_sym, b.space_sym));
+          circleList = circleList.sort((a,b) => {
+            const sym = sorter(a.space_sym, b.space_sym);
+            if (sym !== 0) return sym;
+
+            if (a.space_num > b.space_num) {
+              return 1;
+            }
+            if (a.space_num < b.space_num) {
+              return -1;
+            }
+            return 0;
+          });
         }
 
         this.setState({
