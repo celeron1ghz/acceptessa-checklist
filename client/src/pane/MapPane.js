@@ -33,13 +33,13 @@ class MapPane extends React.Component {
       <div style={{
         display: "inline-block",
         border: "1px solid black",
-        height: "800px",
-        width: "1000px",
+        height: maps.image_height + "px",
+        width:  maps.image_width + "px",
         minWidth: "500px",
         background: `url(${image}) 0 0 no-repeat`,
         position: "relative" }}>
         {
-          maps.map(pos => {
+          maps.mappings.map(pos => {
             const circle = circleIdx[pos.sym + sprintf('%02d', pos.num)];
 
             if (!circle) {
@@ -77,7 +77,7 @@ class MapPane extends React.Component {
 
 MapPane.propTypes = {
   image: PropTypes.string,
-  maps: PropTypes.array,
+  maps: PropTypes.object,
   circles: PropTypes.array.isRequired,
   favorites: PropTypes.object.isRequired,
   onCircleClick: PropTypes.func.isRequired,

@@ -15,7 +15,7 @@ const syms = [
   { sym: "D", left: 930 },
 ];
 
-const extracted = _.flattenDeep(
+const mappings = _.flattenDeep(
   syms.map(sym =>
     _.zip(_.range(1,17), top).map(p => {
       return { sym: sym.sym, left: sym.left , num: p[0], top: p[1] };
@@ -29,5 +29,9 @@ module.exports = {
     "hashtags": "ナナフェス",
     "related": "7fes_info"
   },
-  "map": extracted,
+  "map": {
+    image_width: "1200",
+    image_height: "1047",
+    mappings,
+  },
 };
