@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
+
+import _ from 'lodash';
+
 import { Row, Col, Button, Glyphicon, Panel, Label, FormControl, Modal, Image } from 'react-bootstrap';
 
 class CircleDescriptionModal extends React.Component {
@@ -37,6 +40,20 @@ class CircleDescriptionModal extends React.Component {
 
   componentWillReceiveProps(p) {
     this.setState({ comment: p.favorite ? p.favorite.comment : null });
+  }
+
+  generateTweetLink(text, url) {
+    const { tweetParams } = this.props;
+    const param = {
+      ...tweetParams,
+      text,
+      url,
+    };
+	  return  'https://twitter.com/intent/tweet?' + _.reduce(
+	    param,
+	    (result, value, key) => result += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`,
+	    ''
+    ).slice(0, -1);
   }
 
   render() {
@@ -150,13 +167,10 @@ class CircleDescriptionModal extends React.Component {
                 <Button
                   bsStyle="primary"
                   bsSize="large"
-                  href={
-                    'https://twitter.com/intent/tweet'
-                      + '?text=' + encodeURIComponent(
-                        "【" + circle.space_sym + "-" + circle.space_num + "】 " + circle.circle_name + " のサークル情報です"
-                      )
-                      + '&url='  + encodeURIComponent(window.location.href)
-                  }
+                  href={this.generateTweetLink(
+                    `【${circle.space_sym}-${circle.space_num}】 ${circle.circle_name} のサークル情報です。`,
+                    window.location.href,
+                  )}
                   target="_blank">
                     <FontAwesome name="twitter" size="2x"/>
                 </Button>
@@ -175,6 +189,7 @@ class CircleDescriptionModal extends React.Component {
 
 CircleDescriptionModal.propTypes = {
   show: PropTypes.bool,
+  showChecklistComponent: PropTypes.bool,
   circle: PropTypes.object,
   favorite: PropTypes.object,
   loadings: PropTypes.object.isRequired,
@@ -182,7 +197,7 @@ CircleDescriptionModal.propTypes = {
   onUpdateComment: PropTypes.func.isRequired,
   onAddFavorite: PropTypes.func.isRequired,
   onRemoveFavorite: PropTypes.func.isRequired,
-  showChecklistComponent: PropTypes.bool,
+  tweetParams: PropTypes.object,
 };
 
 export default CircleDescriptionModal;

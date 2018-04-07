@@ -1,6 +1,7 @@
 {
   "tweet": {
-    "homepage": "http://7fes.com",
-    "hashtag": "#ナナフェス"
+    "url": "http://7fes.com",
+    "hashtags": "ナナフェス",
+    "related": "7fes_info"
   }
 }

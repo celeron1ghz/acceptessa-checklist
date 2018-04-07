@@ -385,7 +385,7 @@ class AdminRoot extends React.Component {
     const {
       circleList, favoriteIdx, loading, map,
       showCircleDescModal, showPublicLinkModal, showExportChecklistModal, publicChecklist,
-      selectedCircle, me, config, exhibition, enableChecklist, spaceSymSorter,
+      selectedCircle, me, config, exhibition, enableChecklist, spaceSymSorter, param,
     } = this.state;
 
     if (circleList instanceof Array && circleList.length === 0) {
@@ -528,7 +528,8 @@ class AdminRoot extends React.Component {
         onUpdateComment={this.updateFavoriteComment}
         onAddFavorite={this.addFavorite}
         onRemoveFavorite={this.removeFavorite}
-        showChecklistComponent={!!me}/>
+        showChecklistComponent={!!me}
+        tweetParams={param.tweet}/>
 
       <PublicLinkModal
         show={showPublicLinkModal}
