@@ -13,24 +13,20 @@ const dirs = fs.readdirSync(DIR).filter(f => fs.statSync(DIR + f).isDirectory())
   for (const dir of dirs) {
     console.log("GENERATE:", dir);
 
-    const config = await readFile(DIR + dir + "/config.json")
-      .then(data => JSON.parse(data.toString()))
-      .catch(err => {
-        console.log("ERROR:", err);
-      });
+    const config = require('./' + dir + "/config.js");
 
-    const image = DIR + dir + "/not_uploaded.png";
+    for (const image of ["/not_uploaded.png", "/map.png"].map(f =>  DIR + dir + f)) {
+      await stat(image)
+        .then(data => {
+          console.log("  OK:", image, data.size);
+          config.not_uploaded_image = `/${dir}.png`;
+          return copyFile(image, `./public/${dir}.png`);
+        })
+        .catch(err => {
+          console.log("  ERROR:", image, err.message);
+        });
 
-    await stat(image)
-      .then(data => {
-        console.log("  NOT_UPLOADED_IMAGE:", data.size);
-        config.not_uploaded_image = `/${dir}.png`;
-        return copyFile(image, `./public/${dir}.png`);
-      })
-      .catch(err => {
-        console.log("  NOT_UPLOADED_IMAGE:", err.message);
-      });
-
-    await writeFile(`./public/${dir}.json`, JSON.stringify(config));
+      await writeFile(`./public/${dir}.json`, JSON.stringify(config));
+    }
   }
 })();
