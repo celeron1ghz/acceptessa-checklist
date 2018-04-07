@@ -18,20 +18,26 @@ const syms = [
 const width = 18;
 const height = 33;
 
-const mappings = _.flattenDeep(
-  syms.map(sym =>
-    _.zip(_.range(1,17), top).map(p => {
-      return {
-        sym: sym.sym,
-        left: sym.left,
-        num: p[0],
-        top: p[1],
-        width,
-        height,
-      };
-    })
-  )
-);
+const mappings = [
+  _.flattenDeep(
+    syms.map(sym =>
+      _.zip(_.range(1,17), top).map(p => {
+        return {
+          sym: sym.sym,
+          left: sym.left,
+          num: p[0],
+          top: p[1],
+          width,
+          height,
+        };
+      })
+    )
+  ),
+  { sym: "企業", num: 1, left: 564, top: 837, width: height * 2, height: width },
+  { sym: "企業", num: 2, left: 489, top: 837, width: height * 2, height: width },
+];
+
+
 
 module.exports = {
   "tweet": {
