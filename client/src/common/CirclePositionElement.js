@@ -23,8 +23,8 @@ const CirclePositionElement = styled.div`
 
     background-color: ${props => props.bgColor};
     position: absolute;
-    width: 15px;
-    height: 19px;
+    width: 18px;
+    height: 33px;
     top: ${props => props.top};
     left: ${props => props.left};
     cursor: pointer;

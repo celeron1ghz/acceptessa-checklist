@@ -1,27 +1,33 @@
-module.exports = () => {
-  return {
-    "tweet": {
-      "url": "http://7fes.com",
-      "hashtags": "ナナフェス",
-      "related": "7fes_info"
-    },
-    "map": [
-      { "sym": "S", "num": 1,  "top": 753, "left": 454 },
-      { "sym": "S", "num": 2,  "top": 718, "left": 454 },
-      { "sym": "S", "num": 3,  "top": 678, "left": 454 },
-      { "sym": "S", "num": 4,  "top": 642, "left": 454 },
-      { "sym": "S", "num": 5,  "top": 603, "left": 454 },
-      { "sym": "S", "num": 6,  "top": 567, "left": 454 },
-      { "sym": "S", "num": 7,  "top": 528, "left": 454 },
-      { "sym": "S", "num": 8,  "top": 492, "left": 454 },
-      { "sym": "S", "num": 9,  "top": 375, "left": 454 },
-      { "sym": "S", "num": 10, "top": 339, "left": 454 },
-      { "sym": "S", "num": 11, "top": 300, "left": 454 },
-      { "sym": "S", "num": 12, "top": 264, "left": 454 },
-      { "sym": "S", "num": 13, "top": 225, "left": 454 },
-      { "sym": "S", "num": 14, "top": 189, "left": 454 },
-      { "sym": "S", "num": 15, "top": 150, "left": 454 },
-      { "sym": "S", "num": 16, "top": 114, "left": 454 }
-    ]
-  };
+const _ = require('lodash');
+
+const top = [
+  753,718,678,642,603,567,528,492,375,339,300,264,225,189,150,114
+];
+
+const syms = [
+  { sym: "S", left: 454 },
+  { sym: "T", left: 507 },
+  { sym: "A", left: 596 },
+  { sym: "Y", left: 648 },
+  { sym: "G", left: 737 },
+  { sym: "O", left: 789 },
+  { sym: "L", left: 878 },
+  { sym: "D", left: 930 },
+];
+
+const extracted = _.flattenDeep(
+  syms.map(sym =>
+    _.zip(_.range(1,17), top).map(p => {
+      return { sym: sym.sym, left: sym.left , num: p[0], top: p[1] };
+    })
+  )
+);
+
+module.exports = {
+  "tweet": {
+    "url": "http://7fes.com",
+    "hashtags": "ナナフェス",
+    "related": "7fes_info"
+  },
+  "map": extracted,
 };

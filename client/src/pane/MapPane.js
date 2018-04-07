@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { sprintf } from 'sprintf-js'
+import { sprintf } from 'sprintf-js';
 import { OverlayTrigger, Tooltip, Glyphicon } from 'react-bootstrap';
 
 import CirclePositionElement from '../common/CirclePositionElement';
@@ -11,10 +11,10 @@ class MapPane extends React.Component {
   }
 
   render(){
-    const { circles, favorites, maps } = this.props;
+    const { circles, favorites, maps, image } = this.props;
 
     if (!maps) {
-      return <div/>
+      return <div/>;
     }
 
     const circleIdx = {};
@@ -34,9 +34,9 @@ class MapPane extends React.Component {
         display: "inline-block",
         border: "1px solid black",
         height: "800px",
-        width: "500px",
+        width: "1000px",
         minWidth: "500px",
-        background: "url(/map.png) 0 0 no-repeat",
+        background: `url(${image}) 0 0 no-repeat`,
         position: "relative" }}>
         {
           maps.map(pos => {
@@ -62,8 +62,8 @@ class MapPane extends React.Component {
                 </Tooltip>
               }>
                 <CirclePositionElement
-                  top={pos.top}
-                  left={pos.left}
+                  top={pos.top + "px"}
+                  left={pos.left + "px"}
                   bgColor={bgColor}
                   blink={false}
                   onClick={this.onClick.bind(this,circle)}/>
@@ -76,6 +76,7 @@ class MapPane extends React.Component {
 }
 
 MapPane.propTypes = {
+  image: PropTypes.string,
   maps: PropTypes.array,
   circles: PropTypes.array.isRequired,
   favorites: PropTypes.object.isRequired,

@@ -3,7 +3,6 @@ const fs = require('fs');
 const DIR = './config/';
 
 const stat      = Promise.denodeify(fs.stat);
-const readFile  = Promise.denodeify(fs.readFile);
 const copyFile  = Promise.denodeify(fs.copyFile);
 const writeFile = Promise.denodeify(fs.writeFile);
 

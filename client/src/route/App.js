@@ -243,31 +243,6 @@ class AdminRoot extends React.Component {
         this.setState({ circleList: null });
         console.error("ERROR:", exhibition + '.json', err.status);
       });
-
-/*
-        this.removeLoading("map");
-        console.log("MAP_DATA_OK");
-        const maps = [];
-
-        for (const sym of Object.keys(data.positions)) {
-          const positions = data.positions[sym];
-
-          for (const pos of positions)  {
-            for (const i of _.range(pos.start, pos.end + 1) ) {
-              maps.push({
-                sym: sym,
-                num: i,
-                top: (pos.y + (i - ( pos.start - 1 ) -1) * 18 ) + "px",
-                left: pos.x + "px",
-              });
-            }
-          }
-        }
-
-        this.setState({ map: maps });
-      })
-      .catch(err => console.log)
-*/
   }
 
   getUserData() {
@@ -383,7 +358,7 @@ class AdminRoot extends React.Component {
 
   render() {
     const {
-      circleList, favoriteIdx, loading, map,
+      circleList, favoriteIdx, loading,
       showCircleDescModal, showPublicLinkModal, showExportChecklistModal, publicChecklist,
       selectedCircle, me, config, exhibition, enableChecklist, spaceSymSorter, param,
     } = this.state;
@@ -449,7 +424,9 @@ class AdminRoot extends React.Component {
       {
         (enableChecklist && !me) &&
           <div className="text-info">
-            <Glyphicon glyph="exclamation-sign"/> ログインを行うことでチェックリストの作成を行うことができます。
+            <Glyphicon glyph="exclamation-sign"/> Twitterのアカウントでログインを行うことでチェックリストの作成を行うことが可能です。
+            <br/>
+            （ログインにて取得した情報はログインしたユーザの情報取得のみに利用し、その他ツイートの取得や自動ツイート、パスワード取得等は行いません。）
             <br/>
             <br/>
           </div>
@@ -460,7 +437,7 @@ class AdminRoot extends React.Component {
             <NavItem eventKey="list"><Glyphicon glyph="th-list"/> リスト表示</NavItem>
             <NavItem eventKey="circlecut"><Glyphicon glyph="picture"/> サークルカット</NavItem>
             {
-              map &&
+              param.map &&
                 <NavItem eventKey="map"><Glyphicon glyph="map-marker"/> マップ</NavItem>
             }
             {
@@ -506,10 +483,11 @@ class AdminRoot extends React.Component {
                 </Tab.Pane>
             }
             {
-              map &&
+              param.map &&
                 <Tab.Pane eventKey="map">
                   <MapPane
-                    maps={map}
+                    image={`/${exhibition.id}.png`}
+                    maps={param.map}
                     circles={circleList}
                     favorites={favoriteIdx}
                     onCircleClick={this.openCircleDescModal}/>

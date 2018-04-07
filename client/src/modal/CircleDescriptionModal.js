@@ -143,7 +143,7 @@ class CircleDescriptionModal extends React.Component {
                 }
                 {
                   circle.twitter_id &&
-                    <p><Label><FontAwesome name="twitter"/> Twitter</Label> <a href={"https://twitter.com/" + circle.twitter_id} target="_blank">@{circle.twitter_id}</a></p>
+                    <p><Label><FontAwesome name="twitter"/> Twitter</Label> <a href={"https://twitter.com/" + circle.twitter_id} target="_blank">{circle.twitter_id}</a></p>
                 }
               </Panel.Body>
             </Panel>
