@@ -4,6 +4,7 @@ cd ../client
 
 echo building...
 yarn build
+yarn buildConfig
 
 echo syncing...
 cd build
