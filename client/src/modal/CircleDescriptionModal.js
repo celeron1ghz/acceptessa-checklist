@@ -135,7 +135,7 @@ class CircleDescriptionModal extends React.Component {
                 </p>
                 {
                   circle.pixiv_url &&
-                    <p><Label><FontAwesome name="link"/> Pixiv</Label> <a href={circle.pixiv_url} target="_blank">{circle.pixiv_id}</a></p>
+                    <p><Label><FontAwesome name="link"/> Pixiv</Label> <a href={circle.pixiv_url} target="_blank">{circle.pixiv_url}</a></p>
                 }
                 {
                   circle.site_url &&
