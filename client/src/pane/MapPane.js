@@ -64,14 +64,16 @@ class MapPane extends React.Component {
                 <CirclePositionElement
                   top={pos.top + "px"}
                   left={pos.left + "px"}
+                  width={pos.width}
+                  height={pos.height}
                   bgColor={bgColor}
                   blink={false}
                   onClick={this.onClick.bind(this,circle)}/>
-            </OverlayTrigger>
+            </OverlayTrigger>;
           })
         }
       </div>
-    </div>
+    </div>;
   }
 }
 

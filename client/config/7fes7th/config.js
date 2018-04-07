@@ -15,10 +15,20 @@ const syms = [
   { sym: "D", left: 930 },
 ];
 
+const width = 18;
+const height = 33;
+
 const mappings = _.flattenDeep(
   syms.map(sym =>
     _.zip(_.range(1,17), top).map(p => {
-      return { sym: sym.sym, left: sym.left , num: p[0], top: p[1] };
+      return {
+        sym: sym.sym,
+        left: sym.left,
+        num: p[0],
+        top: p[1],
+        width,
+        height,
+      };
     })
   )
 );
