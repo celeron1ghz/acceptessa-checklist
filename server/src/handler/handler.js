@@ -25,7 +25,7 @@ module.exports.endpoint = (event, context, callback) => {
       throw { code: 400, message: 'INVALID_HEADER' };
     }
 
-    const secret = yield ssm.getParameter({ Name: '/gomitter/jwt_token', WithDecryption: true }).promise().then(d => d.Parameter.Value);
+    const secret = yield ssm.getParameter({ Name: '/tessa_checklist/jwt_secret', WithDecryption: true }).promise().then(d => d.Parameter.Value);
     let sess;
     try {
       sess = jwt.verify(token, secret);

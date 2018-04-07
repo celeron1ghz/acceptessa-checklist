@@ -74,9 +74,9 @@ class TwitterOAuth {
 }
 
 const SESSION_TABLE           = 'tessa_session';
-const SSM_KEY_JWT_SECRET      = '/gomitter/jwt_token';
-const SSM_KEY_CONSUMER_KEY    = '/gomitter/twitter_consumer_key';
-const SSM_KEY_CONSUMER_SECRET = '/gomitter/twitter_consumer_secret';
+const SSM_KEY_JWT_SECRET      = '/tessa_checklist/jwt_secret';
+const SSM_KEY_CONSUMER_KEY    = '/tessa_checklist/twitter_consumer_key';
+const SSM_KEY_CONSUMER_SECRET = '/tessa_checklist/twitter_consumer_secret';
 const ROUTE = {
   start: (event, context, callback) => {
     return vo(function*(){
