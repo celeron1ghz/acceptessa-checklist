@@ -1,31 +1,42 @@
 const Promise = require('promise');
 const fs = require('fs');
-const DIR = './config/';
+const CONFIG_DIR = './config/';
 
 const stat      = Promise.denodeify(fs.stat);
 const copyFile  = Promise.denodeify(fs.copyFile);
 const writeFile = Promise.denodeify(fs.writeFile);
 
-const dirs = fs.readdirSync(DIR).filter(f => fs.statSync(DIR + f).isDirectory());
+const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).isDirectory());
 
 (async function(){
-  for (const dir of dirs) {
-    console.log("GENERATE:", dir);
+  for (const eid of dirs) {
+    console.log("GENERATE:", eid);
+    const edir = `./public/${eid}`;
 
-    const config = require('./' + dir + "/config.js");
+    try {
+      fs.mkdirSync(edir);
+    } catch(e) {
+      if (e.code !== "EEXIST") {
+        console.log("ERROR:", e);
+      }
+    }
 
-    for (const image of ["/not_uploaded.png", "/map.png"].map(f =>  DIR + dir + f)) {
-      await stat(image)
+    const config = require(`./${eid}/config.js`);
+
+    for (const file of ["not_uploaded.png", "map.png"]) {
+      const from = `${CONFIG_DIR}${eid}/${file}`;
+      const dest = `./public/${eid}/${file}`;
+
+      await stat(from)
         .then(data => {
-          console.log("  OK:", image, data.size);
-          config.not_uploaded_image = `/${dir}.png`;
-          return copyFile(image, `./public/${dir}.png`);
+          console.log("  OK:", from, data.size);
+          return copyFile(from, dest);
         })
         .catch(err => {
-          console.log("  ERROR:", image, err.message);
+          console.log("  ERROR:", from, err.message);
         });
 
-      await writeFile(`./public/${dir}.json`, JSON.stringify(config));
+      await writeFile(`./public/${eid}.json`, JSON.stringify(config));
     }
   }
 })();

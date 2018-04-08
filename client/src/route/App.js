@@ -198,7 +198,7 @@ class AdminRoot extends React.Component {
         // for circle of not upload circlecut, padding not uploaded image.
         for (const c of circleList) {
           if (!c.circlecut) {
-            c.circlecut = this.state.param.not_uploaded_image + "?_=" + c.circle_id;
+            c.circlecut = `/${exhibition}/not_uploaded.png?_=${c.circle_id}`;
           }
         }
 
@@ -486,7 +486,7 @@ class AdminRoot extends React.Component {
               param.map &&
                 <Tab.Pane eventKey="map">
                   <MapPane
-                    image={`/${exhibition.id}.png`}
+                    image={`/${exhibition.id}/map.png`}
                     maps={param.map}
                     circles={circleList}
                     favorites={favoriteIdx}
