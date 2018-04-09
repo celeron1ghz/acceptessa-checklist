@@ -71,14 +71,14 @@ class AdminRoot extends React.Component {
   }
 
   callChecklistApi(args, load_type) {
-    const token = window.localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     if (!token) return Promise.reject("No access_token. Please login!!");
 
     if (load_type) this.addLoading(load_type);
 
-    return window.fetch(this.ENDPOINT, {
-      headers: new window.Headers({ 'Authorization': "Bearer " + token }),
+    return fetch(this.ENDPOINT, {
+      headers: new Headers({ 'Authorization': "Bearer " + token }),
       method: 'POST',
       body: JSON.stringify(args),
       cors: true,
@@ -117,7 +117,7 @@ class AdminRoot extends React.Component {
   }
 
   componentWillReceiveProps(props){
-    const param = new window.URLSearchParams(props.location.search);
+    const param = new URLSearchParams(props.location.search);
     const circle_id = param.get("circle_id");
     const circle = this.state.circleList.filter(c => c.circle_id === circle_id)[0];
 
@@ -129,10 +129,10 @@ class AdminRoot extends React.Component {
   }
 
   componentDidMount() {
-    const param = new window.URLSearchParams(window.location.search);
+    const param = new URLSearchParams(location.search);
     const exhibition = param.get('e');
 
-    window.fetch(`${window.location.origin}/${exhibition}.json`, { credentials: 'include' })
+    fetch(`${location.origin}/${exhibition}.json`, { credentials: 'include' })
       .then(data => data.json())
       .then(data => {
         this.setState({ param: data });
@@ -144,7 +144,7 @@ class AdminRoot extends React.Component {
           return;
         }
 
-        const param = new window.URLSearchParams(window.location.search);
+        const param = new URLSearchParams(location.search);
 
         if ( param.get("id") ) {
           return Promise.resolve(param.get("id"))
@@ -159,7 +159,7 @@ class AdminRoot extends React.Component {
   getShareChecklist(member_id) {
     const { exhibition } = this.state;
 
-    return window.fetch(`${this.ENDPOINT}/public/${exhibition.id}/?mid=${member_id}`, { cors: true })
+    return fetch(`${this.ENDPOINT}/public/${exhibition.id}/?mid=${member_id}`, { cors: true })
       .then(data => data.json())
       .then(data => {
         if (!data.favorite) {
@@ -182,10 +182,10 @@ class AdminRoot extends React.Component {
   }
 
   getCircleList() {
-    const param = new window.URLSearchParams(window.location.search);
+    const param = new URLSearchParams(location.search);
     const exhibition = param.get('e');
     this.addLoading("circle");
-    return window.fetch('https://data.familiar-life.info/' + exhibition + '.json')
+    return fetch('https://data.familiar-life.info/' + exhibition + '.json')
       .then(data => data.ok ? data : Promise.reject(data))
       .then(data => data.json())
       .then(data => {
@@ -263,7 +263,7 @@ class AdminRoot extends React.Component {
 
   login() {
     const getJwtToken = event => {
-      window.localStorage.setItem("token", event.data);
+      localStorage.setItem("token", event.data);
       this.getUserData();
     };
 
@@ -272,18 +272,18 @@ class AdminRoot extends React.Component {
   }
 
   logout() {
-    window.localStorage.clear();
+    localStorage.clear();
     this.setState({ me: null, favoriteIdx: {} });
   }
 
   openCircleDescModal(selectedCircle) {
-    const param = new window.URLSearchParams(window.location.search);
+    const param = new URLSearchParams(location.search);
     param.append("circle_id", selectedCircle.circle_id);
     this.props.history.push("?" + param.toString());
   }
 
   closeCircleDescModal() {
-    const param = new window.URLSearchParams(window.location.search);
+    const param = new URLSearchParams(location.search);
     param.delete("circle_id");
     this.props.history.push("?" + param.toString());
   }
