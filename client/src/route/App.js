@@ -129,10 +129,10 @@ class AdminRoot extends React.Component {
   }
 
   componentDidMount() {
-    const param = new URLSearchParams(location.search);
+    const param = new URLSearchParams(location.search); // eslint-disable-line no-restricted-globals
     const exhibition = param.get('e');
 
-    fetch(`${location.origin}/${exhibition}.json`, { credentials: 'include' })
+    fetch(`${location.origin}/${exhibition}.json`, { credentials: 'include' }) // eslint-disable-line no-restricted-globals
       .then(data => data.json())
       .then(data => {
         this.setState({ param: data });
@@ -144,7 +144,7 @@ class AdminRoot extends React.Component {
           return;
         }
 
-        const param = new URLSearchParams(location.search);
+        const param = new URLSearchParams(location.search); // eslint-disable-line no-restricted-globals
 
         if ( param.get("id") ) {
           return Promise.resolve(param.get("id"))
@@ -182,7 +182,7 @@ class AdminRoot extends React.Component {
   }
 
   getCircleList() {
-    const param = new URLSearchParams(location.search);
+    const param = new URLSearchParams(location.search); // eslint-disable-line no-restricted-globals
     const exhibition = param.get('e');
     this.addLoading("circle");
     return fetch('https://data.familiar-life.info/' + exhibition + '.json')
@@ -277,13 +277,13 @@ class AdminRoot extends React.Component {
   }
 
   openCircleDescModal(selectedCircle) {
-    const param = new URLSearchParams(location.search);
+    const param = new URLSearchParams(location.search); // eslint-disable-line no-restricted-globals
     param.append("circle_id", selectedCircle.circle_id);
     this.props.history.push("?" + param.toString());
   }
 
   closeCircleDescModal() {
-    const param = new URLSearchParams(location.search);
+    const param = new URLSearchParams(location.search); // eslint-disable-line no-restricted-globals
     param.delete("circle_id");
     this.props.history.push("?" + param.toString());
   }

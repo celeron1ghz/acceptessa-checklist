@@ -33,8 +33,8 @@ const mappings = [
       })
     )
   ),
-  { sym: "企業", num: 1, left: 564, top: 837, width: height * 2, height: width },
-  { sym: "企業", num: 2, left: 489, top: 837, width: height * 2, height: width },
+  { sym: "企業", num: 1, left: 489, top: 837, width: height * 2 + 2, height: width },
+  { sym: "企業", num: 2, left: 564, top: 837, width: height * 2 + 2, height: width },
 ];
 
 module.exports = {
