@@ -82,6 +82,7 @@ module.exports.endpoint = (event, context, callback) => {
       });
 
     } catch(e) {
+      console.log(e);
       throw { code: 400, message: 'INTERNAL_ERROR' };
     }
 

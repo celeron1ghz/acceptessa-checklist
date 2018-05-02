@@ -8,6 +8,7 @@
     "aws-wkhtmltopdf": "^0.0.2",
     "cookie": "^0.3.1",
     "jsonwebtoken": "^8.1.1",
+    "node-fetch": "^2.1.2",
     "oauth": "^0.9.15",
     "twitter": "^1.7.1",
     "uniqid": "^4.1.1",
