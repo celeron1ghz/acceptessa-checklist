@@ -58,6 +58,7 @@ class AdminRoot extends React.Component {
     this.logout                   = this.logout.bind(this);
     this.addLoading               = this.addLoading.bind(this);
     this.removeLoading            = this.removeLoading.bind(this);
+    this.exportChecklist          = this.exportChecklist.bind(this);
 
     this.openPublicLinkModal          = this.openPublicLinkModal.bind(this);
     this.closePublicLinkModal         = this.closePublicLinkModal.bind(this);
@@ -129,10 +130,10 @@ class AdminRoot extends React.Component {
   }
 
   componentDidMount() {
-    const param = new URLSearchParams(location.search); // eslint-disable-line no-restricted-globals
+    const param = new window.URLSearchParams(window.location.search);
     const exhibition = param.get('e');
 
-    fetch(`${location.origin}/${exhibition}.json`, { credentials: 'include' }) // eslint-disable-line no-restricted-globals
+    window.fetch(`${window.location.origin}/${exhibition}.json`, { credentials: 'include' })
       .then(data => data.json())
       .then(data => {
         this.setState({ param: data });
@@ -356,6 +357,14 @@ class AdminRoot extends React.Component {
     this.setState({ publicChecklist: null });
   }
 
+  exportChecklist() {
+    const { exhibition } = this.state;
+    this.callChecklistApi({ command: "export", exhibition_id: exhibition.id }, 'export').then(data => {
+      console.log(data);
+      console.log("EXPORT_CHECKLIST", data);
+    });
+  }
+
   render() {
     const {
       circleList, favoriteIdx, loading,
@@ -518,7 +527,8 @@ class AdminRoot extends React.Component {
 
       <ExportChecklistModal
         show={showExportChecklistModal}
-        onClose={this.closeExportChecklistModal}/>
+        onClose={this.closeExportChecklistModal}
+        onExport={this.exportChecklist}/>
 
     </div>;
   }

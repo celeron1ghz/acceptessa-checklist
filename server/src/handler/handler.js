@@ -12,6 +12,7 @@ const COMMANDS = {
   remove: require('../command/RemoveFavoriteCommand'),
   update: require('../command/UpdateFavoriteCommand'),
   public: require('../command/PublicLinkCommand'),
+  export: require('../command/ExportPDFCommand'),
 };
 
 module.exports.endpoint = (event, context, callback) => {

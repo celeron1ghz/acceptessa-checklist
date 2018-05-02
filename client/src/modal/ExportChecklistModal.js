@@ -6,11 +6,16 @@ class ExportChecklistModal extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = { comment: null };
-    this.close = this.close.bind(this);
+    this.close  = this.close.bind(this);
+    this.export = this.export.bind(this);
   }
 
   close() {
     this.props.onClose();
+  }
+
+  export() {
+    this.props.onExport();
   }
 
   render() {
@@ -26,7 +31,7 @@ class ExportChecklistModal extends React.Component {
         <p>
         </p>
 
-        <Button block bsStyle="primary"　bsSize="lg">
+        <Button block bsStyle="primary"　bsSize="lg" onClick={this.export}>
           <Glyphicon glyph="export"/> チェックリストをエクスポートする
         </Button>
       </Modal.Body>
@@ -41,6 +46,7 @@ ExportChecklistModal.propTypes = {
   show: PropTypes.bool,
   //loadings: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
+  onExport: PropTypes.func.isRequired,
 };
 
 export default ExportChecklistModal;
