@@ -28,7 +28,6 @@ class ExportPDFCommand {
       const html = `
 <html>
 <head>
-<head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <style>
@@ -101,16 +100,15 @@ ${favs.favorite.map((f,idx) => {
       `;
 
       const pdf = await wkhtmltopdf(html);
+      const basename = `${this.exhibition_id}/${this.user.screen_name}.pdf`;
 
-      return await s3.putObject({
+      await s3.putObject({
         Bucket: 'acceptessa-checklist-export',
-        Key: 'test.pdf',
+        Key: basename,
         Body: pdf,
       }).promise()
-      .catch(err => {
-        console.log(err);
-        return Promise.reject(err);
-      });
+
+      return { url: `http://${process.env.S3BUCKET_PUBLIC_URL}/${basename}` }
     })();
   }
 }

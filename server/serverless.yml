@@ -38,6 +38,8 @@ functions:
     description: tessa checklist application
     tags: { Application: AcceptessaChecklist }
     events: [{ http: { path: "/", method: post, cors: true } }]
+    environment:
+      S3BUCKET_PUBLIC_URL: { Fn::GetAtt: [ExportBucket, DomainName] }
   public:
     handler: handler.public
     description: tessa checklist public endpoint
@@ -56,6 +58,19 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: "${self:service}-export"
+        WebsiteConfiguration:
+          ErrorDocument: error.html
+          IndexDocument: index.html
+    ExportBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: { Ref: ExportBucket }
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Action: ["s3:GetObject"]
+              Resource: { Fn::Join: [ "", [{ Fn::GetAtt: [ExportBucket, Arn] }, "/*" ]] }
+              Principal: "*"
     ## tables
     FavoriteTable:
       Type: AWS::DynamoDB::Table

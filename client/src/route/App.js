@@ -44,6 +44,7 @@ class AdminRoot extends React.Component {
         map: null,
         selectedCircle: null,
         enableChecklist: false,
+        exportChecklistUrl: false,
     };
 
     this.ENDPOINT = "https://api.familiar-life.info";
@@ -360,15 +361,15 @@ class AdminRoot extends React.Component {
   exportChecklist() {
     const { exhibition } = this.state;
     this.callChecklistApi({ command: "export", exhibition_id: exhibition.id }, 'export').then(data => {
-      console.log(data);
       console.log("EXPORT_CHECKLIST", data);
+      this.setState({ exportChecklistUrl: data.url });
     });
   }
 
   render() {
     const {
       circleList, favoriteIdx, loading,
-      showCircleDescModal, showPublicLinkModal, showExportChecklistModal, publicChecklist,
+      showCircleDescModal, showPublicLinkModal, showExportChecklistModal, publicChecklist, exportChecklistUrl,
       selectedCircle, me, config, exhibition, enableChecklist, spaceSymSorter, param,
     } = this.state;
 
@@ -527,6 +528,8 @@ class AdminRoot extends React.Component {
 
       <ExportChecklistModal
         show={showExportChecklistModal}
+        loadings={loading}
+        checklistUrl={exportChecklistUrl}
         onClose={this.closeExportChecklistModal}
         onExport={this.exportChecklist}/>
 
