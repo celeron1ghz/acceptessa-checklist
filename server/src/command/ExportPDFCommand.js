@@ -89,6 +89,7 @@ class ExportPDFCommand {
 }
 
 * { font-family: 'Noto Sans Japanese'; font-size: 10px; }
+tr { page-break-inside: avoid }
 td:nth-child(1) { width: 25px; text-align: center }
 td:nth-child(2) { width: 40px }
 td:nth-child(3) { width: 200px }
