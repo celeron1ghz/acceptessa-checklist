@@ -141,6 +141,7 @@ class FavoriteListPane extends React.Component {
         filterable
         className="-striped -highlight"
         pageSize={20}
+        pageSize={filtered.length}
         showPageSizeOptions={false}
         showPaginationTop={false}
         showPaginationBottom={false}
