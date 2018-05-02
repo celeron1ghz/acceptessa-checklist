@@ -27,7 +27,7 @@ class ExportChecklistModal extends React.Component {
     return <Modal show={show} onHide={this.close}>
       <Modal.Header closeButton>
         <Modal.Title>
-          <Glyphicon glyph="export"/> チェックリストのダウンロードダウンロード
+          <Glyphicon glyph="export"/> チェックリストのダウンロード
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>

@@ -3,6 +3,7 @@ const s3  = new aws.S3();
 const wkhtmltopdf = require('aws-wkhtmltopdf');
 const command = require('./ListFavoriteCommand');
 const fetch = require('node-fetch');
+const _ = require('lodash');
 
 class ExportPDFCommand {
   constructor(args,user){
@@ -13,17 +14,48 @@ class ExportPDFCommand {
     this.user = user;
   }
 
+  sort(data, sort_order) {
+    const sortMap = _.zipObject(sort_order, _.range(sort_order.length));
+    const sorter = (a,b) => {
+      if (sortMap[a] > sortMap[b]) {
+        return 1;
+      }
+      if (sortMap[a] < sortMap[b]) {
+        return -1;
+      }
+      return 0;
+    };
+
+    return data.sort((a,b) => {
+      const sym = sorter(a.space_sym, b.space_sym);
+      if (sym !== 0) return sym;
+
+      if (a.space_num > b.space_num) {
+        return 1;
+      }
+      if (a.space_num < b.space_num) {
+        return -1;
+      }
+      return 0;
+    });
+  }
+
   run() {
     return (async () => {
       const favs = await new command({ exhibition_id: this.exhibition_id }, { screen_name: this.member_id }).run();
       const data = await fetch(`https://data.familiar-life.info/${this.exhibition_id}.json`).then(data => data.json());
 
-      const circles = {};
+      const circleIdx = {};
       const exhibition = data.exhibition;
 
       for (const c of data.circles) {
-        circles[c.circle_id] = c;
+        circleIdx[c.circle_id] = c;
       }
+
+      const favorites = this.sort(
+        favs.favorite.map(f => { return { ...circleIdx[f.circle_id], ...f }}),
+        data.sort_order,
+      );
 
       const html = `
 <html>
@@ -82,15 +114,14 @@ td:nth-child(5) { width: 150px }
     <th>お品書き</th>
     <th>コメント</th>
   </tr>
-${favs.favorite.map((f,idx) => {
-  const c = circles[f.circle_id];
+${favorites.map((c,idx) => {
   return `
     <tr>
       <td>${idx+1}</td>
       <td>${c.space_sym}-${c.space_num}</td>
       <td>${c.circle_name} (${c.penname})</td>
       <td>${c.circle_comment || '<span class="text-muted">(なし)</span>'}</td>
-      <td>${f.comment || '<span class="text-muted">(なし)</span>'}</td>
+      <td>${c.comment || '<span class="text-muted">(なし)</span>'}</td>
     </tr>
   `;
 }).join("")}
