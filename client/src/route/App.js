@@ -134,10 +134,15 @@ class AdminRoot extends React.Component {
     const param = new window.URLSearchParams(window.location.search);
     const exhibition = param.get('e');
 
+    // load setting
     window.fetch(`${window.location.origin}/${exhibition}.json`, { credentials: 'include' })
       .then(data => data.json())
       .then(data => {
         this.setState({ param: data });
+      })
+      .catch(err => {
+        console.log("config load fail. continue with default value");
+        this.setState({ param: {} });
       })
       .then(this.getCircleList)
       .then(data => {
@@ -146,7 +151,7 @@ class AdminRoot extends React.Component {
           return;
         }
 
-        const param = new URLSearchParams(location.search); // eslint-disable-line no-restricted-globals
+        const param = new URLSearchParams(window.location.search);
 
         if ( param.get("id") ) {
           return Promise.resolve(param.get("id"))
