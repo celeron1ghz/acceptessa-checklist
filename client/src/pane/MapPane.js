@@ -20,7 +20,7 @@ class MapPane extends React.Component {
     const circleIdx = {};
 
     for (const c of circles) {
-      const numbers = c.space_num.split('-');
+      const numbers = (c.space_num || '').split('-');
       for (const n of numbers) {
         circleIdx[c.space_sym + n] = c;
       }
