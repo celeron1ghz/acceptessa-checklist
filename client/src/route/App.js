@@ -213,6 +213,12 @@ class AdminRoot extends React.Component {
         if (data.sort_order) {
           const sortMap = _.zipObject(data.sort_order, _.range(data.sort_order.length));
           sorter = (a,b) => {
+            if (sortMap[a] && !sortMap[b]) {
+              return 1;
+            }
+            if (!sortMap[a] && sortMap[b]) {
+              return -1;
+            }
             if (sortMap[a] > sortMap[b]) {
               return 1;
             }
