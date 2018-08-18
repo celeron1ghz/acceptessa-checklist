@@ -152,7 +152,9 @@ class CircleDescriptionModal extends React.Component {
             <Panel>
               <Panel.Body>
                 <p style={{ whiteSpace: "pre" }}>{
-                  circle.circle_comment || <Label>お品書きコメント未記入</Label>
+                  circle.circle_comment
+                    ? circle.circle_comment.split('\n').map(l => <div style={{ wordWrap: 'break-word' }}>{l}</div>)
+                    : <Label>お品書きコメント未記入</Label>
 
                 }</p>
                 {
