@@ -54,6 +54,10 @@ functions:
 resources:
   Description: Acceptessa checklist api
   Resources:
+    IamRoleLambdaExecution:
+      Properties:
+        RoleName: "${self:service}"
+
     ExportBucket:
       Type: AWS::S3::Bucket
       Properties:
