@@ -58,6 +58,8 @@ const mappings = [
       })
     })
   ]),
+  { sym: "企業", num: 1, left: 51,  top: 62, width: 69, height: 21 },
+  { sym: "企業", num: 2, left: 147, top: 62, width: 69, height: 21 },
 ];
 
 module.exports = {
