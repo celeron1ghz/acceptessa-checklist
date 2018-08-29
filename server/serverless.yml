@@ -28,6 +28,10 @@ provider:
         - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_favorite/index/*"]]
         - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_config"]]
     - Effect: Allow
+      Action: [dynamodb:GetItem, dynamodb:UpdateItem]
+      Resource:
+        - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_favorite_count"]]
+    - Effect: Allow
       Action: [s3:PutObject]
       Resource:
         - Fn::Join: [ "", [{ Fn::GetAtt: [ExportBucket, Arn]}, "/*"]]
@@ -50,6 +54,12 @@ functions:
     description: tessa checklist authentication
     tags: { Application: AcceptessaChecklist }
     events: [{ http: { path: "/auth/{action}", method: get, cors: true } }]
+  stream:
+    handler: handler.stream
+    events:
+      - stream:
+          type: dynamodb
+          arn: { Fn::GetAtt: [FavoriteTable, StreamArn] }
 
 resources:
   Description: Acceptessa checklist api
@@ -134,6 +144,19 @@ resources:
           AttributeName: ttl
           Enabled: true
         Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
+
+    CountTable:
+     Type: AWS::DynamoDB::Table
+     Properties:
+       TableName: tessa_favorite_count
+       AttributeDefinitions:
+         - { AttributeName: circle_id, AttributeType: S }
+       KeySchema:
+         - { AttributeName: circle_id, KeyType: HASH }
+       ProvisionedThroughput:
+         ReadCapacityUnits: 1
+         WriteCapacityUnits: 1
+       Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     ## alarms
     WCUAlarm:
