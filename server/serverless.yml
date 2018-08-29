@@ -100,6 +100,8 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 3
               WriteCapacityUnits: 3
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
         Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     ConfigTable:
