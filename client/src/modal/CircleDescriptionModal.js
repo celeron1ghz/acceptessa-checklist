@@ -168,13 +168,13 @@ class CircleDescriptionModal extends React.Component {
               circle && <p>
                 <Button
                   bsStyle="primary"
-                  bsSize="large"
+                  bsSize="small"
                   href={this.generateTweetLink(
                     `【${circle.space_sym}-${circle.space_num}】 ${circle.circle_name} のサークル情報です。`,
                     window.location.href,
                   )}
                   target="_blank">
-                    <FontAwesome name="twitter" size="2x"/>
+                    <FontAwesome name="twitter" size="1x"/>{' '}サークルの情報をツイートする（別画面が開きます）
                 </Button>
               </p>
             }
