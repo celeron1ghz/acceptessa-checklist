@@ -95,9 +95,14 @@ module.exports.endpoint = (event, context, callback) => {
       code = 500;
       mess = "INTERNAL_ERROR";
     } else {
-      console.log("ValidationError:", err.message);
-      code = err.code;
-      mess = err.message;
+      if (err.message === "EXPIRED")    {
+        code = 200;
+        mess = "EXPIRED";
+      } else {
+        console.log("ValidationError:", err.message);
+        code = err.code;
+        mess = err.message;
+      }
     }
 
     return callback(null, {
