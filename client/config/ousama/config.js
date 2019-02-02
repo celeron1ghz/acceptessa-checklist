@@ -8,7 +8,7 @@ const vertical_syms = [
 ];
 
 const horizontal_syms = [
-  { sym: "来賓", top: 66, idx: 8, lefts: [463, 529 ] },
+  { sym: "来賓", top: 66, idx: 9, lefts: [463, 529 ] },
 ];
 
 const mappings = [
