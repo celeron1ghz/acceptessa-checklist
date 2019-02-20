@@ -170,7 +170,8 @@ class CircleDescriptionModal extends React.Component {
                   bsStyle="primary"
                   bsSize="small"
                   href={this.generateTweetLink(
-                    `【${circle.space_sym}-${circle.space_num}】 ${circle.circle_name} のサークル情報です。`,
+                    (circle.space_sym && circle.space_num ? `【${circle.space_sym}-${circle.space_num}】 ` : '')
+                    + `${circle.circle_name} のサークル情報です。`,
                     window.location.href,
                   )}
                   target="_blank">
