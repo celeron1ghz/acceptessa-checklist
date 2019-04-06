@@ -1,66 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 
 import _ from 'lodash';
-
 import { Row, Col, Button, Glyphicon, Panel, Label, FormControl, Modal, Image } from 'react-bootstrap';
 
-class CircleDescriptionModal extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = { comment: null };
+function generateTweetLink(tweetParams, text, url) {
+  const param = {
+    ...tweetParams,
+    text,
+    url,
+  };
+  return  'https://twitter.com/intent/tweet?' + _.reduce(
+    param,
+    (result, value, key) => result += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`,
+    ''
+  ).slice(0, -1);
+}
 
-    this.addFavorite    = this.addFavorite.bind(this);
-    this.removeFavorite = this.removeFavorite.bind(this);
-    this.updateComment  = this.updateComment.bind(this);
-    this.close          = this.close.bind(this);
-    this.updateInput    = this.updateInput.bind(this);
-  }
 
-  addFavorite() {
-    this.props.onAddFavorite(this.props.circle);
-  }
 
-  removeFavorite() {
-    this.props.onRemoveFavorite(this.props.circle);
-  }
+export default ({ show, showChecklistComponent, circle, favorite, loadings, onClose, onUpdateComment, onAddFavorite, onRemoveFavorite, tweetParams }) => {
+    const [comment, setComment] = useState(favorite ? favorite.comment : null);
 
-  updateComment() {
-    this.props.onUpdateComment(this.props.circle, this.state.comment);
-  }
-
-  close() {
-    this.props.onClose();
-  }
-
-  updateInput(e) {
-    this.setState({ comment: e.target.value });
-  }
-
-  componentWillReceiveProps(p) {
-    this.setState({ comment: p.favorite ? p.favorite.comment : null });
-  }
-
-  generateTweetLink(text, url) {
-    const { tweetParams } = this.props;
-    const param = {
-      ...tweetParams,
-      text,
-      url,
-    };
-	  return  'https://twitter.com/intent/tweet?' + _.reduce(
-	    param,
-	    (result, value, key) => result += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`,
-	    ''
-    ).slice(0, -1);
-  }
-
-  render() {
-    const { show, circle, favorite, showChecklistComponent, loadings } = this.props;
-    const { comment } = this.state;
-
-    return <Modal show={show} onHide={this.close}>
+    return <Modal show={show} onHide={onClose}>
       <Modal.Header closeButton>
         <Modal.Title>
           {
@@ -93,7 +56,7 @@ class CircleDescriptionModal extends React.Component {
                                 ? <Button block bsStyle="warning">
                                     <FontAwesome name="spinner" spin pulse={true} /> 処理中
                                   </Button>
-                                : <Button block bsStyle="danger" onClick={this.removeFavorite}>
+                                : <Button block bsStyle="danger" onClick={() => onRemoveFavorite(circle)}>
                                     <Glyphicon glyph="minus"/> お気に入りから削除する
                                   </Button>
                             }
@@ -103,11 +66,11 @@ class CircleDescriptionModal extends React.Component {
                                 <FormControl
                                   componentClass="textarea"
                                   placeholder="(コメントが未記入です)"
-                                  value={comment}
-                                  onChange={this.updateInput}/>
+                                  value={comment || ''}
+                                  onChange={e => setComment(e.target.value)}/>
                               </Col>
                               <Col xs={12} sm={4} md={4} lg={4}>
-                                <Button block bsStyle="primary" onClick={this.updateComment} style={{ height: "55px" }}>
+                                <Button block bsStyle="primary" onClick={() => onUpdateComment(circle, comment)} style={{ height: "55px" }}>
                                   <Glyphicon glyph="refresh"/> コメントを更新する
                                 </Button>
                               </Col>
@@ -117,7 +80,7 @@ class CircleDescriptionModal extends React.Component {
                             ? <Button block bsStyle="warning">
                                 <FontAwesome name="spinner" spin pulse={true} /> 処理中
                               </Button>
-                            : <Button block bsStyle="primary" onClick={this.addFavorite}>
+                            : <Button block bsStyle="primary" onClick={() => onAddFavorite(circle)}>
                                 <Glyphicon glyph="plus"/> お気に入りに追加する
                               </Button>
                   }
@@ -169,7 +132,8 @@ class CircleDescriptionModal extends React.Component {
                 <Button
                   bsStyle="primary"
                   bsSize="small"
-                  href={this.generateTweetLink(
+                  href={generateTweetLink(
+                    tweetParams,
                     (circle.space_sym && circle.space_num ? `【${circle.space_sym}-${circle.space_num}】 ` : '')
                     + `${circle.circle_name} のサークル情報です。`,
                     window.location.href,
@@ -183,24 +147,7 @@ class CircleDescriptionModal extends React.Component {
         }
       </Modal.Body>
       <Modal.Footer>
-        <Button block bsStyle="success" onClick={this.close}>閉じる</Button>
+        <Button block bsStyle="success" onClick={onClose}>閉じる</Button>
       </Modal.Footer>
     </Modal>;
-  }
-}
-
-
-CircleDescriptionModal.propTypes = {
-  show: PropTypes.bool,
-  showChecklistComponent: PropTypes.bool,
-  circle: PropTypes.object,
-  favorite: PropTypes.object,
-  loadings: PropTypes.object.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onUpdateComment: PropTypes.func.isRequired,
-  onAddFavorite: PropTypes.func.isRequired,
-  onRemoveFavorite: PropTypes.func.isRequired,
-  tweetParams: PropTypes.object,
 };
-
-export default CircleDescriptionModal;
