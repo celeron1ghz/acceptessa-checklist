@@ -228,6 +228,11 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
        BucketName: "acceptessa-checklist-assets"
+       CorsConfiguration:
+         CorsRules:
+           - AllowedMethods: ['GET']
+             AllowedOrigins: ['*']
+             AllowedHeaders: ['*']
        Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     BucketPolicy:
