@@ -1,16 +1,15 @@
 const Promise = require('promise');
+const yaml = require('js-yaml');
 const fs = require('fs');
 const CONFIG_DIR = './config/';
 
 const stat      = Promise.denodeify(fs.stat);
 const copyFile  = Promise.denodeify(fs.copyFile);
 const writeFile = Promise.denodeify(fs.writeFile);
-
 const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).isDirectory());
 
 (async function(){
   for (const eid of dirs) {
-    console.log("GENERATE:", eid);
     const edir = `./public/${eid}`;
 
     try {
@@ -21,8 +20,23 @@ const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).
       }
     }
 
-    const config = require(`./${eid}/config.js`);
+    //const config = require(`./${eid}/config.js`);
+    const file = `${__dirname}/${eid}/config.yaml`;
 
+    try {
+      await stat(file);
+      const value = fs.readFileSync(file);
+      const config = yaml.safeLoad(value.toString());
+      console.log(config);
+    } catch (e) {
+      console.log("Error on ", eid);
+      console.log(e.toString());
+      console.log("-------------");
+    }
+
+    //await writeFile(`./public/${eid}.json`, JSON.stringify(config));
+
+/*
     for (const file of ["not_uploaded.png", "map.png"]) {
       const from = `${CONFIG_DIR}${eid}/${file}`;
       const dest = `./public/${eid}/${file}`;
@@ -35,8 +49,7 @@ const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).
         .catch(err => {
           console.log("  ERROR:", from, err.message);
         });
-
-      await writeFile(`./public/${eid}.json`, JSON.stringify(config));
     }
+*/
   }
 })();

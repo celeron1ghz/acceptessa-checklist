@@ -1,0 +1,11 @@
+width: 13
+height: 24
+tweet:
+  url: "http://yoshiriko.info"
+  hashtags: "よしりこオンリー"
+  related: "yoshiriko_only"
+horizontal_syms:
+ - { sym: "あ", top: 42, lefts: [193, 219, 245, 272, 357, 383, 409, 435, 515, 541, 567, 593 ] }
+ - { sym: "ん", top: 118, lefts: [193, 219, 245, 272, 357, 383, 409, 435, ] }
+ - { sym: "こ", top: 198, lefts: [193, 219, 245, 272, 357, 383, 409, 435, ] }
+
