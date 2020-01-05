@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ReactTable from 'react-table-6';
 import "react-table-6/react-table.css";
 import _ from 'lodash';
-import { Badge, Alert, Button } from 'react-bootstrap';
+import { Badge, Card, Button } from 'react-bootstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 class CircleListPane extends React.Component {
@@ -151,7 +151,7 @@ class CircleListPane extends React.Component {
     if (showChecklistComponent) {
       columns.unshift({
         Header: <FontAwesomeIcon icon={['fas', 'star']} />,
-        headerStyle: { backgroundColor: "#fff" },
+        headerStyle: { backgroundColor: "#ff5" },
         columns: [
           {
             headerStyle: { backgroundColor: "#ddd" },
@@ -181,8 +181,8 @@ class CircleListPane extends React.Component {
 
     if (publicChecklist) {
       columns.unshift({
-        Header: "レ",
-        headerStyle: { backgroundColor: "#dff", fontSize: "12px" },
+        Header: <FontAwesomeIcon icon={['fas', 'check']} />,
+        headerStyle: { backgroundColor: "#f44", color: "#fff" },
         columns: [
           {
             headerStyle: { backgroundColor: "#ddd", fontSize: "12px" },
@@ -192,7 +192,7 @@ class CircleListPane extends React.Component {
             filterable: false,
             className: "text-center",
             Cell: row => row.value
-                ? <FontAwesomeIcon icon={['far', 'ok']} />
+                ? <FontAwesomeIcon icon={['fas', 'check']} />
                 : ""
             ,
           },
@@ -212,19 +212,19 @@ class CircleListPane extends React.Component {
     return <div>
       {
         publicChecklist &&
-          <Alert bsStyle="success" className="clearfix">
+          <Card body bg="light" className="clearfix mt1e">
             <a href={"https://twitter.com/" + publicChecklist.config.member_id} target="_blank">
               <FontAwesomeIcon icon={['fab', 'twitter']} />{publicChecklist.config.member_id}
             </a>
             &nbsp;さんのチェックリスト
-            &nbsp;<Badge>{Object.keys(publicChecklist.idx).length}</Badge>&nbsp;
-            を「<FontAwesomeIcon icon={['far', 'ok']} />」で表示しています。
+            &nbsp;<Badge pill variant="primary">{Object.keys(publicChecklist.idx).length}</Badge>&nbsp;
+            を「<FontAwesomeIcon icon={['fas', 'check']} />」で表示しています。
             <div className="pull-right">
-              <Button bsStyle="success" bsSize="xs" onClick={this.removePublicChecklist.bind(this)}>
-                <FontAwesomeIcon icon={['far', 'remove']} /> 非表示にする
+              <Button variant="success" size="sm" onClick={this.removePublicChecklist.bind(this)}>
+                <FontAwesomeIcon icon={['fas', 'times']} /> 非表示にする
               </Button>
             </div>
-          </Alert>
+          </Card>
       }
       {
         table &&
