@@ -3,22 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.26",
+    "@fortawesome/free-brands-svg-icons": "^5.12.0",
+    "@fortawesome/free-regular-svg-icons": "^5.12.0",
+    "@fortawesome/free-solid-svg-icons": "^5.12.0",
+    "@fortawesome/react-fontawesome": "^0.1.8",
     "babel-polyfill": "^6.26.0",
-    "bootstrap": "3.3.7",
+    "bootstrap": "^4.4.1",
     "font-awesome": "^4.7.0",
-    "react": "16.8.6",
-    "react-bootstrap": "^0.32.1",
-    "react-bootstrap-toggle": "^2.2.6",
-    "react-copy-to-clipboard": "^5.0.1",
-    "react-dom": "16.8.6",
-    "react-fontawesome": "^1.6.1",
-    "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.0",
-    "react-table": "^6.7.6",
-    "sprintf-js": "^1.1.1",
-    "styled-components": "^3.1.6",
-    "url-polyfill": "^1.0.13",
-    "whatwg-fetch": "^2.0.4"
+    "react": "^16.12.0",
+    "react-bootstrap": "^1.0.0-beta.16",
+    "react-bootstrap-toggle": "^2.3.2",
+    "react-copy-to-clipboard": "^5.0.2",
+    "react-dom": "^16.12.0",
+    "react-fontawesome": "^1.7.1",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "^3.3.0",
+    "react-table": "^7.0.0-rc.15",
+    "react-table-6": "^6.11.0",
+    "sprintf-js": "^1.1.2",
+    "styled-components": "^4.4.1",
+    "url-polyfill": "^1.1.7",
+    "whatwg-fetch": "^3.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -26,5 +32,17 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "buildConfig": "node config/build.js"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

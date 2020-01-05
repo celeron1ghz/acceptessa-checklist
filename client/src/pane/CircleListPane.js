@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactTable from "react-table";
+import ReactTable from 'react-table-6';
+import "react-table-6/react-table.css";
 import _ from 'lodash';
-import { Badge, Alert, Glyphicon, Button } from 'react-bootstrap';
-import FontAwesome from 'react-fontawesome';
+import { Badge, Alert, Button } from 'react-bootstrap';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 class CircleListPane extends React.Component {
   constructor(props, context) {
@@ -57,13 +58,13 @@ class CircleListPane extends React.Component {
 
     const columns = [
       {
-        Header: "サークル情報",
-        headerStyle: { backgroundColor: "#ddf" },
+        Header: "スペース",
+        headerStyle: { backgroundColor: "#222", color: "#fff" },
         columns: [
           {
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "space_sym",
-            width: 100,
+            width: 70,
             show: enableChecklist,
             resizable: false,
             className: "text-center",
@@ -74,36 +75,50 @@ class CircleListPane extends React.Component {
                 onChange={event => onChange(event.target.value)}
                 style={{ width: "100%" }}
                 value={filter ? filter.value : "all"}>
-                  <option value="">全て</option>
-                  {_.uniq(circleList.map(c => c.space_sym)).map(sym => <option key={sym} value={sym}>{sym}</option>)}
+                <option value=""></option>
+                {_.uniq(circleList.map(c => c.space_sym)).map(sym => <option key={sym} value={sym}>{sym}</option>)}
               </select>
           },{
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "space_num",
-            width: 55,
+            width: 60,
             show: enableChecklist,
             resizable: false,
             className: "text-center",
             Header: "番号",
-            Filter: makePlaceholderFilter("(数)"),
-          },{
+            Filter: makePlaceholderFilter(),
+          }
+        ]
+      },
+      {
+        Header: "サークル情報",
+        headerStyle: { backgroundColor: "#666", color: "#fff" },
+        columns: [
+          {
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "circle_name",
-            width: enableChecklist ? 280 : 650,
             Header: "サークル名",
             Filter: makePlaceholderFilter("(検索)"),
           },{
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "penname",
-            width: enableChecklist ? 150 : 500,
-            Header: "作者",
+            width: 200,
+            Header: "作者名",
             Filter: makePlaceholderFilter("(検索)"),
-          }
-        ]
-      },{
-        Header: "お品書き",
-        headerStyle: { backgroundColor: "#dfd" },
-        columns: [
+          },
+          {
+            headerStyle: { backgroundColor: "#ddd" },
+            accessor: "twitter_id",
+            className: "text-center",
+            width: 75,
+            show: enableChecklist,
+            resizable: false,
+            Header: "Twitter",
+            Cell: row => row.value
+                ? <a href={'https://twitter.com/' + row.value} onClick={e => { e.stopPropagation() }} target="_blank"><FontAwesomeIcon icon={['fab', 'twitter']} /></a>
+                : "",
+            sortable: false,
+          },
           {
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "circle_link",
@@ -111,40 +126,23 @@ class CircleListPane extends React.Component {
             width: 75,
             show: enableChecklist,
             resizable: false,
-            Header: "リンク",
+            Header: "Web",
             Cell: row => row.value
-              ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><Glyphicon glyph="link"/></a>
-              : "",
-            Filter: ({ filter, onChange }) => {
-              return <select
-                onChange={event => onChange(event.target.value)}
-                style={{ width: "100%" }}
-                value={filter ? filter.value : ""}>
-                  <option value="なし">なし</option>
-                  <option value="あり">あり</option>
-                  <option value="">全て</option>
-              </select>;
-            },
-            filterMethod: (filter, row, column) => {
-              const state = filter.value;
-              if (state === "あり") {
-                return !!row.circle_link;
-              } else if (state === "なし") {
-                return !row.circle_link;
-              } else {
-                return true;
-              }
-            },
-          },{
+                ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><FontAwesomeIcon icon={['fas', 'external-link-alt']} /></a>
+                : "",
+            sortable: false,
+          },
+          {
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "circle_comment",
-            width: 490,
+            className: "text-center",
+            width: 100,
             show: enableChecklist,
             Header: "お品書き",
             Filter: makePlaceholderFilter("(検索)"),
             Cell: row => row.value
-              ? row.value
-              : <span style={{ color: "#ccc" }}>(未記入)</span>
+                ? <FontAwesomeIcon icon={['far', 'comment-dots']} />
+                : '',
           }
         ]
       }
@@ -152,27 +150,28 @@ class CircleListPane extends React.Component {
 
     if (showChecklistComponent) {
       columns.unshift({
-        Header: "チェック",
-        headerStyle: { backgroundColor: "#dff", fontSize: "12px" },
+        Header: <FontAwesomeIcon icon={['fas', 'star']} />,
+        headerStyle: { backgroundColor: "#fff" },
         columns: [
           {
-            headerStyle: { backgroundColor: "#ddd", fontSize: "12px" },
+            headerStyle: { backgroundColor: "#ddd" },
+            Header: "",
             accessor: "favorite",
-            width: 80,
+            width: 70,
             resizable: false,
             filterable: false,
             className: "text-center",
             Cell: row => {
               return loadings[row.original.circle_id] || loadings.user
-                ? <Button bsStyle="warning" bsSize="xs" style={{ width: "65px" }} onClick={e => { e.stopPropagation(); }}>
-                    <FontAwesome name="spinner" spin pulse={true} /> 処理中
+                ? <Button variant="warning" size="xs" style={{ width: "60px" }} onClick={e => { e.stopPropagation(); }}>
+                    <FontAwesomeIcon icon={['fas', 'spinner']} spin pulse={true} />
                   </Button>
                 : row.original.favorite
-                  ? <Button bsStyle="danger" bsSize="xs" style={{ width: "65px" }} onClick={e => { e.stopPropagation(); this.removeFavorite(row.original)}}>
-                      <Glyphicon glyph="minus"/> 削除
+                  ? <Button variant="danger" size="sm" style={{ width: "60px" }} onClick={e => { e.stopPropagation(); this.removeFavorite(row.original); }}>
+                      <FontAwesomeIcon icon={['fas', 'star']} /> 削除
                     </Button>
-                  : <Button bsStyle="primary" bsSize="xs" style={{ width: "65px" }} onClick={e => { e.stopPropagation(); this.addFavorite(row.original)  }}>
-                      <Glyphicon glyph="plus"/> 追加
+                  : <Button variant="primary" size="sm" style={{ width: "60px" }} onClick={e => { e.stopPropagation(); this.addFavorite(row.original); }}>
+                      <FontAwesomeIcon icon={['far', 'star']} /> 追加
                     </Button>
             },
           },
@@ -193,7 +192,7 @@ class CircleListPane extends React.Component {
             filterable: false,
             className: "text-center",
             Cell: row => row.value
-                ? <Glyphicon glyph="ok"/>
+                ? <FontAwesomeIcon icon={['far', 'ok']} />
                 : ""
             ,
           },
@@ -215,20 +214,21 @@ class CircleListPane extends React.Component {
         publicChecklist &&
           <Alert bsStyle="success" className="clearfix">
             <a href={"https://twitter.com/" + publicChecklist.config.member_id} target="_blank">
-              <FontAwesome name="twitter"/>{publicChecklist.config.member_id}
+              <FontAwesomeIcon icon={['fab', 'twitter']} />{publicChecklist.config.member_id}
             </a>
             &nbsp;さんのチェックリスト
             &nbsp;<Badge>{Object.keys(publicChecklist.idx).length}</Badge>&nbsp;
-            を「<Glyphicon glyph="ok"/>」で表示しています。
+            を「<FontAwesomeIcon icon={['far', 'ok']} />」で表示しています。
             <div className="pull-right">
               <Button bsStyle="success" bsSize="xs" onClick={this.removePublicChecklist.bind(this)}>
-                <Glyphicon glyph="remove"/> 非表示にする
+                <FontAwesomeIcon icon={['far', 'remove']} /> 非表示にする
               </Button>
             </div>
           </Alert>
       }
       {
-        table && <div>
+        table &&
+        <div className="mt1e">
           {
             table.filtered.length !== 0
               ? <div>
@@ -236,14 +236,14 @@ class CircleListPane extends React.Component {
                   (<b>{table.data.length}</b> サークル中 <b>{table.sortedData.length}</b> 件)
                 </div>
               : <div className="text-muted">
-                  <Glyphicon glyph="exclamation-sign"/> テーブルの行をクリックすると詳細画面が開きます。
+                  <FontAwesomeIcon icon={['fas', 'info-circle']} /> テーブルの行をクリックすると詳細画面が開きます。
                 </div>
           }
         </div>
       }
       <ReactTable
         filterable
-        className="-striped -highlight"
+        className="-striped -highlight mt1e"
         pageSize={table && table.sortedData.length !== 0 ? table.sortedData.length : circleList.length}
         showPageSizeOptions={false}
         showPaginationTop={false}
