@@ -476,7 +476,7 @@ class AdminRoot extends React.Component {
             </span>
           </div>
       }
-      <Tab.Container id="mainContainer" defaultActiveKey="list">
+      <Tab.Container id="mainContainer" defaultActiveKey="circlecut">
         <div className="mt1e">
           <Nav variant="pills">
             <Nav.Item>
