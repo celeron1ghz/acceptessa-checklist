@@ -1,7 +1,8 @@
 import React from 'react';
-import { Label, Button, Glyphicon, Modal, Panel } from 'react-bootstrap';
+import { Button, Modal, Badge, Card, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
 import Toggle from 'react-bootstrap-toggle';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default ({ show, config, me, onPublicLinkClick, onClose }) => {
     if (!config) {
@@ -17,43 +18,47 @@ export default ({ show, config, me, onPublicLinkClick, onClose }) => {
     return <Modal show={show} onHide={onClose}>
       <Modal.Header closeButton>
         <Modal.Title>
-          <Glyphicon glyph="link"/> チェックリストの公開設定
+          <FontAwesomeIcon icon={['fas', 'link']} /> チェックリストの公開設定
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Panel>
-          <Panel.Body>
+        <Card>
+          <Card.Header>
             <div>
               チェックリストの共有
               &nbsp;&nbsp;
-              <Toggle
-                width={110}
-                height={30}
-                on={<span>公開する</span>}
-                off={<span>公開しない</span>}
-                active={config.public}
-                onClick={onPublicLinkClick.bind(this,!config.public)}/>
+              <ToggleButtonGroup type="radio" name="publish" defaultValue={config.public ? 'published' : 'notPublished'}>
+                <ToggleButton
+                    onClick={onPublicLinkClick.bind(this, true)}
+                    value={'published'}
+                    variant="outline-primary">{config.public}公開する</ToggleButton>
+                <ToggleButton
+                    onClick={onPublicLinkClick.bind(this, false)}
+                    value={'notPublished'}
+                    variant="outline-secondary">公開しない</ToggleButton>
+              </ToggleButtonGroup>
             </div>
-            <hr/>
+          </Card.Header>
+          <Card.Body>
             <div>
               {
                 config.public
                   ? <span>
-                      チェックリストは <Label bsStyle="primary">公開</Label> に設定されています。
+                      チェックリストは <Badge variant="primary">公開</Badge> に設定されています。
                       <br/><br/>
                       <h4>
                         チェックリストの公開URL&nbsp;
                         <CopyToClipboard text={publicUrl}>
-                          <Button bsStyle="success" bsSize="xs"><Glyphicon glyph="copy"/> クリップボードにコピー</Button>
+                          <Button variant="success" size="sm"><FontAwesomeIcon icon={['far', 'copy']} /> クリップボードにコピー</Button>
                         </CopyToClipboard>
                       </h4>
                       <b><a href={publicUrl} target="_blank">{publicUrl}</a></b>
                     </span>
-                  : <span>チェックリストは <Label>非公開</Label> に設定されています。</span>
+                  : <span>チェックリストは <Badge variant="secondary">非公開</Badge> に設定されています。</span>
               }
             </div>
-          </Panel.Body>
-        </Panel>
+          </Card.Body>
+        </Card>
         <ul>
           <li>上のボタンを押すことで共有・非共有が設定されます。共有ボタンを押していない場合は公開されません。</li>
           <li>公開状態から非公開状態に戻すことも可能です。</li>
@@ -61,7 +66,7 @@ export default ({ show, config, me, onPublicLinkClick, onClose }) => {
         </ul>
       </Modal.Body>
       <Modal.Footer>
-        <Button block bsStyle="success" onClick={this.close}>閉じる</Button>
+        <Button block variant="success" onClick={onClose}>閉じる</Button>
       </Modal.Footer>
     </Modal>;
 };
