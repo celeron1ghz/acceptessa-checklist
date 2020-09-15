@@ -1,0 +1,16 @@
+width: 35
+height: 68
+tweet:
+  url: "http://familiar-life.info/GJ/"
+  hashtags: "大天使祭"
+  related: "FamiliarLife_PR"
+vertical_syms:
+ - { sym: "G", left: 630, tops: [ 424, 492, 561, 630, 699, 767, 836, 905, 1042, 1111, 1180, 1248, 1317, 1385, 1455, 1523] }  
+ - { sym: "J", left: 630, tops: [ 1730, 1798, 1867, 1936, 2005, 2073 ] }  
+ - { sym: "B", left: 252, tops: [ 424, 492, 561, 630, 699, 767, 836, 905, 1042, 1111, 1180, 1248, 1317, 1385 ] }  
+ - { sym: "P", left: 630, tops: [ 1730, 1798, 1867, 1936, 2005, 2073 ] }  
+horizontal_syms: 
+ - { sym: "J", top: 2280, idx: 7, lefts: [527] }
+ - { sym: "P", top: 2280, idx: 7, lefts: [321, 390] }
+ - { sym: "A", top: 2280, idx: 1, lefts: [458] }
+

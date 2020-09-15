@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactTable from "react-table";
+import ReactTable from "react-table-6";
 import _ from 'lodash';
-import { Glyphicon } from 'react-bootstrap';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 class FavoriteListPane extends React.Component {
   rowClick(circle) {
@@ -35,111 +35,98 @@ class FavoriteListPane extends React.Component {
     const filtered = circleList.filter(c => c.favorite);
     const columns = [
       {
-        Header: "サークル情報",
-        headerStyle: { backgroundColor: "#ddf" },
+        Header: "スペース",
+        headerStyle: { backgroundColor: "#222", color: "#fff" },
         columns: [
           {
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "space_sym",
-            width: 100,
+            width: 70,
             resizable: false,
             className: "text-center",
             Header: "記号",
             sortMethod: spaceSymSorter,
             Filter: ({ filter, onChange }) =>
-              <select
-                onChange={event => onChange(event.target.value)}
-                style={{ width: "100%" }}
-                value={filter ? filter.value : "all"}>
-                  <option value="">全て</option>
+                <select
+                    onChange={event => onChange(event.target.value)}
+                    style={{ width: "100%" }}
+                    value={filter ? filter.value : "all"}>
+                  <option value=""></option>
                   {_.uniq(circleList.map(c => c.space_sym)).map(sym => <option key={sym} value={sym}>{sym}</option>)}
-              </select>
+                </select>
           },{
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "space_num",
-            width: 55,
+            width: 60,
             resizable: false,
             className: "text-center",
             Header: "番号",
-            Filter: makePlaceholderFilter("(数)"),
-          },{
-            headerStyle: { backgroundColor: "#ddd" },
-            accessor: "circle_name",
-            width: 250,
-            Header: "サークル名",
-            Filter: makePlaceholderFilter("(検索)"),
+            Filter: makePlaceholderFilter(),
           }
         ]
-      },{
-        Header: "お品書き",
-        headerStyle: { backgroundColor: "#dfd" },
+      },
+      {
+        Header: "サークル情報",
+        headerStyle: { backgroundColor: "#666", color: "#fff" },
         columns: [
+          {
+            headerStyle: { backgroundColor: "#ddd" },
+            accessor: "circle_name",
+            Header: "サークル名",
+            Filter: makePlaceholderFilter("(検索)"),
+          },{
+            headerStyle: { backgroundColor: "#ddd" },
+            accessor: "penname",
+            width: 200,
+            Header: "作者名",
+            Filter: makePlaceholderFilter("(検索)"),
+          },
+          {
+            headerStyle: { backgroundColor: "#ddd" },
+            accessor: "twitter_id",
+            className: "text-center",
+            width: 75,
+            resizable: false,
+            Header: "Twitter",
+            Cell: row => row.value
+                ? <a href={'https://twitter.com/' + row.value} onClick={e => { e.stopPropagation() }} target="_blank"><FontAwesomeIcon icon={['fab', 'twitter']} /></a>
+                : "",
+            sortable: false,
+          },
           {
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "circle_link",
             className: "text-center",
             width: 75,
             resizable: false,
-            Header: "リンク",
+            Header: "Web",
             Cell: row => row.value
-              ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><Glyphicon glyph="link"/></a>
-              : "",
-            Filter: ({ filter, onChange }) => {
-              return <select
-                onChange={event => onChange(event.target.value)}
-                style={{ width: "100%" }}
-                value={filter ? filter.value : ""}>
-                  <option value="なし">なし</option>
-                  <option value="あり">あり</option>
-                  <option value="">全て</option>
-              </select>;
-            },
-            filterMethod: (filter, row, column) => {
-              const state = filter.value;
-              if (state === "あり") {
-                return !!row.circle_link;
-              } else if (state === "なし") {
-                return !row.circle_link;
-              } else {
-                return true;
-              }
-            },
-          },{
+                ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><FontAwesomeIcon icon={['fas', 'external-link-alt']} /></a>
+                : "",
+            sortable: false,
+          },
+          {
             headerStyle: { backgroundColor: "#ddd" },
             accessor: "circle_comment",
-            width: 490,
+            className: "text-center",
+            width: 100,
             Header: "お品書き",
             Filter: makePlaceholderFilter("(検索)"),
             Cell: row => row.value
-              ? row.value
-              : <span style={{ color: "#ccc" }}>(未記入)</span>
+                ? <FontAwesomeIcon icon={['far', 'comment-dots']} />
+                : '',
           }
-        ]
-      },{
-        Header: "チェックリスト",
-        headerStyle: { backgroundColor: "#dff" },
-        columns: [
-          {
-            Header: "コメント",
-            headerStyle: { backgroundColor: "#ddd" },
-            accessor: "favorite.comment",
-            width: 300,
-            Filter: makePlaceholderFilter("(検索)"),
-            Cell: row => row.value
-              ? row.value
-              : <span style={{ color: "#ccc" }}>(未記入)</span>
-          },
         ]
       }
     ];
 
     return <div>
-      <div className="text-muted">
-        <Glyphicon glyph="exclamation-sign"/> テーブルの行をクリックすると詳細画面が開きます。
+      <div className="text-muted mt1e">
+        <FontAwesomeIcon icon={['fas', 'info-circle']} /> テーブルの行をクリックすると詳細画面が開きます。
       </div>
       <ReactTable
         filterable
-        className="-striped -highlight"
+        className="-striped -highlight mt1e"
         pageSize={20}
         pageSize={filtered.length}
         showPageSizeOptions={false}
@@ -155,7 +142,6 @@ class FavoriteListPane extends React.Component {
         }}
         getTrProps={(a,b) => {
           return {
-            style: { color: b && b.original && b.original.favorite ? "red" : "" },
             onClick: () => { this.rowClick(b.original) }
           };
         }}

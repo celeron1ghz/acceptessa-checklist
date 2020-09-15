@@ -1,24 +1,42 @@
 import React from 'react';
-import FontAwesome from 'react-fontawesome';
 import { withRouter } from 'react-router-dom';
-import { Image, ButtonToolbar, DropdownButton, MenuItem, Well, Badge, Tab, Nav, NavItem, Button, Glyphicon } from 'react-bootstrap';
+import {
+  Image,
+  ButtonToolbar,
+  Dropdown,
+  DropdownButton,
+  Badge,
+  Card,
+  Tab,
+  Nav,
+  NavItem,
+  Button,
+  ToggleButton,
+  ToggleButtonGroup,
+  ButtonGroup
+} from 'react-bootstrap';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import _ from 'lodash';
 
-import MapPane from '../pane/MapPane';
-import CirclecutPane from '../pane/CirclecutPane';
 import CircleListPane from '../pane/CircleListPane';
+import CirclecutPane from '../pane/CirclecutPane';
 import FavoriteListPane from '../pane/FavoriteListPane';
+import MapPane from '../pane/MapPane';
 
+import CircleDescriptionModal from '../modal/CircleDescriptionModal';
 import PublicLinkModal from '../modal/PublicLinkModal';
 import ExportChecklistModal from '../modal/ExportChecklistModal';
-import CircleDescriptionModal from '../modal/CircleDescriptionModal';
 
-import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import '../../node_modules/bootstrap/dist/css/bootstrap-theme.min.css';
-import '../../node_modules/react-table/react-table.css';
-import '../../node_modules/react-bootstrap-toggle/dist/bootstrap2-toggle.css';
-import '../../node_modules/font-awesome/css/font-awesome.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap-theme.min.css';
+import 'react-bootstrap-toggle/dist/bootstrap2-toggle.css';
+import 'font-awesome/css/font-awesome.min.css';
+library.add(fab, fas, far);
 
 class AdminRoot extends React.Component {
   constructor(props, context) {
@@ -400,13 +418,12 @@ class AdminRoot extends React.Component {
 
     return <div className="container">
       <br/>
-      <Well bsSize="small" className="clearfix">
+      <Card body bg="light">
         <span>
-          サークル一覧
           {
             exhibition
-              ? <span> ({exhibition.exhibition_name}) <Badge>{circleList.length}</Badge></span>
-              : ' '
+              ? <span> {exhibition.exhibition_name} サークル一覧 <Badge pill variant="secondary">{circleList.length}</Badge></span>
+              : 'サークル一覧'
           }
         </span>
         {
@@ -414,59 +431,73 @@ class AdminRoot extends React.Component {
             <div className="pull-right">
               {
                 loading.auth
-                  ? <Button bsStyle="warning" bsSize="xs">
-                      <FontAwesome name="spinner" spin pulse={true} /> 読み込み中...
+                  ? <Button variant="warning" size="sm">
+                      <FontAwesomeIcon icon={['fas', 'spinner']} spin pulse={true} /> 読み込み中...
                     </Button>
                   : me
                     ? <ButtonToolbar>
                         <DropdownButton
-                          bsStyle="success"
-                          bsSize="xsmall"
+                          alignRight
+                          variant="success"
+                          size="sm"
                           id="dropdown-size-extra-small"
-                          title={<span><FontAwesome name="twitter"/> {me.screen_name}</span>}>
-                            <MenuItem eventKey="1">
+                          title={<span><FontAwesomeIcon icon={['fab', 'twitter']} /> {me.screen_name}</span>}>
+                            <Dropdown.Item eventKey="1">
                               {me.display_name + ' '}
-                              <Image circle src={me.profile_image_url} style={{width: "32px", height: "32px", border: "1px solid gray" }}/>
-                            </MenuItem>
-                            <MenuItem eventKey="2" onClick={this.logout}>ログアウト <FontAwesome name="sign-out"/></MenuItem>
-                            <MenuItem divider />
-                            <MenuItem eventKey="3" onClick={this.openExportChecklistModal}><Glyphicon glyph="export"/> エクスポート</MenuItem>
-                            <MenuItem divider />
-                            <MenuItem eventKey="4" onClick={this.openPublicLinkModal}><Glyphicon glyph="link"/> 公開設定</MenuItem>
+                              <Image circle src={me.profile_image_url} style={{width: "32px", height: "32px", borderRadius: "50%" }}/>
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey="2" onClick={this.logout}>
+                              ログアウト <FontAwesomeIcon icon={['fas', 'sign-out-alt']} />
+                            </Dropdown.Item>
+                            <Dropdown.Divider />
+                            <Dropdown.Item eventKey="3" onClick={this.openExportChecklistModal}>
+                              <FontAwesomeIcon icon={['fas', 'file-download']} /> エクスポート
+                            </Dropdown.Item>
+                            <Dropdown.Divider />
+                            <Dropdown.Item eventKey="4" onClick={this.openPublicLinkModal}>
+                              <FontAwesomeIcon icon={['fas', 'link']} /> 公開設定
+                            </Dropdown.Item>
                         </DropdownButton>
                       </ButtonToolbar>
-                    : <Button bsStyle="primary" bsSize="xs" onClick={this.login}>
-                        <FontAwesome name="twitter"/> Login via Twitter
+                    : <Button variant="primary" size="sm" onClick={this.login}>
+                      <FontAwesomeIcon icon={['fab', 'twitter']} /> Login via Twitter
                       </Button>
               }
             </div>
         }
-      </Well>
+      </Card>
       {
         (enableChecklist && !me) &&
-          <div className="text-info">
-            <Glyphicon glyph="exclamation-sign"/> Twitterのアカウントでログインを行うことでチェックリストの作成を行うことが可能です。
+          <div className="text-info mt1e mb1e">
+            <FontAwesomeIcon icon={['fas', 'info-circle']} /> Twitterのアカウントでログインを行うことでチェックリストの作成を行うことが可能です。
             <br/>
-            （ログインにて取得した情報はログインしたユーザの情報取得のみに利用し、その他ツイートの取得や自動ツイート、パスワード取得等は行いません。）
-            <br/>
-            <br/>
+            <span className="fz80p">
+              （取得した情報はログインしたユーザの情報取得のみに利用し、ツイートの取得・自動ツイート等は行いません。）
+            </span>
           </div>
       }
-      <Tab.Container id="left-tabs-example" defaultActiveKey="list">
-        <div>
-          <Nav bsStyle="pills">
-            <NavItem eventKey="list"><Glyphicon glyph="th-list"/> リスト表示</NavItem>
-            <NavItem eventKey="circlecut"><Glyphicon glyph="picture"/> サークルカット</NavItem>
+      <Tab.Container id="mainContainer" defaultActiveKey="circlecut">
+        <div className="mt1e">
+          <Nav variant="pills">
+            <Nav.Item>
+              <Nav.Link eventKey="list"><FontAwesomeIcon icon={['fas', 'list']} /> リスト表示</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="circlecut"><FontAwesomeIcon icon={['fas', 'images']} /> サークルカット</Nav.Link>
+            </Nav.Item>
             {
               param.map &&
-                <NavItem eventKey="map"><Glyphicon glyph="map-marker"/> マップ</NavItem>
+                <Nav.Item>
+                  <Nav.Link eventKey="map"><FontAwesomeIcon icon={['fas', 'map-marked-alt']} /> マップ</Nav.Link>
+                </Nav.Item>
             }
             {
               enableChecklist &&
-                <NavItem eventKey="favorite"><Glyphicon glyph="star"/> お気に入り済み <Badge>{Object.keys(favoriteIdx).length}</Badge></NavItem>
+                <Nav.Item>
+                  <Nav.Link eventKey="favorite"><FontAwesomeIcon icon={['fas', 'star']} /> お気に入り <Badge pill variant="light">{Object.keys(favoriteIdx).length}</Badge></Nav.Link>
+                </Nav.Item>
             }
           </Nav>
-          <br/>
           <Tab.Content>
             <Tab.Pane eventKey="list">
               <CircleListPane
@@ -528,7 +559,8 @@ class AdminRoot extends React.Component {
         onAddFavorite={this.addFavorite}
         onRemoveFavorite={this.removeFavorite}
         showChecklistComponent={!!me}
-        tweetParams={param.tweet}/>
+        tweetParams={param.tweet}
+        exhibitionName={exhibition.exhibition_name}/>
 
       <PublicLinkModal
         show={showPublicLinkModal}

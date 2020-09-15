@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import FontAwesome from 'react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import _ from 'lodash';
-import { Row, Col, Button, Glyphicon, Panel, Label, FormControl, Modal, Image } from 'react-bootstrap';
+import {Row, Col, Button, FormControl, Modal, Image, Badge, Nav, Card} from 'react-bootstrap';
 
 function generateTweetLink(tweetParams, text, url) {
   const param = {
@@ -18,9 +18,7 @@ function generateTweetLink(tweetParams, text, url) {
   ).slice(0, -1);
 }
 
-
-
-export default ({ show, showChecklistComponent, circle, favorite, loadings, onClose, onUpdateComment, onAddFavorite, onRemoveFavorite, tweetParams }) => {
+export default ({ show, showChecklistComponent, circle, favorite, loadings, onClose, onUpdateComment, onAddFavorite, onRemoveFavorite, tweetParams, exhibitionName }) => {
     const [comment, setComment] = useState(favorite ? favorite.comment : null);
 
     return <Modal show={show} onHide={onClose}>
@@ -28,10 +26,13 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
         <Modal.Title>
           {
             circle && <div>
-              <Glyphicon glyph="cog"/>
-              {' ' + circle.circle_name + ' '}
+              <FontAwesomeIcon icon={['far', 'clipboard']} />&ensp;
+              {circle.circle_name}&emsp;
               {
-                favorite && <Label bsStyle="warning"><Glyphicon glyph="star"/> お気に入り</Label>
+                favorite &&
+                  <Button variant="warning" size="sm" onClick={e => { e.stopPropagation(); onRemoveFavorite(circle) }}>
+                    <FontAwesomeIcon icon={['fas', 'star']} /> お気に入り
+                  </Button>
               }
             </div>
           }
@@ -41,7 +42,7 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
         {
           circle && <div>
             <div className="text-center">
-              <Image src={circle.circlecut} style={{ border: favorite ? "4px solid aqua" : "4px solid transparent" }}/>
+              <Image src={circle.circlecut} style={{ border: favorite ? "7px solid #f00" : "none" }}/>
             </div>
 
             <br/>
@@ -53,101 +54,119 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
                         ? <div>
                             {
                               loadings[circle.circle_id]
-                                ? <Button block bsStyle="warning">
-                                    <FontAwesome name="spinner" spin pulse={true} /> 処理中
+                                ? <Button block variant="warning">
+                                    <FontAwesomeIcon icon={['fas', 'spinner']} spin pulse={true} /> 処理中
                                   </Button>
-                                : <Button block bsStyle="danger" onClick={() => onRemoveFavorite(circle)}>
-                                    <Glyphicon glyph="minus"/> お気に入りから削除する
+                                : <Button block variant="danger" onClick={() => onRemoveFavorite(circle)}>
+                                    <FontAwesomeIcon icon={['fas', 'minus']} /> お気に入りから削除する
                                   </Button>
                             }
                             <br/>
                             <Row>
-                              <Col xs={12} sm={8} md={8} lg={8}>
+                              <Col xs={12} sm={12} md={8} lg={8}>
                                 <FormControl
                                   componentClass="textarea"
                                   placeholder="(コメントが未記入です)"
                                   value={comment || ''}
                                   onChange={e => setComment(e.target.value)}/>
                               </Col>
-                              <Col xs={12} sm={4} md={4} lg={4}>
-                                <Button block bsStyle="primary" onClick={() => onUpdateComment(circle, comment)} style={{ height: "55px" }}>
-                                  <Glyphicon glyph="refresh"/> コメントを更新する
+                              <Col xs={12} sm={12} md={4} lg={4}>
+                                <Button className="circleDescripton-renewComment" block variant="primary" onClick={() => onUpdateComment(circle, comment)}>
+                                  <FontAwesomeIcon icon={['fas', 'sync-alt']} /> コメント更新
                                 </Button>
                               </Col>
                             </Row>
                           </div>
                         : loadings[circle.circle_id]
-                            ? <Button block bsStyle="warning">
-                                <FontAwesome name="spinner" spin pulse={true} /> 処理中
+                            ? <Button block variant="warning">
+                                <FontAwesomeIcon icon={['fas', 'spinner']} spin pulse={true} /> 処理中
                               </Button>
-                            : <Button block bsStyle="primary" onClick={() => onAddFavorite(circle)}>
-                                <Glyphicon glyph="plus"/> お気に入りに追加する
+                            : <Button block variant="primary" onClick={() => onAddFavorite(circle)}>
+                                <FontAwesomeIcon icon={['far', 'star']}  /> お気に入りに追加する
                               </Button>
                   }
                 </div>
             }
             <br/>
 
-            <h4>サークルの情報</h4>
-            <Panel>
-              <Panel.Body>
-                <p>
-                  <Label bsStyle="primary">{circle.space_sym}-{circle.space_num}</Label>
-                  &nbsp;
-                  {circle.circle_name} ({circle.penname})
-                </p>
+            <h4 className="text-center">サークルの情報</h4>
+            <Card body bg="">
+              <p>
+                <Badge variant="primary">{circle.space_sym}-{circle.space_num}</Badge>
+                &nbsp;
+                {circle.circle_name} ({circle.penname})
+              </p>
                 {
                   circle.pixiv_url &&
-                    <p><Label><FontAwesome name="link"/> Pixiv</Label> <a href={circle.pixiv_url} target="_blank">{circle.pixiv_url}</a></p>
+                    <dl className="circle-link">
+                      <dt>
+                        <Badge pill variant="secondary"><FontAwesomeIcon icon={['fas', 'palette']} /> Pixiv</Badge>
+                      </dt>
+                      <dd>
+                        <a href={circle.pixiv_url} target="_blank">{circle.pixiv_url}</a>
+                      </dd>
+                    </dl>
                 }
                 {
                   circle.site_url &&
-                    <p><Label><FontAwesome name="link"/> ホームページ</Label> <a href={circle.site_url} target="_blank">{circle.site_url}</a></p>
+                  <dl className="circle-link">
+                  <dt>
+                      <Badge pill variant="secondary"><FontAwesomeIcon icon={['fas', 'link']} /> Web</Badge>
+                  </dt>
+                    <dd>
+                      <a href={circle.site_url} target="_blank">{circle.site_url}</a>
+                    </dd>
+                  </dl>
                 }
                 {
                   circle.twitter_id &&
-                    <p><Label><FontAwesome name="twitter"/> Twitter</Label> <a href={"https://twitter.com/" + circle.twitter_id} target="_blank">{circle.twitter_id}</a></p>
+                  <dl className="circle-link">
+                    <dt>
+                        <Badge pill variant="secondary"><FontAwesomeIcon icon={['fab', 'twitter']} /> Twitter</Badge>
+                    </dt>
+                    <dd>
+                        <a href={"https://twitter.com/" + circle.twitter_id} target="_blank">{circle.twitter_id}</a>
+                    </dd>
+                  </dl>
                 }
-              </Panel.Body>
-            </Panel>
+            </Card>
 
-            <h4>サークルのお品書き</h4>
-            <Panel>
-              <Panel.Body>
-                <p style={{ whiteSpace: "pre" }}>{
-                  circle.circle_comment
-                    ? circle.circle_comment.split('\n').map(l => <div style={{ wordWrap: 'break-word' }}>{l}</div>)
-                    : <Label>お品書きコメント未記入</Label>
+            <h4 className="text-center mt1e">サークルのお品書き</h4>
+            <Card body>
+              <p style={{ whiteSpace: "pre" }}>{
+                circle.circle_comment
+                  ? circle.circle_comment.split('\n').map(l => <div style={{ wordWrap: 'break-word' }}>{l}</div>)
+                  : <Badge>お品書きコメント未記入</Badge>
 
-                }</p>
-                {
-                  circle.circle_link
-                    ? <a href={circle.circle_link} target="_blank">{circle.circle_link}</a>
-                    : <Label>お品書きリンク未記入</Label>
-                }
-              </Panel.Body>
-            </Panel>
+              }</p>
+              {
+                circle.circle_link
+                  ? <a href={circle.circle_link} target="_blank">{circle.circle_link}</a>
+                  : <Badge>お品書きリンク未記入</Badge>
+              }
+            </Card>
             {
-              circle && <p>
+              circle &&
                 <Button
-                  bsStyle="primary"
-                  bsSize="small"
-                  href={generateTweetLink(
-                    tweetParams,
-                    (circle.space_sym && circle.space_num ? `【${circle.space_sym}-${circle.space_num}】 ` : '')
-                    + `${circle.circle_name} のサークル情報です。`,
-                    window.location.href,
-                  )}
-                  target="_blank">
-                    <FontAwesome name="twitter" size="1x"/>{' '}サークルの情報をツイートする（別画面が開きます）
+                    block
+                    className="mt1e"
+                    variant="primary"
+                    size="small"
+                    href={generateTweetLink(
+                        tweetParams,
+                        `${exhibitionName} ` + (circle.space_sym && circle.space_num ? `【${circle.space_sym}-${circle.space_num}】 ` : '')
+                        + `${circle.circle_name} のサークル情報です。`,
+                        window.location.href,
+                    )}
+                    target="_blank">
+                  <FontAwesomeIcon icon={['fav', 'twitter']} /> {' '}サークルの情報をツイートする（別画面が開きます）
                 </Button>
-              </p>
             }
           </div>
         }
       </Modal.Body>
       <Modal.Footer>
-        <Button block bsStyle="success" onClick={onClose}>閉じる</Button>
+        <Button block variant="success" onClick={onClose}>閉じる</Button>
       </Modal.Footer>
     </Modal>;
 };

@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { sprintf } from 'sprintf-js';
-import { OverlayTrigger, Tooltip, Glyphicon } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import CirclePositionElement from '../common/CirclePositionElement';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 class MapPane extends React.Component {
   onClick(circle) {
@@ -26,11 +27,11 @@ class MapPane extends React.Component {
       }
     }
 
-    return <div className="text-center">
-      <div className="text-muted">
-        <Glyphicon glyph="exclamation-sign"/> サークルのスペースをクリックすると詳細画面が開きます。
+    return <div className="">
+      <div className="text-muted mt1e">
+        <FontAwesomeIcon icon={['fas', 'info-circle']} /> サークルのスペースをクリックすると詳細画面が開きます。
       </div>
-      <div className="pre-scrollable" style={{ height: parseInt(maps.image_height) + 10 + "px", maxHeight: parseInt(maps.image_height) + 10 + "px" }}>
+      <div className="pre-scrollable mt1e" style={{ height: parseInt(maps.image_height, 10) + 10 + "px", maxHeight: parseInt(maps.image_height, 10) + 10 + "px" }}>
         <div style={{
           display: "inline-block",
           border: "1px solid black",
