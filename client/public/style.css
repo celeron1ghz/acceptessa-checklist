@@ -42,15 +42,18 @@
     pointer-events: none;
 }
 .circleCut-detail {
-    border: 3px solid #111;
+    /*border: 3px solid #111;
     border-top: none;
     display: flex;
     height: 60px;
-    font-size: 14px;
+    font-size: 14px;*/
+    display: none;
 }
 .circleCut-space {
+    position: absolute;
+    left: 0;
+    top: 0;
     text-align: center;
-    width: 50px;
     line-height: 1.2em;
     font-size: 16px;
     background-color: #111;
@@ -60,18 +63,16 @@
     align-items: center;
     justify-content: center;
 }
-.space-wide .circleCut-space {
-    width: 70px;
-}
-.circleCut-name {
+/*.circleCut-name {
     width: 50px;
     text-align: left;
     flex-grow: 1;
-    padding-left: 1em;
+    padding-left: 0.5em;
     display: flex;
     align-items: center;
     line-height: 1.3em;
 }
+*/
 .circleCut-favorite {
     width: 78px;
     padding: 13px 8px 13px 5px;
@@ -92,14 +93,18 @@
         padding: 0;
     }
     .circleCut-item {
-        width: 250px;
+        width: 127px;
     }
     .circleCut-item.space-wide {
-        width: 500px;
+        width: 255px;
     }
     .circleCut-item.is--favorite:after {
         height: 196px;
         border-width: 4px;
+    }
+    .circleCut-space {
+        width: 37px;
+        height: 37px;
     }
     .circleCut-detail {
         font-Size: 14px;
@@ -112,7 +117,7 @@
         padding: 0 1px;
     }
     .circleCut-item {
-        width: 232px;
+        width: 154px;
         transition: 0.15s;
     }
     .circleCut-item:hover {
@@ -120,11 +125,15 @@
         transition: 0.25s;
     }
     .circleCut-item.space-wide {
-        width: 464px;
+        width: 309px;
     }
     .circleCut-item.is--favorite:after {
         height: 182px;
         border-width: 3px;
+    }
+    .circleCut-space {
+        width: 45px;
+        height: 45px;
     }
 }
 @media screen and (min-width: 1200px) {
@@ -133,14 +142,18 @@
         padding: 0;
     }
     .circleCut-item {
-        width: 250px;
+        width: 166px;
     }
     .circleCut-item.space-wide {
-        width: 500px;
+        width: 333px;
     }
     .circleCut-item.is--favorite:after {
         height: 196px;
         border-width: 4px;
+    }
+    .circleCut-space {
+        width: 49px;
+        height: 49px;
     }
 }
 

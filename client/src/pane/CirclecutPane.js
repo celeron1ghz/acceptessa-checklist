@@ -44,10 +44,10 @@ class CirclecutPane extends React.Component {
             <img
               src={c.circlecut ? c.circlecut.replace('http:', 'https:') : null}
               className="circleCut-img"/>
+            <div className="circleCut-space">
+              {c.space_sym}<br/>{c.space_num}
+            </div>
             <div className="circleCut-detail">
-              <div className="circleCut-space">
-                {c.space_sym}<br/>{c.space_num}
-              </div>
               <div className="circleCut-name">
                 {c.circle_name}
               </div>
