@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { Button, Col, Image, Badge } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 class CirclecutPane extends React.Component {
@@ -43,7 +43,9 @@ class CirclecutPane extends React.Component {
             onClick={this.imageClick.bind(this,c)}>
             <img
               src={c.circlecut ? c.circlecut.replace('http:', 'https:') : null}
-              className="circleCut-img"/>
+              className="circleCut-img"
+              alt={c.circle_name}
+            />
             <div className="circleCut-space">
               {c.space_sym}<br/>{c.space_num}
             </div>

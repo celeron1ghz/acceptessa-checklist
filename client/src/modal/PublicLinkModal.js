@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Modal, Badge, Card, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
-import Toggle from 'react-bootstrap-toggle';
+// import Toggle from 'react-bootstrap-toggle';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -52,7 +52,7 @@ export default ({ show, config, me, onPublicLinkClick, onClose }) => {
                           <Button variant="success" size="sm"><FontAwesomeIcon icon={['far', 'copy']} /> クリップボードにコピー</Button>
                         </CopyToClipboard>
                       </h4>
-                      <b><a href={publicUrl} target="_blank">{publicUrl}</a></b>
+                      <b><a href={publicUrl} target="_blank" rel="noopener noreferrer">{publicUrl}</a></b>
                     </span>
                   : <span>チェックリストは <Badge variant="secondary">非公開</Badge> に設定されています。</span>
               }

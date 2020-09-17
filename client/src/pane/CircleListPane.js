@@ -115,7 +115,7 @@ class CircleListPane extends React.Component {
             resizable: false,
             Header: "Twitter",
             Cell: row => row.value
-                ? <a href={'https://twitter.com/' + row.value} onClick={e => { e.stopPropagation() }} target="_blank"><FontAwesomeIcon icon={['fab', 'twitter']} /></a>
+                ? <a href={'https://twitter.com/' + row.value} onClick={e => { e.stopPropagation() }} target="_blank" rel="noopener noreferrer"><FontAwesomeIcon icon={['fab', 'twitter']} /></a>
                 : "",
             sortable: false,
           },
@@ -128,7 +128,7 @@ class CircleListPane extends React.Component {
             resizable: false,
             Header: "Web",
             Cell: row => row.value
-                ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><FontAwesomeIcon icon={['fas', 'external-link-alt']} /></a>
+                ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank" rel="noopener noreferrer"><FontAwesomeIcon icon={['fas', 'external-link-alt']} /></a>
                 : "",
             sortable: false,
           },
@@ -213,7 +213,7 @@ class CircleListPane extends React.Component {
       {
         publicChecklist &&
           <Card body bg="light" className="clearfix mt1e">
-            <a href={"https://twitter.com/" + publicChecklist.config.member_id} target="_blank">
+            <a href={"https://twitter.com/" + publicChecklist.config.member_id} target="_blank" rel="noopener noreferrer">
               <FontAwesomeIcon icon={['fab', 'twitter']} />{publicChecklist.config.member_id}
             </a>
             &nbsp;さんのチェックリスト

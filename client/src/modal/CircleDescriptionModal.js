@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import _ from 'lodash';
-import {Row, Col, Button, FormControl, Modal, Image, Badge, Nav, Card} from 'react-bootstrap';
+import {Row, Col, Button, FormControl, Modal, Image, Badge, Card} from 'react-bootstrap';
 
 function generateTweetLink(tweetParams, text, url) {
   const param = {
@@ -103,7 +103,7 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
                         <Badge pill variant="secondary"><FontAwesomeIcon icon={['fas', 'palette']} /> Pixiv</Badge>
                       </dt>
                       <dd>
-                        <a href={circle.pixiv_url} target="_blank">{circle.pixiv_url}</a>
+                        <a href={circle.pixiv_url} target="_blank" rel="noopener noreferrer">{circle.pixiv_url}</a>
                       </dd>
                     </dl>
                 }
@@ -114,7 +114,7 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
                       <Badge pill variant="secondary"><FontAwesomeIcon icon={['fas', 'link']} /> Web</Badge>
                   </dt>
                     <dd>
-                      <a href={circle.site_url} target="_blank">{circle.site_url}</a>
+                      <a href={circle.site_url} target="_blank" rel="noopener noreferrer">{circle.site_url}</a>
                     </dd>
                   </dl>
                 }
@@ -125,7 +125,7 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
                         <Badge pill variant="secondary"><FontAwesomeIcon icon={['fab', 'twitter']} /> Twitter</Badge>
                     </dt>
                     <dd>
-                        <a href={"https://twitter.com/" + circle.twitter_id} target="_blank">{circle.twitter_id}</a>
+                        <a href={"https://twitter.com/" + circle.twitter_id} target="_blank" rel="noopener noreferrer">{circle.twitter_id}</a>
                     </dd>
                   </dl>
                 }
@@ -141,7 +141,7 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
               }</p>
               {
                 circle.circle_link
-                  ? <a href={circle.circle_link} target="_blank">{circle.circle_link}</a>
+                  ? <a href={circle.circle_link} target="_blank" rel="noopener noreferrer">{circle.circle_link}</a>
                   : <Badge>お品書きリンク未記入</Badge>
               }
             </Card>
