@@ -41,14 +41,6 @@
     display: inline-block;
     pointer-events: none;
 }
-.circleCut-detail {
-    /*border: 3px solid #111;
-    border-top: none;
-    display: flex;
-    height: 60px;
-    font-size: 14px;*/
-    display: none;
-}
 .circleCut-space {
     position: absolute;
     left: 0;
@@ -63,16 +55,22 @@
     align-items: center;
     justify-content: center;
 }
-/*.circleCut-name {
+.circleCut-detail {
+    border: 3px solid #111;
+    border-top: none;
+    display: flex;
+    height: 60px;
+    font-size: 14px;
+}
+.circleCut-name {
     width: 50px;
-    text-align: left;
     flex-grow: 1;
     padding-left: 0.5em;
     display: flex;
     align-items: center;
+    justify-content: center;
     line-height: 1.3em;
 }
-*/
 .circleCut-favorite {
     width: 78px;
     padding: 13px 8px 13px 5px;
@@ -114,10 +112,9 @@
     /*930px*/
     .circleCutWrapper {
         width: 930px;
-        padding: 0 1px;
     }
     .circleCut-item {
-        width: 154px;
+        width: 155px;
         transition: 0.15s;
     }
     .circleCut-item:hover {
@@ -125,7 +122,7 @@
         transition: 0.25s;
     }
     .circleCut-item.space-wide {
-        width: 309px;
+        width: 310px;
     }
     .circleCut-item.is--favorite:after {
         height: 182px;
