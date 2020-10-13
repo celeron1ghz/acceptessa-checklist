@@ -89,7 +89,7 @@ class FavoriteListPane extends React.Component {
             resizable: false,
             Header: "Twitter",
             Cell: row => row.value
-                ? <a href={'https://twitter.com/' + row.value} onClick={e => { e.stopPropagation() }} target="_blank"><FontAwesomeIcon icon={['fab', 'twitter']} /></a>
+                ? <a href={'https://twitter.com/' + row.value} onClick={e => { e.stopPropagation() }} target="_blank" rel="noopener noreferrer"><FontAwesomeIcon icon={['fab', 'twitter']} /></a>
                 : "",
             sortable: false,
           },
@@ -101,7 +101,7 @@ class FavoriteListPane extends React.Component {
             resizable: false,
             Header: "Web",
             Cell: row => row.value
-                ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank"><FontAwesomeIcon icon={['fas', 'external-link-alt']} /></a>
+                ? <a href={row.value} onClick={e => { e.stopPropagation() }} target="_blank" rel="noopener noreferrer"><FontAwesomeIcon icon={['fas', 'external-link-alt']} /></a>
                 : "",
             sortable: false,
           },
@@ -127,7 +127,7 @@ class FavoriteListPane extends React.Component {
       <ReactTable
         filterable
         className="-striped -highlight mt1e"
-        pageSize={20}
+        // pageSize={20}
         pageSize={filtered.length}
         showPageSizeOptions={false}
         showPaginationTop={false}
