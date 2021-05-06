@@ -11,7 +11,7 @@
     "node-fetch": "^2.1.2",
     "oauth": "^0.9.15",
     "twitter": "^1.7.1",
-    "underscore": "^1.9.1",
+    "underscore": "^1.12.1",
     "uniqid": "^4.1.1",
     "vo": "^4.0.2",
     "wkhtmltopdf": "^0.3.4"
