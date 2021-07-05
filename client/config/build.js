@@ -44,8 +44,8 @@ const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).
                 left: sym.left,
                 num: p[0],
                 top: p[1],
-                width,
-                height,
+                width: height,
+                height: width,
               };  
             })  
           }), 
@@ -58,8 +58,8 @@ const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).
                 left: p[1],
                 num: p[0],
                 top: sym.top,
-                width: height,
-                height: width,
+                width,
+                height,
               };  
             })  
           })
