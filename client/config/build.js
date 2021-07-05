@@ -22,7 +22,6 @@ const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).
     }
 
     try {
-      console.log("----------------------------------------------------------------------------------------------------");
       //const config = require(`./${eid}/config.js`);
       const file = `${__dirname}/${eid}/config.yaml`;
       await stat(file);
@@ -79,14 +78,10 @@ const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).
       };
 
       await writeFile(`./public/${eid}.json`, JSON.stringify(data));
-      console.log(`OK ./public/${eid}.json`);
+      console.log(`[${eid}] <CREATE>  ./public/${eid}.json`);
     } catch (e) {
-      console.log("Error on ", eid);
-      console.log(e.toString());
-      console.log("-------------");
+      console.log(`[${eid}] <ERROR>  `, e.toString());
     }
-
-
 
     for (const file of ["not_uploaded.png", "map.png"]) {
       const from = `${CONFIG_DIR}${eid}/${file}`;
@@ -94,11 +89,11 @@ const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).
 
       await stat(from)
         .then(data => {
-          console.log("  OK:", from, data.size);
+          console.log(`[${eid}] <CREATE> `, from, data.size);
           return copyFile(from, dest);
         })
         .catch(err => {
-          console.log("  ERROR:", from, err.message);
+          console.log(`[${eid}] <ERROR>  `, from, err.message);
         });
     }
   }
