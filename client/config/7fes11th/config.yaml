@@ -1,0 +1,17 @@
+space_width: 50
+space_height: 16
+tweet:
+  url: http://7fes.com
+  related: 7fes_info
+  hashtags: ナナフェス
+# vertical_syms:
+horizontal_syms:
+  - { sym: "L", idx: 1, top: 72, lefts: [80, 131] }
+  - { sym: "L", idx: 3, top: 72, lefts: [266, 317] }
+  - { sym: "L", idx: 5, top: 74, lefts: [455, 506] }
+  - { sym: "I", idx: 1,  top: 136, lefts: [131, 182, 234, 285, 336] }
+  - { sym: "I", idx: 6,  top: 135, lefts: [435, 487, 538] }
+  - { sym: "V", idx: 1,  top: 211, lefts: [131, 182, 234, 285, 336] }
+  - { sym: "V", idx: 6,  top: 211, lefts: [436, 487, 539] }
+  - { sym: "E", top: 293, lefts: [444, 495, 546, 598] }
+
