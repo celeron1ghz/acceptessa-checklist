@@ -3,6 +3,7 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const CONFIG_DIR = './config/';
 const _ = require('lodash');
+const sizeOf = require('image-size');
 
 const stat      = Promise.denodeify(fs.stat);
 const copyFile  = Promise.denodeify(fs.copyFile);
@@ -22,7 +23,6 @@ const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).
     }
 
     try {
-      //const config = require(`./${eid}/config.js`);
       const file = `${__dirname}/${eid}/config.yaml`;
       await stat(file);
 
@@ -68,11 +68,14 @@ const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).
         // { sym: "企業", num: 2, left: 147, top: 62, width: 69, height: 21 },
       ];
 
+      const mapFile = `${CONFIG_DIR}${eid}/map.png`;
+      const meta = await stat(mapFile).then(() => sizeOf(mapFile));
+
       const data = {
         tweet: config.tweet,
         map: {
-          image_width: config.image_width,
-          image_height: config.image_height,
+          image_width: meta.width,
+          image_height: meta.height,
           mappings,
         }
       };
