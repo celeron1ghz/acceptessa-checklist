@@ -8,10 +8,19 @@ const stat      = Promise.denodeify(fs.stat);
 const copyFile  = Promise.denodeify(fs.copyFile);
 const writeFile = Promise.denodeify(fs.writeFile);
 
-const CONFIG_DIR = './config/';
-const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).isDirectory());
+const CONFIG_DIR = __dirname;
+const EXHIBITION_DIRS = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + "/" + f).isDirectory());
 
-async function build(){
+async function build(exhibitionName){
+  const filtered = EXHIBITION_DIRS.filter(dir => dir === exhibitionName);
+
+  if (exhibitionName && !filtered.length) {
+    console.log("No such exhibition found: ", exhibitionName);
+    return;
+  }
+
+  const dirs = filtered.length ? filtered : EXHIBITION_DIRS;
+
   for (const eid of dirs) {
     const edir = `./public/${eid}`;
 
@@ -23,11 +32,14 @@ async function build(){
       }
     }
 
-    try {
-      const file = `${__dirname}/${eid}/config.yaml`;
-      await stat(file);
+    const destConfigFile = `./public/${eid}.json`;
+    const fromConfigfile = `${CONFIG_DIR}/${eid}/config.yaml`;
+    const mapFile        = `${CONFIG_DIR}/${eid}/map.png`;
 
-      const value = fs.readFileSync(file);
+    try {
+      await stat(fromConfigfile);
+
+      const value = fs.readFileSync(fromConfigfile);
       const config = yaml.safeLoad(value.toString());
 
       const width = config.space_width;
@@ -65,11 +77,8 @@ async function build(){
             })  
           })
         ]),
-        // { sym: "企業", num: 1, left: 51,  top: 62, width: 69, height: 21 },
-        // { sym: "企業", num: 2, left: 147, top: 62, width: 69, height: 21 },
       ];
 
-      const mapFile = `${CONFIG_DIR}${eid}/map.png`;
       const meta = await stat(mapFile).then(() => sizeOf(mapFile));
 
       const data = {
@@ -81,19 +90,19 @@ async function build(){
         }
       };
 
-      await writeFile(`./public/${eid}.json`, JSON.stringify(data));
-      console.log(`[${eid}] <CREATE>  ./public/${eid}.json`);
+      await writeFile(destConfigFile, JSON.stringify(data));
+      console.log(`[${eid}] <CREATE> `, destConfigFile);
     } catch (e) {
-      console.log(`[${eid}] <ERROR>  `, e.toString());
+      console.log(`[${eid}] <ERROR>  `, destConfigFile, e.toString());
     }
 
     for (const file of ["not_uploaded.png", "map.png"]) {
-      const from = `${CONFIG_DIR}${eid}/${file}`;
+      const from = `${CONFIG_DIR}/${eid}/${file}`;
       const dest = `./public/${eid}/${file}`;
 
       await stat(from)
         .then(data => {
-          console.log(`[${eid}] <CREATE> `, from, data.size);
+          console.log(`[${eid}] <COPIED> `, from, "==>", dest, data.size);
           return copyFile(from, dest);
         })
         .catch(err => {
