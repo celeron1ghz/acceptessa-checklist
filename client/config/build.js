@@ -1,13 +1,14 @@
-const Promise = require('promise');
-const yaml = require('js-yaml');
-const fs = require('fs');
-const CONFIG_DIR = './config/';
 const _ = require('lodash');
+const fs = require('fs');
+const yaml = require('js-yaml');
 const sizeOf = require('image-size');
+const Promise = require('promise');
 
 const stat      = Promise.denodeify(fs.stat);
 const copyFile  = Promise.denodeify(fs.copyFile);
 const writeFile = Promise.denodeify(fs.writeFile);
+
+const CONFIG_DIR = './config/';
 const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).isDirectory());
 
 (async function(){
