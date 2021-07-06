@@ -11,7 +11,7 @@ const writeFile = Promise.denodeify(fs.writeFile);
 const CONFIG_DIR = './config/';
 const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).isDirectory());
 
-(async function(){
+async function build(){
   for (const eid of dirs) {
     const edir = `./public/${eid}`;
 
@@ -101,4 +101,10 @@ const dirs = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + f).
         });
     }
   }
-})();
+}
+
+module.exports = build;
+
+if (require.main === module) {
+  build();
+}

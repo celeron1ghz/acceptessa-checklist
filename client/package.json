@@ -31,6 +31,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
+    "watchConfig": "node config/watch.js",
     "buildConfig": "node config/build.js"
   },
   "browserslist": {
@@ -46,6 +47,7 @@
     ]
   },
   "devDependencies": {
+    "chokidar": "^3.5.2",
     "image-size": "^1.0.0"
   }
 }
