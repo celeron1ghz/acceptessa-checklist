@@ -41,11 +41,13 @@ class CirclecutPane extends React.Component {
             key={c.circlecut || c.circle_id}
             className={ spaceClass + " circleCut-item"}
             onClick={this.imageClick.bind(this,c)}>
-            <img
-              src={c.circlecut ? c.circlecut.replace('http:', 'https:') : null}
-              className="circleCut-img"
-              alt={c.circle_name}
-            />
+            <div className="circleCut-image">
+              <img
+                src={c.circlecut ? c.circlecut.replace('http:', 'https:') : null}
+                className="circleCut-img"
+                alt={c.circle_name}
+              />
+            </div>
             <div className="circleCut-space">
               {c.space_sym}<br/>{c.space_num}
             </div>
@@ -58,14 +60,14 @@ class CirclecutPane extends React.Component {
                   <div className="circleCut-favorite">
                     {
                       loadings[c.circle_id]
-                        ? <Button variant="warning" size="sm" style={{ width: "65px" }} onClick={e => { e.stopPropagation(); }}>
+                        ? <Button variant="warning" size="sm" onClick={e => { e.stopPropagation(); }}>
                             <FontAwesomeIcon icon={['fas', 'spinner']} spin pulse={true} /> 処理中
                           </Button>
                         : c.favorite
-                          ? <Button variant="danger" size="sm" style={{ width: "65px" }} onClick={e => { e.stopPropagation(); this.removeFavorite(c) }}>
+                          ? <Button variant="danger" size="sm" onClick={e => { e.stopPropagation(); this.removeFavorite(c) }}>
                             <FontAwesomeIcon icon={['fas', 'star']} /> 削除
                             </Button>
-                          : <Button variant="primary" size="sm" style={{ width: "65px" }} onClick={e => { e.stopPropagation(); this.addFavorite(c) }}>
+                          : <Button variant="primary" size="sm" onClick={e => { e.stopPropagation(); this.addFavorite(c) }}>
                             <FontAwesomeIcon icon={['far', 'star']} /> 追加
                             </Button>
                     }
