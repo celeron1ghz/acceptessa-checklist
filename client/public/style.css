@@ -96,6 +96,12 @@
     .circleCut-item.space-wide {
         width: 255px;
     }
+    .circleCut-space {
+        font-size: 12px;
+    }
+    .circleCut-item.space-wide .circleCut-space {
+        font-size: 10px;
+    }
     .circleCut-item.is--favorite:after {
         height: 196px;
         border-width: 4px;
