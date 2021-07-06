@@ -41,7 +41,7 @@ class MapPane extends React.Component {
           position: "relative" }}>
           {
             maps.mappings.map(pos => {
-              const circle = circleIdx[pos.sym + sprintf('%02d', pos.num)];
+              const circle = circleIdx[pos.s + sprintf('%02d', pos.n)];
 
               if (!circle) {
                 //console.log("NOT FOUND", pos.sym, pos.num);
@@ -55,7 +55,7 @@ class MapPane extends React.Component {
                   : "rgba(64,64,64,0.3)";
 
               return <OverlayTrigger
-                key={pos.sym + pos.num}
+                key={pos.s + pos.n}
                 placement="left"
                 overlay={
                   <Tooltip id="tooltip">
@@ -63,10 +63,10 @@ class MapPane extends React.Component {
                   </Tooltip>
                 }>
                   <CirclePositionElement
-                    top={pos.top + "px"}
-                    left={pos.left + "px"}
-                    width={pos.width}
-                    height={pos.height}
+                    top={pos.t + "px"}
+                    left={pos.l + "px"}
+                    width={pos.w}
+                    height={pos.h}
                     bgColor={bgColor}
                     blink={false}
                     onClick={this.onClick.bind(this,circle)}/>

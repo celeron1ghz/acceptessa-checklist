@@ -53,12 +53,12 @@ async function build(exhibitionName){
             let idx = sym.idx || 1;
             return _.zip(_.range(idx, idx + sym.tops.length), sym.tops).map(p => {
               return {
-                sym: sym.sym,
-                left: sym.left,
-                num: p[0],
-                top: p[1],
-                width: height,
-                height: width,
+                s: sym.sym,
+                n: p[0], //num
+                l: sym.left,
+                t: p[1], //top
+                w: height,
+                h: width,
               };  
             })  
           }), 
@@ -67,12 +67,12 @@ async function build(exhibitionName){
             let idx = sym.idx || 1;
             return _.zip(_.range(idx, idx + sym.lefts.length), sym.lefts).map(p => {
               return {
-                sym: sym.sym,
-                left: p[1],
-                num: p[0],
-                top: sym.top,
-                width,
-                height,
+                s: sym.sym,
+                n: p[0], //num
+                l: p[1], //left
+                t: sym.top,
+                w: width,
+                h: height,
               };  
             })  
           })
