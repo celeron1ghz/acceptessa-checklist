@@ -11,6 +11,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: client
+
     strategy:
       matrix:
         node-version: [16.x]
@@ -25,7 +29,5 @@ jobs:
           cache: 'npm'
 
       - run: npm install
-        working-directory: client
 
       - run: npm buildConfig
-        working-directory: client
