@@ -66,7 +66,7 @@ http://localhost:3000/?e=nijisanji
 ```
 acceptessa-checklist
 └ config
- └ 即売会名
+ └ <即売会名>
   ┣ config.yaml      （設定ファイル。これから書き方を説明）
   ┣ map.png          （マップとして表示されるファイル）
   ┗ not_uploaded.png （サークルカット未アップロード時に表示される画像）
@@ -91,7 +91,7 @@ Start watching config...
 
 # config.yaml の書き方
 
-`npm run watchConfig` を実行していれば、 `config.yaml` を保存 → 設定ファイルの生成 → ブラウザの再読み込みが自動で走るはずなので保存したらマップの座標がずれていないかを確認してください。
+`npm run watchConfig` を実行していれば、 `config.yaml` を保存 → 設定ファイルの生成 → ブラウザの再読み込みが自動で走るはずなので、保存したらマップの座標がずれていないかを確認してください。
 
 フォーマットは下記の通り。
 
@@ -148,5 +148,23 @@ https://developer.twitter.com/en/docs/twitter-for-websites/tweet-button/guides/p
 ```
  - { sym: "ス", left: 18, tops: [324, 342,361, 379, 427, 445, 464, 482, 501, 519] }
 ```
+
+# repository へ反映
+
+正しく設定ファイルが作成出来たら repository へ反映する。
+
+```
+git add config/7fes11th/config.yaml
+git add config/7fes11th/map.png
+git add config/7fes11th/not_uploaded.png
+
+git commit -m "7fes11thの設定ファイルを追加"
+
+git push
+```
+
+自動テストを追加して、設定がおかしかったらエラーが出るようにするかもしれない。
+
+機能を追加したら書く。
 
 以上。
