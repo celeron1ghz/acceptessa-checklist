@@ -1,4 +1,8 @@
+# About
 チェックリストのマップ座標の設定方法
+
+## 更新履歴
+ * 2021/07/06 初稿
 
 # nodejs を入れる
 
@@ -153,7 +157,7 @@ https://developer.twitter.com/en/docs/twitter-for-websites/tweet-button/guides/p
 
 正しく設定ファイルが作成出来たら repository へ反映する。
 
-```
+```bash
 git add config/7fes11th/config.yaml
 git add config/7fes11th/map.png
 git add config/7fes11th/not_uploaded.png
