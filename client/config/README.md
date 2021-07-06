@@ -1,6 +1,6 @@
-# インストール方法
+チェックリストのマップ座標の設定方法
 
-## nodejs を入れる
+# nodejs を入れる
 
 nodejs はがんばってインストールする。
 
@@ -11,7 +11,7 @@ $ node -v
 v10.19.0
 ```
 
-## セットアップ（初回）
+# セットアップ（初回）
 
 一番最初のセットアップの際、下記のコマンドを実行する。
 
@@ -23,7 +23,7 @@ cd acceptessa-checklist/client
 npm install
 ```
 
-## セットアップ（二回目以降）
+# セットアップ（二回目以降）
 
 前回の操作から間が空いた際、下記のコマンドを実行して最新のものを取ってくる。
 
@@ -35,7 +35,7 @@ git pull --rebase
 npm install
 ```
 
-## サーバの起動
+# サーバの起動
 
 ```
 npm run start
@@ -59,14 +59,14 @@ To create a production build, use yarn build.
 
 http://localhost:3000/?e=nijisanji
 
-## 即売会ごとの初期設定
+# 即売会ごとの初期設定
 
 1. 以下の場所に即売会のディレクトリを作る。適宜ファイルを置く。
 
 ```
 acceptessa-checklist
-└config
- └即売会名
+└ config
+ └ 即売会名
   ┣ config.yaml      （設定ファイル。これから書き方を説明）
   ┣ map.png          （マップとして表示されるファイル）
   ┗ not_uploaded.png （サークルカット未アップロード時に表示される画像）
@@ -89,9 +89,11 @@ npm run watchConfig
 Start watching config...
 ```
 
-## config.yaml の書き方
+# config.yaml の書き方
 
-下記のようなフォーマットを作成する。
+`npm run watchConfig` を実行していれば、 `config.yaml` を保存 → 設定ファイルの生成 → ブラウザの再読み込みが自動で走るはずなので保存したらマップの座標がずれていないかを確認してください。
+
+フォーマットは下記の通り。
 
 ```
 space_width: 18
@@ -138,3 +140,13 @@ https://developer.twitter.com/en/docs/twitter-for-websites/tweet-button/guides/p
 ### vertical_syms
 
 縦に並んでいるサークルを記載するのに使用する。ない場合は書かなくてもいい。
+
+<img src=".document/vertical.png">
+
+座標を求めて、下記のように記入する。分らなかったら聞いてください。
+
+```
+ - { sym: "ス", left: 18, tops: [324, 342,361, 379, 427, 445, 464, 482, 501, 519] }
+```
+
+以上。
