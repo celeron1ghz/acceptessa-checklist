@@ -1,5 +1,6 @@
-width: 17
-height: 18
+space:
+  width: 17
+  height: 18
 tweet:
   url: "http://7fes.com"
   hashtags: "ナナフェス"

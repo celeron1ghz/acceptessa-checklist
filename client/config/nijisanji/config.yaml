@@ -1,5 +1,6 @@
-width: 27
-height: 35
+space:
+  width: 27
+  height: 35
 tweet:
   url: "https://nijisanji.familiar-life.info"
   hashtags: "にじそうさく"

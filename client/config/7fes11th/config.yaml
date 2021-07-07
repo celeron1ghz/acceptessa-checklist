@@ -1,10 +1,10 @@
-space_width: 50
-space_height: 16
+space:
+  width: 50
+  height: 16
 tweet:
   url: http://7fes.com
   related: 7fes_info
   hashtags: ナナフェス
-# vertical_syms:
 horizontal_syms:
   - { sym: "L", idx: 1, top: 72, lefts: [80, 131] }
   - { sym: "L", idx: 3, top: 72, lefts: [266, 317] }

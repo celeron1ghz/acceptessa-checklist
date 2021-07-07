@@ -1,5 +1,6 @@
-width: 35
-height: 68
+space:
+  width: 35
+  height: 68
 tweet:
   url: "http://familiar-life.info/GJ/"
   hashtags: "大天使祭"

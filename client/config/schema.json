@@ -15,35 +15,33 @@
                 "vertical_syms": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/AlSym"
+                        "$ref": "#/definitions/VerticalSym"
                     }
                 },
                 "horizontal_syms": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/AlSym"
+                        "$ref": "#/definitions/HorizontalSym"
                     }
                 }
             },
             "required": [
-                "horizontal_syms",
                 "space",
-                "tweet",
-                "vertical_syms"
+                "tweet"
             ],
             "title": "Schema"
         },
-        "AlSym": {
+        "HorizontalSym": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
                 "sym": {
                     "type": "string"
                 },
-                "idx": {
+                "top": {
                     "type": "integer"
                 },
-                "top": {
+                "idx": {
                     "type": "integer"
                 },
                 "lefts": {
@@ -58,7 +56,7 @@
                 "sym",
                 "top"
             ],
-            "title": "AlSym"
+            "title": "HorizontalSym"
         },
         "Space": {
             "type": "object",
@@ -82,16 +80,12 @@
             "additionalProperties": false,
             "properties": {
                 "url": {
-                    "type": "string",
-                    "format": "uri",
-                    "qt-uri-protocols": [
-                        "http"
-                    ]
-                },
-                "related": {
                     "type": "string"
                 },
                 "hashtags": {
+                    "type": "string"
+                },
+                "related": {
                     "type": "string"
                 }
             },
@@ -101,6 +95,33 @@
                 "url"
             ],
             "title": "Tweet"
+        },
+        "VerticalSym": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "sym": {
+                    "type": "string"
+                },
+                "left": {
+                    "type": "integer"
+                },
+                "idx": {
+                    "type": "integer"
+                },
+                "tops": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "required": [
+                "left",
+                "sym",
+                "tops"
+            ],
+            "title": "VerticalSym"
         }
     }
 }

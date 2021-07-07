@@ -1,5 +1,6 @@
-width: 29
-height: 62
+space:
+  width: 29
+  height: 62
 tweet:
   url: "http://yutoriou.com/comicou/"
   hashtags: "コミック王"

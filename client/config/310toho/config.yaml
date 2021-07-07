@@ -1,9 +1,11 @@
-width: 10
-height: 21
+space:
+  width: 10
+  height: 21
 tweet:
   url: http://miaresai.info/310/
   related: miaresai
-vertical_syms:
+  hashtags: ""
+#vertical_syms:
 horizontal_syms:
  - { sym: "求", top: 38, lefts: [77, 99, 140, 162, 184, 206, 228, 250, 277, 299, 321, 343, 365, 387, 436, 458, 480, 502] }
  - { sym: "鈴", top: 98, lefts: [414, 436, 458, 480] }

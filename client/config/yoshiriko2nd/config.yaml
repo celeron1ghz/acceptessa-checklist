@@ -1,5 +1,6 @@
-width: 13
-height: 17
+space:
+  width: 13
+  height: 17
 tweet:
   url: "http://yoshiriko.info"
   hashtags: "よしりこオンリー"
