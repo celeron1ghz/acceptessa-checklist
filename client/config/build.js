@@ -11,7 +11,10 @@ const copyFile  = Promise.denodeify(fs.copyFile);
 const writeFile = Promise.denodeify(fs.writeFile);
 
 const CONFIG_DIR = __dirname;
-const EXHIBITION_DIRS = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + "/" + f).isDirectory());
+const EXHIBITION_DIRS = fs
+  .readdirSync(CONFIG_DIR)
+  .filter(f => fs.statSync(CONFIG_DIR + "/" + f).isDirectory())
+  .filter(f => !f.match(/^\./));
 
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'))
 
