@@ -47,6 +47,8 @@
     ]
   },
   "devDependencies": {
+    "ajv": "^8.6.1",
+    "json-schema": "^0.3.0",
     "chokidar": "^3.5.2",
     "image-size": "^1.0.0"
   }

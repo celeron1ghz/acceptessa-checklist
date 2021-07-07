@@ -3,6 +3,8 @@ const fs = require('fs');
 const yaml = require('js-yaml');
 const sizeOf = require('image-size');
 const Promise = require('promise');
+const Ajv = require('ajv');
+const ajv = new Ajv({allErrors: true})
 
 const stat      = Promise.denodeify(fs.stat);
 const copyFile  = Promise.denodeify(fs.copyFile);
@@ -11,6 +13,10 @@ const writeFile = Promise.denodeify(fs.writeFile);
 const CONFIG_DIR = __dirname;
 const EXHIBITION_DIRS = fs.readdirSync(CONFIG_DIR).filter(f => fs.statSync(CONFIG_DIR + "/" + f).isDirectory());
 
+ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'))
+
+const validator = ajv.compile(require('./schema.json'));
+
 async function build(exhibitionName){
   const filtered = EXHIBITION_DIRS.filter(dir => dir === exhibitionName);
 
@@ -18,6 +24,7 @@ async function build(exhibitionName){
     console.log("No such exhibition found: ", exhibitionName);
     return;
   }
+
 
   const dirs = filtered.length ? filtered : EXHIBITION_DIRS;
 
@@ -41,6 +48,16 @@ async function build(exhibitionName){
 
       const value = fs.readFileSync(fromConfigfile);
       const config = yaml.safeLoad(value.toString());
+
+      if (!validator(config)) {
+        console.log(`[${eid}] !!!!!ERROR!!!!! validation error in `, fromConfigfile);
+
+        for (const e of validator.errors) {
+          console.log(JSON.stringify(e, null, 2));
+        }
+
+        continue;
+      }
 
       const width = config.space_width;
       const height = config.space_height;
