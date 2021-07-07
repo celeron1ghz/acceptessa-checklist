@@ -1,0 +1,106 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Schema",
+    "definitions": {
+        "Schema": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "space": {
+                    "$ref": "#/definitions/Space"
+                },
+                "tweet": {
+                    "$ref": "#/definitions/Tweet"
+                },
+                "vertical_syms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AlSym"
+                    }
+                },
+                "horizontal_syms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AlSym"
+                    }
+                }
+            },
+            "required": [
+                "horizontal_syms",
+                "space",
+                "tweet",
+                "vertical_syms"
+            ],
+            "title": "Schema"
+        },
+        "AlSym": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "sym": {
+                    "type": "string"
+                },
+                "idx": {
+                    "type": "integer"
+                },
+                "top": {
+                    "type": "integer"
+                },
+                "lefts": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "required": [
+                "lefts",
+                "sym",
+                "top"
+            ],
+            "title": "AlSym"
+        },
+        "Space": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "width": {
+                    "type": "integer"
+                },
+                "height": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "height",
+                "width"
+            ],
+            "title": "Space"
+        },
+        "Tweet": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "http"
+                    ]
+                },
+                "related": {
+                    "type": "string"
+                },
+                "hashtags": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "hashtags",
+                "related",
+                "url"
+            ],
+            "title": "Tweet"
+        }
+    }
+}
