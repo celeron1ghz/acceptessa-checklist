@@ -25,17 +25,17 @@ export default ({ show, config, me, onPublicLinkClick, onClose }) => {
         <Card>
           <Card.Header>
             <div>
-              チェックリストの共有
+              <span>チェックリストを公開</span>
               &nbsp;&nbsp;
               <ToggleButtonGroup type="radio" name="publish" defaultValue={config.public ? 'published' : 'notPublished'}>
                 <ToggleButton
                     onClick={onPublicLinkClick.bind(this, true)}
                     value={'published'}
-                    variant="outline-primary">{config.public}公開する</ToggleButton>
+                    variant="outline-primary">{config.public}する</ToggleButton>
                 <ToggleButton
                     onClick={onPublicLinkClick.bind(this, false)}
                     value={'notPublished'}
-                    variant="outline-secondary">公開しない</ToggleButton>
+                    variant="outline-secondary">しない</ToggleButton>
               </ToggleButtonGroup>
             </div>
           </Card.Header>
@@ -44,7 +44,7 @@ export default ({ show, config, me, onPublicLinkClick, onClose }) => {
               {
                 config.public
                   ? <span>
-                      チェックリストは <Badge variant="primary">公開</Badge> に設定されています。
+                      チェックリストは <Badge bg="primary">公開</Badge> に設定されています。
                       <br/><br/>
                       <h4>
                         チェックリストの公開URL&nbsp;
@@ -54,7 +54,7 @@ export default ({ show, config, me, onPublicLinkClick, onClose }) => {
                       </h4>
                       <b><a href={publicUrl} target="_blank" rel="noopener noreferrer">{publicUrl}</a></b>
                     </span>
-                  : <span>チェックリストは <Badge variant="secondary">非公開</Badge> に設定されています。</span>
+                  : <span>チェックリストは <Badge bg="secondary">非公開</Badge> に設定されています。</span>
               }
             </div>
           </Card.Body>
