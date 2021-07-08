@@ -217,7 +217,7 @@ class CircleListPane extends React.Component {
               <FontAwesomeIcon icon={['fab', 'twitter']} />{publicChecklist.config.member_id}
             </a>
             &nbsp;さんのチェックリスト
-            &nbsp;<Badge pill variant="primary">{Object.keys(publicChecklist.idx).length}</Badge>&nbsp;
+            &nbsp;<Badge pill bg="primary">{Object.keys(publicChecklist.idx).length}</Badge>&nbsp;
             を「<FontAwesomeIcon icon={['fas', 'check']} />」で表示しています。
             <div className="pull-right">
               <Button variant="success" size="sm" onClick={this.removePublicChecklist.bind(this)}>

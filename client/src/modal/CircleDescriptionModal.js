@@ -92,7 +92,7 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
             <h4 className="text-center">サークルの情報</h4>
             <Card body bg="">
               <p>
-                <Badge variant="primary">{circle.space_sym}-{circle.space_num}</Badge>
+                <Badge bg="secondary">{circle.space_sym}-{circle.space_num}</Badge>
                 &nbsp;
                 {circle.circle_name} ({circle.penname})
               </p>
@@ -100,7 +100,7 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
                   circle.pixiv_url &&
                     <dl className="circle-link">
                       <dt>
-                        <Badge pill variant="secondary"><FontAwesomeIcon icon={['fas', 'palette']} /> Pixiv</Badge>
+                        <Badge pill bg="secondary"><FontAwesomeIcon icon={['fas', 'palette']} /> Pixiv</Badge>
                       </dt>
                       <dd>
                         <a href={circle.pixiv_url} target="_blank" rel="noopener noreferrer">{circle.pixiv_url}</a>
@@ -111,7 +111,7 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
                   circle.site_url &&
                   <dl className="circle-link">
                   <dt>
-                      <Badge pill variant="secondary"><FontAwesomeIcon icon={['fas', 'link']} /> Web</Badge>
+                      <Badge pill bg="secondary"><FontAwesomeIcon icon={['fas', 'link']} /> Web</Badge>
                   </dt>
                     <dd>
                       <a href={circle.site_url} target="_blank" rel="noopener noreferrer">{circle.site_url}</a>
@@ -122,7 +122,7 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
                   circle.twitter_id &&
                   <dl className="circle-link">
                     <dt>
-                        <Badge pill variant="secondary"><FontAwesomeIcon icon={['fab', 'twitter']} /> Twitter</Badge>
+                        <Badge pill bg="secondary"><FontAwesomeIcon icon={['fab', 'twitter']} /> Twitter</Badge>
                     </dt>
                     <dd>
                         <a href={"https://twitter.com/" + circle.twitter_id} target="_blank" rel="noopener noreferrer">{circle.twitter_id}</a>
@@ -136,13 +136,13 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
               <p style={{ whiteSpace: "pre" }}>{
                 circle.circle_comment
                   ? circle.circle_comment.split('\n').map(l => <div style={{ wordWrap: 'break-word' }}>{l}</div>)
-                  : <Badge>お品書きコメント未記入</Badge>
+                  : <Badge bg="secondary">お品書きコメント未記入</Badge>
 
               }</p>
               {
                 circle.circle_link
                   ? <a href={circle.circle_link} target="_blank" rel="noopener noreferrer">{circle.circle_link}</a>
-                  : <Badge>お品書きリンク未記入</Badge>
+                  : <Badge bg="secondary">お品書きリンク未記入</Badge>
               }
             </Card>
             {
