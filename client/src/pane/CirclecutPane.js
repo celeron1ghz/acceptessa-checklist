@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Button } from 'react-bootstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import LazyLoad from 'react-lazyload';
 
 class CirclecutPane extends React.Component {
   addFavorite(circle) {
@@ -42,11 +43,13 @@ class CirclecutPane extends React.Component {
             className={ spaceClass + " circleCut-item"}
             onClick={this.imageClick.bind(this,c)}>
             <div className="circleCut-image">
-              <img
-                src={c.circlecut ? c.circlecut.replace('http:', 'https:') : null}
-                className="circleCut-img"
-                alt={c.circle_name}
-              />
+              <LazyLoad height={200} offset={0} once>
+                <img
+                  src={c.circlecut ? c.circlecut.replace('http:', 'https:') : null}
+                  className="circleCut-img"
+                  alt={c.circle_name}
+                  />
+              </LazyLoad>
             </div>
             <div className="circleCut-space">
               {c.space_sym}<br/>{c.space_num}
