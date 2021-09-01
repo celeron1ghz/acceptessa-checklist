@@ -4,10 +4,10 @@ const yaml = require('js-yaml');
 const sizeOf = require('image-size');
 const Promise = require('promise');
 const Ajv = require('ajv');
-const ajv = new Ajv({allErrors: true})
+const ajv = new Ajv({ allErrors: true })
 
-const stat      = Promise.denodeify(fs.stat);
-const copyFile  = Promise.denodeify(fs.copyFile);
+const stat = Promise.denodeify(fs.stat);
+const copyFile = Promise.denodeify(fs.copyFile);
 const writeFile = Promise.denodeify(fs.writeFile);
 
 const CONFIG_DIR = __dirname;
@@ -20,7 +20,7 @@ ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'))
 
 const validator = ajv.compile(require('./schema.json'));
 
-async function build(exhibitionName){
+async function build(exhibitionName) {
   const filtered = EXHIBITION_DIRS.filter(dir => dir === exhibitionName);
 
   if (exhibitionName && !filtered.length) {
@@ -36,7 +36,7 @@ async function build(exhibitionName){
 
     try {
       fs.mkdirSync(edir);
-    } catch(e) {
+    } catch (e) {
       if (e.code !== "EEXIST") {
         console.log("ERROR:", e);
       }
@@ -44,7 +44,7 @@ async function build(exhibitionName){
 
     const destConfigFile = `./public/${eid}.json`;
     const fromConfigfile = `${CONFIG_DIR}/${eid}/config.yaml`;
-    const mapFile        = `${CONFIG_DIR}/${eid}/map.png`;
+    const mapFile = `${CONFIG_DIR}/${eid}/map.png`;
 
     try {
       await stat(fromConfigfile);
@@ -62,12 +62,13 @@ async function build(exhibitionName){
         continue;
       }
 
-      const width = config.space_width;
-      const height = config.space_height;
-      const vertical_syms   = config.vertical_syms   || [];
+      const width = config.space.width;
+      const height = config.space.height;
+      console.log(width, height);
+      const vertical_syms = config.vertical_syms || [];
       const horizontal_syms = config.horizontal_syms || [];
 
-      const mappings = [ 
+      const mappings = [
         ..._.flattenDeep([
           vertical_syms.map(sym => {
             let idx = sym.idx || 1;
@@ -79,9 +80,9 @@ async function build(exhibitionName){
                 t: p[1], //top
                 w: height,
                 h: width,
-              };  
-            })  
-          }), 
+              };
+            })
+          }),
 
           horizontal_syms.map(sym => {
             let idx = sym.idx || 1;
@@ -93,8 +94,8 @@ async function build(exhibitionName){
                 t: sym.top,
                 w: width,
                 h: height,
-              };  
-            })  
+              };
+            })
           })
         ]),
       ];
