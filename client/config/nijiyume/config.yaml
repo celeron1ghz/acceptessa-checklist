@@ -1,0 +1,14 @@
+space:
+  width: 93
+  height: 35
+tweet:
+  url: "https://nijiyume.net/"
+  hashtags: "にじゆめ"
+  related: "NijiyumeI"
+horizontal_syms:
+ - { sym: "有明", idx: 1, top: 872, lefts: [814, 714, 614, 514, 414, 314]}
+ - { sym: "有明", idx: 7, top: 772, lefts: [314, 414, 514, 614, 714, 814]}
+ - { sym: "台場", idx: 1, top: 1141, lefts: [814, 714, 614, 514, 414, 314]}
+ - { sym: "台場", idx: 7, top: 1041, lefts: [314, 414, 514, 614, 714, 814]}
+ - { sym: "東雲", idx: 1, top: 1411, lefts: [814, 714, 614, 514, 414, 314]}
+ - { sym: "東雲", idx: 7, top: 1311, lefts: [314, 514, 614, 814]}
