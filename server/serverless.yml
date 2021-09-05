@@ -81,6 +81,7 @@ resources:
         WebsiteConfiguration:
           ErrorDocument: error.html
           IndexDocument: index.html
+
     ExportBucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
@@ -91,6 +92,7 @@ resources:
               Action: ["s3:GetObject"]
               Resource: { Fn::Join: [ "", [{ Fn::GetAtt: [ExportBucket, Arn] }, "/*" ]] }
               Principal: "*"
+
     ## tables
     FavoriteTable:
       Type: AWS::DynamoDB::Table
@@ -155,45 +157,45 @@ resources:
           - { AttributeName: circle_id, KeyType: HASH }
 
     ## alarms
-    WCUAlarm:
-      Type: AWS::CloudWatch::Alarm
-      Properties:
-        AlarmName: "acceptessa-checklist-tessa_favorite-dynamodb-wcu"
-        AlarmDescription: "DynamoDB WCU alarm for acceptessa-checklist"
-        ComparisonOperator: GreaterThanOrEqualToThreshold
-        Dimensions:
-          - { Name: TableName, Value: { Ref: FavoriteTable } }
-        EvaluationPeriods: 1
-        MetricName: ConsumedWriteCapacityUnits
-        Namespace: AWS/DynamoDB
-        Period: 60
-        Statistic: Maximum
-        Threshold: 60
-        TreatMissingData: notBreaching
-        AlarmActions:
-          - Fn::Join: [ ":", ["arn:aws:sns", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "aws-slack-notifier"]]
-        OKActions:
-          - Fn::Join: [ ":", ["arn:aws:sns", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "aws-slack-notifier"]]
+    # WCUAlarm:
+    #   Type: AWS::CloudWatch::Alarm
+    #   Properties:
+    #     AlarmName: "acceptessa-checklist-tessa_favorite-dynamodb-wcu"
+    #     AlarmDescription: "DynamoDB WCU alarm for acceptessa-checklist"
+    #     ComparisonOperator: GreaterThanOrEqualToThreshold
+    #     Dimensions:
+    #       - { Name: TableName, Value: { Ref: FavoriteTable } }
+    #     EvaluationPeriods: 1
+    #     MetricName: ConsumedWriteCapacityUnits
+    #     Namespace: AWS/DynamoDB
+    #     Period: 60
+    #     Statistic: Maximum
+    #     Threshold: 60
+    #     TreatMissingData: notBreaching
+    #     AlarmActions:
+    #       - Fn::Join: [ ":", ["arn:aws:sns", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "aws-slack-notifier"]]
+    #     OKActions:
+    #       - Fn::Join: [ ":", ["arn:aws:sns", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "aws-slack-notifier"]]
 
-    RCUAlarm:
-      Type: AWS::CloudWatch::Alarm
-      Properties:
-        AlarmName: "acceptessa-checklist-tessa_favorite-dynamodb-rcu"
-        AlarmDescription: "DynamoDB RCU alarm for acceptessa-checklist"
-        ComparisonOperator: GreaterThanOrEqualToThreshold
-        Dimensions:
-          - { Name: TableName, Value: { Ref: FavoriteTable } }
-        EvaluationPeriods: 1
-        MetricName: ConsumedReadCapacityUnits
-        Namespace: AWS/DynamoDB
-        Period: 60
-        Statistic: Maximum
-        Threshold: 60
-        TreatMissingData: notBreaching
-        AlarmActions:
-          - Fn::Join: [ ":", ["arn:aws:sns", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "aws-slack-notifier"]]
-        OKActions:
-          - Fn::Join: [ ":", ["arn:aws:sns", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "aws-slack-notifier"]]
+    # RCUAlarm:
+    #   Type: AWS::CloudWatch::Alarm
+    #   Properties:
+    #     AlarmName: "acceptessa-checklist-tessa_favorite-dynamodb-rcu"
+    #     AlarmDescription: "DynamoDB RCU alarm for acceptessa-checklist"
+    #     ComparisonOperator: GreaterThanOrEqualToThreshold
+    #     Dimensions:
+    #       - { Name: TableName, Value: { Ref: FavoriteTable } }
+    #     EvaluationPeriods: 1
+    #     MetricName: ConsumedReadCapacityUnits
+    #     Namespace: AWS/DynamoDB
+    #     Period: 60
+    #     Statistic: Maximum
+    #     Threshold: 60
+    #     TreatMissingData: notBreaching
+    #     AlarmActions:
+    #       - Fn::Join: [ ":", ["arn:aws:sns", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "aws-slack-notifier"]]
+    #     OKActions:
+    #       - Fn::Join: [ ":", ["arn:aws:sns", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "aws-slack-notifier"]]
 
     ## api domain setting
     Domain:
