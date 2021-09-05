@@ -95,6 +95,7 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: tessa_favorite
+        BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - { AttributeName: member_id,     AttributeType: S }
           - { AttributeName: circle_id,     AttributeType: S }
@@ -102,9 +103,6 @@ resources:
         KeySchema:
           - { AttributeName: member_id,     KeyType: HASH }
           - { AttributeName: circle_id,     KeyType: RANGE }
-        ProvisionedThroughput:
-          ReadCapacityUnits: 3
-          WriteCapacityUnits: 3
         GlobalSecondaryIndexes:
           - IndexName: tessa_favorite_gsi
             KeySchema:
@@ -112,9 +110,6 @@ resources:
               - { AttributeName: exhibition_id, KeyType: RANGE }
             Projection:
               ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 3
-              WriteCapacityUnits: 3
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
 
