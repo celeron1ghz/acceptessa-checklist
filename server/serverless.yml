@@ -45,19 +45,16 @@ functions:
   endpoint:
     handler: handler.endpoint
     description: tessa checklist application
-    tags: { Application: AcceptessaChecklist }
     events: [{ http: { path: "/", method: post, cors: true } }]
     environment:
       S3BUCKET_PUBLIC_URL: { Fn::GetAtt: [ExportBucket, DomainName] }
   public:
     handler: handler.public
     description: tessa checklist public endpoint
-    tags: { Application: AcceptessaChecklist }
     events: [{ http: { path: "/public/{eid}/", method: get, cors: true } }]
   auth:
     handler: handler.auth
     description: tessa checklist authentication
-    tags: { Application: AcceptessaChecklist }
     events: [{ http: { path: "/auth/{action}", method: get, cors: true } }]
   stream:
     handler: handler.stream
@@ -225,13 +222,12 @@ resources:
     Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: "acceptessa-checklist-assets"
+        BucketName: "${self:service}"
         CorsConfiguration:
           CorsRules:
             - AllowedMethods: ['GET']
               AllowedOrigins: ['*']
               AllowedHeaders: ['*']
-        Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     BucketPolicy:
       Type: AWS::S3::BucketPolicy
@@ -273,7 +269,6 @@ resources:
               DomainName: !GetAtt Bucket.DomainName
               S3OriginConfig:
                 OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
-        Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     CloudFrontOriginAccessIdentity:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
