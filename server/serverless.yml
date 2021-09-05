@@ -272,9 +272,9 @@ resources:
             ForwardedValues:
               QueryString: true
               Headers: ["Origin"]
-            MinTTL: 8640000
-            MaxTTL: 8640000
-            DefaultTTL: 8640000
+            MinTTL: 43200 ## 12 hour
+            MaxTTL: 43200
+            DefaultTTL: 43200
           Enabled: true
           Origins:
             - Id: AcceptessaChecklistWebAssets
