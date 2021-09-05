@@ -296,5 +296,5 @@ resources:
         Type: A
         HostedZoneName: "familiar-life.info."
         AliasTarget:
-          DNSName: { Fn::GetAtt: [Cloudfront, DomainName] }
+          DNSName: !GetAtt Cloudfront.DomainName
           HostedZoneId: Z2FDTNDATAQYW2
