@@ -118,7 +118,6 @@ resources:
               WriteCapacityUnits: 3
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
-        Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     ConfigTable:
       Type: AWS::DynamoDB::Table
@@ -133,7 +132,6 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 3
           WriteCapacityUnits: 3
-        Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     SessionTable:
       Type: AWS::DynamoDB::Table
@@ -149,7 +147,6 @@ resources:
         TimeToLiveSpecification:
           AttributeName: ttl
           Enabled: true
-        Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     CountTable:
       Type: AWS::DynamoDB::Table
@@ -162,7 +159,6 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     ## alarms
     WCUAlarm:
