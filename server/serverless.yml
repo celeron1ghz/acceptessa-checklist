@@ -226,7 +226,7 @@ resources:
         Type: A
         HostedZoneName: "familiar-life.info."
         AliasTarget:
-          DNSName: { Fn::GetAtt: [Domain, DistributionDomainName] }
+          DNSName: !GetAtt Domain.DistributionDomainName
           HostedZoneId: Z2FDTNDATAQYW2
 
     ## static file domain setting
@@ -251,9 +251,9 @@ resources:
             - Effect: Allow
               Action: s3:GetObject
               Principal:
-                AWS: "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${ssm:/tessa_checklist/oai_id}"
+                AWS: !Sub arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}
               Resource:
-                Fn::Join: [ "/", [ { Fn::GetAtt: [ Bucket, Arn ] }, "*" ] ]
+                Fn::Join: [ "/", [ !GetAtt [ Bucket, Arn ] , "*" ] ]
 
     Cloudfront:
       Type: AWS::CloudFront::Distribution
@@ -278,10 +278,16 @@ resources:
           Enabled: true
           Origins:
             - Id: AcceptessaChecklistWebAssets
-              DomainName: "acceptessa-checklist-assets.s3.amazonaws.com"
+              DomainName: !GetAtt Bucket.DomainName
               S3OriginConfig:
-                OriginAccessIdentity: "origin-access-identity/cloudfront/${ssm:/tessa_checklist/oai_id}"
+                OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
         Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
+
+    CloudFrontOriginAccessIdentity:
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: !Ref AWS::StackName
 
     RecordSetOfAssets:
       Type: AWS::Route53::RecordSet
