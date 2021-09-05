@@ -123,27 +123,23 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: tessa_config
+        BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - { AttributeName: member_id,     AttributeType: S }
           - { AttributeName: exhibition_id, AttributeType: S }
         KeySchema:
           - { AttributeName: member_id,     KeyType: HASH }
           - { AttributeName: exhibition_id, KeyType: RANGE }
-        ProvisionedThroughput:
-          ReadCapacityUnits: 3
-          WriteCapacityUnits: 3
 
     SessionTable:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: tessa_session
+        BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - { AttributeName: uid, AttributeType: S }
         KeySchema:
           - { AttributeName: uid, KeyType: HASH }
-        ProvisionedThroughput:
-          ReadCapacityUnits: 3
-          WriteCapacityUnits: 3
         TimeToLiveSpecification:
           AttributeName: ttl
           Enabled: true
@@ -152,13 +148,11 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: tessa_favorite_count
+        BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - { AttributeName: circle_id, AttributeType: S }
         KeySchema:
           - { AttributeName: circle_id, KeyType: HASH }
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
 
     ## alarms
     WCUAlarm:
