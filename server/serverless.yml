@@ -1,40 +1,45 @@
 service: acceptessa-checklist
+variablesResolutionMode: 20210326
+
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs12.x
   stage: dev
   region: ap-northeast-1
   deploymentBucket: serverless-upload-ap-northeast-1
   versionFunctions: false
-  iamRoleStatements:
-    - Effect: Allow
-      Action: [ssm:GetParameter]
-      Resource:
-        - Fn::Join: [ ":", ["arn:aws:ssm", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "parameter/tessa_checklist/*"]]
-    - Effect: Allow
-      Action: [dynamodb:GetItem, dynamodb:PutItem, dynamodb:DeleteItem]
-      Resource:
-        - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_session"]]
-    - Effect: Allow
-      Action:
-        - dynamodb:Query
-        - dynamodb:GetItem
-        - dynamodb:BatchGetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-      Resource:
-        - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_favorite"]]
-        - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_favorite/index/*"]]
-        - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_config"]]
-    - Effect: Allow
-      Action: [dynamodb:GetItem, dynamodb:UpdateItem]
-      Resource:
-        - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_favorite_count"]]
-    - Effect: Allow
-      Action: [s3:PutObject]
-      Resource:
-        - Fn::Join: [ "", [{ Fn::GetAtt: [ExportBucket, Arn]}, "/*"]]
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: [ssm:GetParameter]
+          Resource:
+            - Fn::Join: [ ":", ["arn:aws:ssm", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "parameter/tessa_checklist/*"]]
+        - Effect: Allow
+          Action: [dynamodb:GetItem, dynamodb:PutItem, dynamodb:DeleteItem]
+          Resource:
+            - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_session"]]
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:GetItem
+            - dynamodb:BatchGetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_favorite"]]
+            - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_favorite/index/*"]]
+            - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_config"]]
+        - Effect: Allow
+          Action: [dynamodb:GetItem, dynamodb:UpdateItem]
+          Resource:
+            - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_favorite_count"]]
+        - Effect: Allow
+          Action: [s3:PutObject]
+          Resource:
+            - Fn::Join: [ "", [{ Fn::GetAtt: [ExportBucket, Arn]}, "/*"]]
 
 functions:
   endpoint:
@@ -65,6 +70,7 @@ resources:
   Description: Acceptessa checklist api
   Resources:
     IamRoleLambdaExecution:
+      Type: AWS::IAM::Role
       Properties:
         RoleName: "${self:service}"
 
@@ -146,17 +152,17 @@ resources:
         Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     CountTable:
-     Type: AWS::DynamoDB::Table
-     Properties:
-       TableName: tessa_favorite_count
-       AttributeDefinitions:
-         - { AttributeName: circle_id, AttributeType: S }
-       KeySchema:
-         - { AttributeName: circle_id, KeyType: HASH }
-       ProvisionedThroughput:
-         ReadCapacityUnits: 1
-         WriteCapacityUnits: 1
-       Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: tessa_favorite_count
+        AttributeDefinitions:
+          - { AttributeName: circle_id, AttributeType: S }
+        KeySchema:
+          - { AttributeName: circle_id, KeyType: HASH }
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     ## alarms
     WCUAlarm:
@@ -203,7 +209,7 @@ resources:
     Domain:
       Type: AWS::ApiGateway::DomainName
       Properties:
-        CertificateArn: "${ssm:/tessa_checklist/acm_cert_arn~true}"
+        CertificateArn: "${ssm:/tessa_checklist/acm_cert_arn}"
         DomainName: "api.familiar-life.info"
 
     Mapping:
@@ -227,13 +233,13 @@ resources:
     Bucket:
       Type: AWS::S3::Bucket
       Properties:
-       BucketName: "acceptessa-checklist-assets"
-       CorsConfiguration:
-         CorsRules:
-           - AllowedMethods: ['GET']
-             AllowedOrigins: ['*']
-             AllowedHeaders: ['*']
-       Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
+        BucketName: "acceptessa-checklist-assets"
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods: ['GET']
+              AllowedOrigins: ['*']
+              AllowedHeaders: ['*']
+        Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     BucketPolicy:
       Type: AWS::S3::BucketPolicy
@@ -245,7 +251,7 @@ resources:
             - Effect: Allow
               Action: s3:GetObject
               Principal:
-                AWS: "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${ssm:/tessa_checklist/oai_id~true}"
+                AWS: "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${ssm:/tessa_checklist/oai_id}"
               Resource:
                 Fn::Join: [ "/", [ { Fn::GetAtt: [ Bucket, Arn ] }, "*" ] ]
 
@@ -257,7 +263,7 @@ resources:
           Aliases: ["checklist.familiar-life.info"]
           HttpVersion: http2
           ViewerCertificate:
-            AcmCertificateArn: "${ssm:/tessa_checklist/acm_cert_arn~true}"
+            AcmCertificateArn: "${ssm:/tessa_checklist/acm_cert_arn}"
             SslSupportMethod: sni-only
           DefaultRootObject: index.html
           DefaultCacheBehavior:
@@ -274,7 +280,7 @@ resources:
             - Id: AcceptessaChecklistWebAssets
               DomainName: "acceptessa-checklist-assets.s3.amazonaws.com"
               S3OriginConfig:
-                OriginAccessIdentity: "origin-access-identity/cloudfront/${ssm:/tessa_checklist/oai_id~true}"
+                OriginAccessIdentity: "origin-access-identity/cloudfront/${ssm:/tessa_checklist/oai_id}"
         Tags: [{ Key: "Application", Value: "AcceptessaChecklist" }]
 
     RecordSetOfAssets:
