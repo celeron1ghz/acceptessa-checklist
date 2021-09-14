@@ -65,7 +65,7 @@ class AdminRoot extends React.Component {
         exportChecklistUrl: false,
     };
 
-    this.ENDPOINT = "https://api.familiar-life.info";
+    this.ENDPOINT = "https://api.familiar-life.info/api/";
 
     this.openCircleDescModal      = this.openCircleDescModal.bind(this);
     this.closeCircleDescModal     = this.closeCircleDescModal.bind(this);
@@ -97,7 +97,7 @@ class AdminRoot extends React.Component {
 
     if (load_type) this.addLoading(load_type);
 
-    return fetch(this.ENDPOINT, {
+    return fetch(this.ENDPOINT + "endpoint", {
       headers: new Headers({ 'Authorization': "Bearer " + token }),
       method: 'POST',
       body: JSON.stringify(args),
@@ -294,11 +294,13 @@ class AdminRoot extends React.Component {
 
   login() {
     const getJwtToken = event => {
-      localStorage.setItem("token", event.data);
-      this.getUserData();
+      if (typeof event.data === 'string') {
+        localStorage.setItem("token", event.data);
+        this.getUserData();
+      }
     };
 
-    window.open(this.ENDPOINT + "/auth/start");
+    window.open(this.ENDPOINT + "auth/start");
     window.addEventListener('message', getJwtToken, false);
   }
 

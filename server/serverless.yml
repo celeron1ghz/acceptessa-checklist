@@ -45,17 +45,17 @@ functions:
   endpoint:
     handler: handler.endpoint
     description: tessa checklist application
-    events: [{ http: { path: "/", method: post, cors: true } }]
+    events: [{ http: { path: "/api/endpoint", method: post, cors: true } }]
     environment:
       S3BUCKET_PUBLIC_URL: { Fn::GetAtt: [ExportBucket, DomainName] }
   public:
     handler: handler.public
     description: tessa checklist public endpoint
-    events: [{ http: { path: "/public/{eid}/", method: get, cors: true } }]
+    events: [{ http: { path: "/api/public/{eid}/", method: get, cors: true } }]
   auth:
     handler: handler.auth
     description: tessa checklist authentication
-    events: [{ http: { path: "/auth/{action}", method: get, cors: true } }]
+    events: [{ http: { path: "/api/auth/{action}", method: get, cors: true } }]
   stream:
     handler: handler.stream
     events:
