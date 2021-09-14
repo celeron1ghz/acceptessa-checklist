@@ -250,7 +250,7 @@ resources:
             SslSupportMethod: sni-only
           DefaultRootObject: index.html
           DefaultCacheBehavior:
-            TargetOriginId: AcceptessaChecklistWebAssets
+            TargetOriginId: s3
             ViewerProtocolPolicy: redirect-to-https
             ForwardedValues:
               QueryString: true
@@ -260,10 +260,16 @@ resources:
             DefaultTTL: 43200
           Enabled: true
           Origins:
-            - Id: AcceptessaChecklistWebAssets
+            - Id: s3
               DomainName: !GetAtt Bucket.DomainName
               S3OriginConfig:
                 OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+            # - Id: api_auth
+            #   DomainName: { Fn::Join: ["", [!GetAtt ApiGatewayRestApi.RootResourceId, ".execute-api.ap-northeast-1.amazonaws.com" ]] }
+            #   OriginPath: "/public/*"
+            #   CustomOriginConfig:
+            #     OriginProtocolPolicy: https-only
+            #     OriginSSLProtocols: [TLSv1.1, TLSv1.2]
 
     CloudFrontOriginAccessIdentity:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
