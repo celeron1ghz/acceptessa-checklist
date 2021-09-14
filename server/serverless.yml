@@ -56,6 +56,8 @@ functions:
     handler: handler.auth
     description: tessa checklist authentication
     events: [{ http: { path: "/api/auth/{action}", method: get, cors: true } }]
+    environment:
+      SERVE_HOST: "checklist.familiar-life.info"
   stream:
     handler: handler.stream
     events:
@@ -258,18 +260,28 @@ resources:
             MinTTL: 43200 ## 12 hour
             MaxTTL: 43200
             DefaultTTL: 43200
+          CacheBehaviors:
+            - PathPattern: /api/*
+              TargetOriginId: api_auth
+              ViewerProtocolPolicy: redirect-to-https
+              ForwardedValues:
+                QueryString: true
+                Headers: ["Origin"]
+              MinTTL: 43200 ## 12 hour
+              MaxTTL: 43200
+              DefaultTTL: 43200
           Enabled: true
           Origins:
             - Id: s3
               DomainName: !GetAtt Bucket.DomainName
               S3OriginConfig:
                 OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
-            # - Id: api_auth
-            #   DomainName: { Fn::Join: ["", [!GetAtt ApiGatewayRestApi.RootResourceId, ".execute-api.ap-northeast-1.amazonaws.com" ]] }
-            #   OriginPath: "/public/*"
-            #   CustomOriginConfig:
-            #     OriginProtocolPolicy: https-only
-            #     OriginSSLProtocols: [TLSv1.1, TLSv1.2]
+            - Id: api_auth
+              DomainName: { Fn::Join: ["", [{ Ref:  ApiGatewayRestApi }, ".execute-api.ap-northeast-1.amazonaws.com" ]] }
+              OriginPath: /dev
+              CustomOriginConfig:
+                OriginProtocolPolicy: https-only
+                OriginSSLProtocols: [TLSv1.1, TLSv1.2]
 
     CloudFrontOriginAccessIdentity:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
