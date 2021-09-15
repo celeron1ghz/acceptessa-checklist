@@ -191,30 +191,6 @@ resources:
     #     OKActions:
     #       - Fn::Join: [ ":", ["arn:aws:sns", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "aws-slack-notifier"]]
 
-    ## api domain setting
-    Domain:
-      Type: AWS::ApiGateway::DomainName
-      Properties:
-        CertificateArn: "${ssm:/tessa_checklist/acm_cert_arn}"
-        DomainName: "api.familiar-life.info"
-
-    Mapping:
-      Type: AWS::ApiGateway::BasePathMapping
-      Properties:
-        DomainName: { Ref: Domain }
-        RestApiId:  { Ref: ApiGatewayRestApi }
-        Stage: dev
-
-    RecordSetOfAPI:
-      Type: AWS::Route53::RecordSet
-      Properties:
-        Name: "api.familiar-life.info"
-        Type: A
-        HostedZoneName: "familiar-life.info."
-        AliasTarget:
-          DNSName: !GetAtt Domain.DistributionDomainName
-          HostedZoneId: Z2FDTNDATAQYW2
-
     ## static file domain setting
     Bucket:
       Type: AWS::S3::Bucket
