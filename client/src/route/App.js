@@ -65,7 +65,7 @@ class AdminRoot extends React.Component {
         exportChecklistUrl: false,
     };
 
-    this.ENDPOINT = "https://api.familiar-life.info/api/";
+    this.ENDPOINT = "https://checklist.familiar-life.info/api/";
 
     this.openCircleDescModal      = this.openCircleDescModal.bind(this);
     this.closeCircleDescModal     = this.closeCircleDescModal.bind(this);
