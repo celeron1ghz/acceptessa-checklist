@@ -78,7 +78,7 @@ class TwitterOAuth {
 }
 
 const ROUTE = {
-  start: (event, context, callback) => {
+  start: async (event, context, callback) => {
     return vo(function*(){
       const uid   = uniqid();
       const oauth = TwitterOAuth.createInstance(event);
@@ -108,7 +108,7 @@ const ROUTE = {
     });
   },
 
-  callback: (event, context, callback) => {
+  callback: async (event, context, callback) => {
     return vo(function*(){
       if (!event.headers.Cookie) {
         throw { code: 400, message: 'NO_DATA' };
@@ -161,7 +161,7 @@ const ROUTE = {
     });
   },
 
-  me: (event, context, callback) => {
+  me: async (event, context, callback) => {
     return vo(function*(){
       if (!event.headers.Authorization) {
         throw { code: 400, message: 'INVALID_HEADER' };

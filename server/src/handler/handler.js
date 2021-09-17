@@ -15,7 +15,7 @@ const COMMANDS = {
   export: require('../command/ExportPDFCommand'),
 };
 
-module.exports.endpoint = (event, context, callback) => {
+module.exports.endpoint = async (event, context, callback) => {
   return vo(function*(){
     let token;
 
@@ -113,7 +113,7 @@ module.exports.endpoint = (event, context, callback) => {
   });
 };
 
-module.exports.public = (event, context, callback) => {
+module.exports.public = async (event, context, callback) => {
   return vo(function*(){
     const member_id     = event.queryStringParameters.mid;
     const exhibition_id = event.pathParameters.eid;
