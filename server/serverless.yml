@@ -76,6 +76,18 @@ resources:
       Type: AWS::IAM::Role
       Properties:
         RoleName: "${self:service}"
+    EndpointLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties: { RetentionInDays: 7 }
+    PublicLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties: { RetentionInDays: 7 }
+    AuthLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties: { RetentionInDays: 7 }
+    StreamLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties: { RetentionInDays: 7 }
 
     ## bucket and policy
     Bucket:
