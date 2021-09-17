@@ -14,7 +14,6 @@
     "twitter": "^1.7.1",
     "underscore": "^1.9.1",
     "uniqid": "^4.1.1",
-    "vo": "^4.0.2",
     "wkhtmltopdf": "^0.3.4"
   },
   "devDependencies": {

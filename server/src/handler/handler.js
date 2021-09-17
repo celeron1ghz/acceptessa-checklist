@@ -1,6 +1,5 @@
 'use strict';
 
-const vo  = require('vo');
 const jwt = require('jsonwebtoken');
 const aws = require('aws-sdk');
 const ssm = new aws.SSM();
@@ -16,7 +15,7 @@ const COMMANDS = {
 };
 
 module.exports.endpoint = async (event, context, callback) => {
-  return vo(function*(){
+  try {
     let token;
 
     try {
@@ -37,7 +36,7 @@ module.exports.endpoint = async (event, context, callback) => {
 
     let user;
     try {
-      user = yield dynamodb.get({
+      user = await dynamodb.get({
         TableName: "tessa_session",
         Key: { "uid": sess.sessid },
         AttributesToGet: ['twitter_id', 'screen_name', 'display_name', 'profile_image_url'],
@@ -73,7 +72,7 @@ module.exports.endpoint = async (event, context, callback) => {
 
 
     try {
-      const ret = yield obj.run();
+      const ret = await obj.run();
 
       return callback(null, {
         statusCode: 200,
@@ -86,7 +85,7 @@ module.exports.endpoint = async (event, context, callback) => {
       throw { code: 400, message: 'INTERNAL_ERROR' };
     }
 
-  }).catch(err => {
+  } catch (err) {
     let code;
     let mess;
 
@@ -110,15 +109,15 @@ module.exports.endpoint = async (event, context, callback) => {
       headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify({ error: mess }),
     });
-  });
+  }
 };
 
 module.exports.public = async (event, context, callback) => {
-  return vo(function*(){
+  try {
     const member_id     = event.queryStringParameters.mid;
     const exhibition_id = event.pathParameters.eid;
 
-    const config = yield dynamodb.get({
+    const config = await dynamodb.get({
       TableName: "tessa_config",
       Key: { member_id: member_id, exhibition_id: exhibition_id },
     }).promise().then(data => data.Item);
@@ -131,19 +130,18 @@ module.exports.public = async (event, context, callback) => {
       });
     }
 
-    const ret = yield new COMMANDS.list({ exhibition_id }, { screen_name: member_id }).run();
+    const ret = await new COMMANDS.list({ exhibition_id }, { screen_name: member_id }).run();
     return callback(null, {
       statusCode: 200,
       headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify(ret),
     })
 
-  }).catch(err => {
+  } catch (err) {
     return callback(null, {
       statusCode: 500,
       headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify({ error: err.message }),
     });
-
-  });
+  }
 };

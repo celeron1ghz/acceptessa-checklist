@@ -1,7 +1,6 @@
 'use strict';
 
 const jwt       = require('jsonwebtoken');
-const vo        = require('vo');
 const uniqid    = require('uniqid');
 const Cookie    = require('cookie');
 const aws       = require('aws-sdk');
@@ -79,12 +78,12 @@ class TwitterOAuth {
 
 const ROUTE = {
   start: async (event, context, callback) => {
-    return vo(function*(){
+    try {
       const uid   = uniqid();
       const oauth = TwitterOAuth.createInstance(event);
-      const auth  = yield oauth.getOAuthRequestToken();
+      const auth  = await oauth.getOAuthRequestToken();
 
-      const ret = yield dynamodb.put({
+      const ret = await dynamodb.put({
         TableName: SESSION_TABLE,
         Item: {
           uid: uid,
@@ -101,21 +100,20 @@ const ROUTE = {
           'Set-Cookie': 'sessid=' + uid + '; secure;',
         },
       });
-
-    }).catch(err => {
+    } catch (err) {
       console.log("Error on auth:", err);
       return callback(null, { statusCode: 500, body: "ERROR!" });
-    });
+    }
   },
 
   callback: async (event, context, callback) => {
-    return vo(function*(){
+    try {
       if (!event.headers.Cookie) {
         throw { code: 400, message: 'NO_DATA' };
       }
 
       const sessid = Cookie.parse(event.headers.Cookie).sessid;
-      const row    = yield dynamodb.get({ TableName: SESSION_TABLE, Key: { "uid": sessid } }).promise();
+      const row    = await dynamodb.get({ TableName: SESSION_TABLE, Key: { "uid": sessid } }).promise();
 
       if (!row.Item) {
         throw { code: 401, message: 'NO_DATA' };
@@ -125,12 +123,12 @@ const ROUTE = {
       const oauth_token_secret = row.Item.session;
 
       const query = event.queryStringParameters;
-      const ret = yield oauth.getOAuthAccessToken(query.oauth_token, oauth_token_secret, query.oauth_verifier);
-      const me  = yield oauth.call_get_api(ret.access_token, ret.access_token_secret, "account/verify_credentials", {});
+      const ret = await oauth.getOAuthAccessToken(query.oauth_token, oauth_token_secret, query.oauth_verifier);
+      const me  = await oauth.call_get_api(ret.access_token, ret.access_token_secret, "account/verify_credentials", {});
 
       console.log(JSON.stringify({ status: "success", id: me.screen_name, name: me.name }));
 
-      yield dynamodb.put({
+      await dynamodb.put({
         TableName: SESSION_TABLE,
         Item: {
           uid:                  sessid,
@@ -151,18 +149,18 @@ const ROUTE = {
         headers: { 'Content-Type': "text/html"},
         body: `<script>window.opener.postMessage("${signed}", "*"); window.close();</script>`,
       });
-    }).catch(err => {
+    } catch (err) {
       if (err instanceof Error) {
         console.log("Error on callback:", err);
         return callback(null, { statusCode: 500,      body: JSON.stringify({ error: err.message }) });
       } else {
         return callback(null, { statusCode: err.code, body: JSON.stringify({ error: err.message }) });
       }
-    });
+    }
   },
 
   me: async (event, context, callback) => {
-    return vo(function*(){
+    try {
       if (!event.headers.Authorization) {
         throw { code: 400, message: 'INVALID_HEADER' };
       }
@@ -184,7 +182,7 @@ const ROUTE = {
         throw { code: 401, message: 'INVALID_HEADER' };
       }
 
-      const ret = yield dynamodb.get({
+      const ret = await dynamodb.get({
         TableName: SESSION_TABLE,
         Key: { "uid": sessid },
         AttributesToGet: ['twitter_id', 'screen_name', 'display_name', 'profile_image_url']
@@ -205,8 +203,7 @@ const ROUTE = {
         headers: { 'Access-Control-Allow-Origin': '*' },
         body: JSON.stringify(row),
       });
-
-    }).catch(err => {
+    } catch(err) {
       let code;
       let mess;
       console.log("ERROR:", err);
@@ -224,7 +221,7 @@ const ROUTE = {
         headers: { 'Access-Control-Allow-Origin': '*' },
         body: JSON.stringify({ error: mess }),
       });
-    });
+    }
   },
 };
 
