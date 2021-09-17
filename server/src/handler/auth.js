@@ -5,22 +5,20 @@ const vo        = require('vo');
 const uniqid    = require('uniqid');
 const Cookie    = require('cookie');
 const aws       = require('aws-sdk');
-const ssm       = new aws.SSM();
 const dynamodb  = new aws.DynamoDB.DocumentClient();
 
 const OAuth   = require('oauth').OAuth;
 const Twitter = require('twitter');
 
+const SESSION_TABLE = 'tessa_session';
+
 class TwitterOAuth {
-  static createInstance(event, keyName, secretName){
-    return vo(function*(){
-      const key    = yield ssm.getParameter({ Name: keyName,    WithDecryption: true }).promise().then(d => d.Parameter.Value);
-      const secret = yield ssm.getParameter({ Name: secretName, WithDecryption: true }).promise().then(d => d.Parameter.Value);
-      return new TwitterOAuth(event, key, secret);
-    }).catch(err => {
-      console.log("Error on creating oauth object:", err);
-      throw err;
-    });
+  static createInstance(event){
+    return new TwitterOAuth(
+      event,
+      process.env.SSM_KEY_CONSUMER_KEY,
+      process.env.SSM_KEY_CONSUMER_SECRET
+    );
   }
 
   constructor(event, key, secret) {
@@ -79,15 +77,11 @@ class TwitterOAuth {
   }
 }
 
-const SESSION_TABLE           = 'tessa_session';
-const SSM_KEY_JWT_SECRET      = '/tessa_checklist/jwt_secret';
-const SSM_KEY_CONSUMER_KEY    = '/tessa_checklist/twitter_consumer_key';
-const SSM_KEY_CONSUMER_SECRET = '/tessa_checklist/twitter_consumer_secret';
 const ROUTE = {
   start: (event, context, callback) => {
     return vo(function*(){
       const uid   = uniqid();
-      const oauth = yield TwitterOAuth.createInstance(event, SSM_KEY_CONSUMER_KEY, SSM_KEY_CONSUMER_SECRET);
+      const oauth = TwitterOAuth.createInstance(event);
       const auth  = yield oauth.getOAuthRequestToken();
 
       const ret = yield dynamodb.put({
@@ -127,7 +121,7 @@ const ROUTE = {
         throw { code: 401, message: 'NO_DATA' };
       }
 
-      const oauth = yield TwitterOAuth.createInstance(event, SSM_KEY_CONSUMER_KEY, SSM_KEY_CONSUMER_SECRET);
+      const oauth = TwitterOAuth.createInstance(event);
       const oauth_token_secret = row.Item.session;
 
       const query = event.queryStringParameters;
@@ -150,8 +144,7 @@ const ROUTE = {
         },
       }).promise();
 
-      const secret = yield ssm.getParameter({ Name: SSM_KEY_JWT_SECRET, WithDecryption: true }).promise().then(d => d.Parameter.Value);
-      const signed = jwt.sign({ sessid: sessid }, secret);
+      const signed = jwt.sign({ sessid: sessid }, process.env.SSM_KEY_JWT_SECRET);
 
       return callback(null, {
         statusCode: 200,
@@ -181,11 +174,10 @@ const ROUTE = {
       }
 
       const token  = token_matched[1];
-      const secret = (yield ssm.getParameter({ Name: SSM_KEY_JWT_SECRET, WithDecryption: true }).promise() ).Parameter.Value;
       let sessid;
 
       try {
-        const data = jwt.verify(token, secret);
+        const data = jwt.verify(token, process.env.SSM_KEY_JWT_SECRET);
         sessid = data.sessid;
       } catch(e) {
         console.log("Error on jwt verify:", e.toString());

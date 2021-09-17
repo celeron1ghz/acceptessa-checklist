@@ -13,10 +13,6 @@ provider:
     role:
       statements:
         - Effect: Allow
-          Action: [ssm:GetParameter]
-          Resource:
-            - Fn::Join: [ ":", ["arn:aws:ssm", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "parameter/tessa_checklist/*"]]
-        - Effect: Allow
           Action: [dynamodb:GetItem, dynamodb:PutItem, dynamodb:DeleteItem]
           Resource:
             - Fn::Join: [ ":", ["arn:aws:dynamodb", { Ref: AWS::Region }, { Ref: AWS::AccountId }, "table/tessa_session"]]
@@ -48,16 +44,23 @@ functions:
     events: [{ http: { path: "/api/endpoint", method: post, cors: true } }]
     environment:
       S3BUCKET_PUBLIC_URL: { Fn::GetAtt: [ExportBucket, DomainName] }
+      SSM_KEY_JWT_SECRET:  "${ssm:/tessa_checklist/jwt_secret}"
+
   public:
     handler: handler.public
     description: tessa checklist public endpoint
     events: [{ http: { path: "/api/public/{eid}/", method: get, cors: true } }]
+
   auth:
     handler: handler.auth
     description: tessa checklist authentication
     events: [{ http: { path: "/api/auth/{action}", method: get, cors: true } }]
     environment:
-      SERVE_HOST: "checklist.familiar-life.info"
+      SERVE_HOST:              "checklist.familiar-life.info"
+      SSM_KEY_CONSUMER_KEY:    "${ssm:/tessa_checklist/twitter_consumer_key}"
+      SSM_KEY_CONSUMER_SECRET: "${ssm:/tessa_checklist/twitter_consumer_secret}"
+      SSM_KEY_JWT_SECRET:      "${ssm:/tessa_checklist/jwt_secret}"
+
   stream:
     handler: handler.stream
     events:
