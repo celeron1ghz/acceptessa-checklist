@@ -208,10 +208,9 @@ resources:
             MinTTL: 43200 ## 12 hour
             MaxTTL: 43200
             DefaultTTL: 43200
-            # LambdaFunctionAssociations:
-            #   - EventType: viewer-request
-            #     LambdaFunctionARN:
-            #       Fn::Join: ["", [!GetAtt OgpLambdaFunction.Arn, ":1"]]
+            LambdaFunctionAssociations:
+              - EventType: viewer-request
+                LambdaFunctionARN: !Sub "arn:aws:lambda:us-east-1:${AWS::AccountId}:function:acceptessa-checklist-ogp-dev-ogp:16"
           CacheBehaviors:
             - PathPattern: /api/*
               AllowedMethods: [GET, HEAD, OPTIONS, PUT, PATCH, POST, DELETE]
