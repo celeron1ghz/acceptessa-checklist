@@ -107,7 +107,7 @@ resources:
               Principal:
                 AWS: !Sub arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}
               Resource:
-                Fn::Join: [ "/", [ !GetAtt [ Bucket, Arn ] , "*" ] ]
+                Fn::Join: [ "/", [ !GetAtt [ Bucket, Arn ], "*" ] ]
 
     ExportBucket:
       Type: AWS::S3::Bucket
@@ -125,8 +125,9 @@ resources:
           Statement:
             - Effect: Allow
               Action: ["s3:GetObject"]
-              Resource: { Fn::Join: [ "", [{ Fn::GetAtt: [ExportBucket, Arn] }, "/*" ]] }
               Principal: "*"
+              Resource:
+                Fn::Join: [ "", [ !GetAtt [ExportBucket, Arn], "/*" ]]
 
     ## tables
     FavoriteTable:
@@ -207,6 +208,10 @@ resources:
             MinTTL: 43200 ## 12 hour
             MaxTTL: 43200
             DefaultTTL: 43200
+            # LambdaFunctionAssociations:
+            #   - EventType: viewer-request
+            #     LambdaFunctionARN:
+            #       Fn::Join: ["", [!GetAtt OgpLambdaFunction.Arn, ":1"]]
           CacheBehaviors:
             - PathPattern: /api/*
               AllowedMethods: [GET, HEAD, OPTIONS, PUT, PATCH, POST, DELETE]

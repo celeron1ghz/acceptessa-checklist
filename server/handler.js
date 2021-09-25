@@ -3,7 +3,7 @@ const Auth = require('./src/handler/auth');
 module.exports.endpoint = Main.endpoint;
 module.exports.public = Main.public;
 module.exports.auth = Auth.auth;
- 
+
 const aws = require('aws-sdk');
 const dynamodb = new aws.DynamoDB.DocumentClient({ convertEmptyValues: true });
 
