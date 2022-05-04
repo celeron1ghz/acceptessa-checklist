@@ -1,5 +1,5 @@
 service: acceptessa-checklist-ogp
-frameworkVersion: '2'
+frameworkVersion: '3'
 
 provider:
   name: aws
@@ -7,6 +7,7 @@ provider:
   lambdaHashingVersion: 20201221
   stage: dev
   region: us-east-1
+  deploymentBucket: serverless-upload-us-east-1
   iamRoleStatements:
     - Effect: Allow
       Action: [
