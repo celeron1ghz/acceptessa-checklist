@@ -53,18 +53,16 @@ async function build(exhibitionName) {
       const config = yaml.safeLoad(value.toString());
 
       if (!validator(config)) {
-        console.log(`[${eid}] !!!!!ERROR!!!!! validation error in `, fromConfigfile);
-
         for (const e of validator.errors) {
           console.log(JSON.stringify(e, null, 2));
         }
 
         continue;
+        // throw new Error(`[${eid}] !!!!!ERROR!!!!! validation error in ` + fromConfigfile);
       }
 
       const width = config.space.width;
       const height = config.space.height;
-      console.log(width, height);
       const vertical_syms = config.vertical_syms || [];
       const horizontal_syms = config.horizontal_syms || [];
 
@@ -123,11 +121,13 @@ async function build(exhibitionName) {
 
       await stat(from)
         .then(data => {
-          console.log(`[${eid}] <COPIED> `, from, "==>", dest, data.size);
+          // console.log(`[${eid}] <COPIED> `, from, "==>", dest, data.size);
+          console.log(`[${eid}] <COPIED> `, "==>", dest, data.size);
           return copyFile(from, dest);
         })
         .catch(err => {
-          console.log(`[${eid}] <ERROR>  `, from, err.message);
+          // console.log(`[${eid}] <ERROR>  `, from, err.message);
+          console.log(`[${eid}] <ERROR>  `, err.message);
         });
     }
   }
