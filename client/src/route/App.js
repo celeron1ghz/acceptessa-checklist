@@ -343,7 +343,7 @@ class AdminRoot extends React.Component {
     return this.callChecklistApi({ command: "add", exhibition_id: exhibition.id, circle_id: circle.circle_id }, circle.circle_id).then(data => {
       if (!data) return;
 
-      console.log("ADD_FAVORITE", data);
+      // console.log("ADD_FAVORITE");
       favoriteIdx[circle.circle_id] = data;
       this.setState({ favoriteIdx });
     });
@@ -355,7 +355,7 @@ class AdminRoot extends React.Component {
     this.callChecklistApi({ command: "remove", circle_id: circle.circle_id }, circle.circle_id).then(data => {
       if (!data) return;
 
-      console.log("REMOVE_FAVORITE", data);
+      // console.log("REMOVE_FAVORITE");
       delete favoriteIdx[circle.circle_id];
       this.setState({ favoriteIdx });
     });
