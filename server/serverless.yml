@@ -200,7 +200,7 @@ resources:
             SslSupportMethod: sni-only
           DefaultRootObject: index.html
           DefaultCacheBehavior:
-            TargetOriginId: s3
+            TargetOriginId: s3static
             ViewerProtocolPolicy: redirect-to-https
             ForwardedValues:
               QueryString: true
@@ -228,7 +228,7 @@ resources:
               DefaultTTL: 0
           Enabled: true
           Origins:
-            - Id: s3
+            - Id: s3static
               DomainName: !GetAtt Bucket.DomainName
               S3OriginConfig:
                 OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
