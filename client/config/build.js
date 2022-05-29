@@ -2,6 +2,7 @@ const _ = require('lodash');
 const fs = require('fs');
 const yaml = require('js-yaml');
 const sizeOf = require('image-size');
+const path = require('path');
 const Promise = require('promise');
 const Ajv = require('ajv');
 const ajv = new Ajv({ allErrors: true })
@@ -10,17 +11,40 @@ const stat = Promise.denodeify(fs.stat);
 const copyFile = Promise.denodeify(fs.copyFile);
 const writeFile = Promise.denodeify(fs.writeFile);
 
-const CONFIG_DIR = __dirname;
-const EXHIBITION_DIRS = fs
-  .readdirSync(CONFIG_DIR)
-  .filter(f => fs.statSync(CONFIG_DIR + "/" + f).isDirectory())
-  .filter(f => !f.match(/^\./));
-
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'))
-
 const validator = ajv.compile(require('./schema.json'));
 
+// usage:
+//   $ node build.js <CONFIG_DIR> <PUBLISH_DIR>
+//
+// defaults are:
+//   CONFIG_DIR:  /client/config
+//   PUBLISH_DIR: /client/public
+
 async function build(exhibitionName) {
+  let CONFIG_DIR;
+  let PUBLISH_DIR;
+
+  if (fs.existsSync(process.argv[2])) {
+    CONFIG_DIR = path.resolve(process.argv[2]);
+  } else {
+    CONFIG_DIR = __dirname;
+  }
+
+  if (fs.existsSync(process.argv[3])) {
+    PUBLISH_DIR = path.resolve(process.argv[3]);
+  } else {
+    PUBLISH_DIR = path.resolve('./public');
+  }
+
+  console.log("CONFIG_DIR:", CONFIG_DIR);
+  console.log("PUBLISH_DIR:", PUBLISH_DIR);
+
+  const EXHIBITION_DIRS = fs
+    .readdirSync(CONFIG_DIR)
+    .filter(f => fs.statSync(CONFIG_DIR + "/" + f).isDirectory())
+    .filter(f => !f.match(/^\./));
+
   const filtered = EXHIBITION_DIRS.filter(dir => dir === exhibitionName);
 
   if (exhibitionName && !filtered.length) {
@@ -28,12 +52,31 @@ async function build(exhibitionName) {
     return;
   }
 
-
   const dirs = filtered.length ? filtered : EXHIBITION_DIRS;
 
   for (const eid of dirs) {
-    const edir = `./public/${eid}`;
+    const edir = `${PUBLISH_DIR}/${eid}`;
 
+    // least 'config.yaml' is required.
+    // 'map.png' and 'not_uploaded.png' are optional
+
+    const fromConfigfile = `${CONFIG_DIR}/${eid}/config.yaml`;
+    const destConfigFile = `${PUBLISH_DIR}/${eid}.json`;
+    const mapFile = `${CONFIG_DIR}/${eid}/map.png`;
+
+    const value = fs.readFileSync(fromConfigfile);
+    const config = yaml.safeLoad(value.toString());
+
+    // if config is invalid, abord now
+    if (!validator(config)) {
+      for (const e of validator.errors) {
+        console.log(JSON.stringify(e, null, 2));
+      }
+
+      throw new Error(`[${eid}] !!!!!ERROR!!!!! validation error in ` + fromConfigfile);
+    }
+
+    // after validation is ok, mkdir.
     try {
       fs.mkdirSync(edir);
     } catch (e) {
@@ -42,25 +85,7 @@ async function build(exhibitionName) {
       }
     }
 
-    const destConfigFile = `./public/${eid}.json`;
-    const fromConfigfile = `${CONFIG_DIR}/${eid}/config.yaml`;
-    const mapFile = `${CONFIG_DIR}/${eid}/map.png`;
-
     try {
-      await stat(fromConfigfile);
-
-      const value = fs.readFileSync(fromConfigfile);
-      const config = yaml.safeLoad(value.toString());
-
-      if (!validator(config)) {
-        for (const e of validator.errors) {
-          console.log(JSON.stringify(e, null, 2));
-        }
-
-        continue;
-        // throw new Error(`[${eid}] !!!!!ERROR!!!!! validation error in ` + fromConfigfile);
-      }
-
       const width = config.space.width;
       const height = config.space.height;
       const vertical_syms = config.vertical_syms || [];
@@ -117,7 +142,7 @@ async function build(exhibitionName) {
 
     for (const file of ["not_uploaded.png", "map.png"]) {
       const from = `${CONFIG_DIR}/${eid}/${file}`;
-      const dest = `./public/${eid}/${file}`;
+      const dest = `${PUBLISH_DIR}/${eid}/${file}`;
 
       await stat(from)
         .then(data => {
