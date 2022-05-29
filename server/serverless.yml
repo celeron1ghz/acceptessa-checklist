@@ -117,6 +117,25 @@ resources:
           ErrorDocument: error.html
           IndexDocument: index.html
 
+    ConfigBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: "${self:service}-config"
+
+    ConfigBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: { Ref: ConfigBucket }
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: s3:GetObject
+              Principal:
+                AWS: !Sub arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity2}
+              Resource:
+                Fn::Join: [ "/", [ !GetAtt [ ConfigBucket, Arn ], "*" ] ]
+
     ExportBucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
@@ -226,12 +245,27 @@ resources:
               MinTTL: 0
               MaxTTL: 0
               DefaultTTL: 0
+            - PathPattern: /config/*
+              AllowedMethods: [GET, HEAD, OPTIONS, PUT, PATCH, POST, DELETE]
+              CachedMethods: [GET, HEAD]
+              TargetOriginId: s3config
+              ViewerProtocolPolicy: redirect-to-https
+              ForwardedValues:
+                QueryString: true
+                Headers: ["Origin"]
+              MinTTL: 43200
+              MaxTTL: 43200
+              DefaultTTL: 43200
           Enabled: true
           Origins:
             - Id: s3static
               DomainName: !GetAtt Bucket.DomainName
               S3OriginConfig:
                 OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+            - Id: s3config
+              DomainName: !GetAtt ConfigBucket.DomainName
+              S3OriginConfig:
+                OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity2}
             - Id: api
               DomainName: { Fn::Join: ["", [{ Ref:  ApiGatewayRestApi }, ".execute-api.ap-northeast-1.amazonaws.com" ]] }
               OriginPath: /dev
@@ -243,7 +277,15 @@ resources:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
       Properties:
         CloudFrontOriginAccessIdentityConfig:
-          Comment: !Ref AWS::StackName
+          Comment:
+            Fn::Join: [" ", [!Ref AWS::StackName, "static file"]]
+
+    CloudFrontOriginAccessIdentity2:
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment:
+            Fn::Join: [" ", [!Ref AWS::StackName, "config file"]]
 
     RecordSetOfAssets:
       Type: AWS::Route53::RecordSet
