@@ -1,9 +1,11 @@
 const chokidar = require("chokidar");
 const build = require("./build");
+const path = require('path');
 
-const watcher = chokidar.watch("./config/", { persistent: true });
+const targetPath = path.resolve("./config/");
+const watcher = chokidar.watch(targetPath, { persistent: true });
 
-console.log("Start watching config...\n");
+console.log(`Start watching config: ${targetPath}`);
 
 watcher.on("change", (path) => {
   if (!path.match(/\.yaml$/)) {

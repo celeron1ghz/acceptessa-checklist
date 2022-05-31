@@ -21,18 +21,18 @@ const validator = ajv.compile(require('./schema.json'));
 //   CONFIG_DIR:  /client/config
 //   PUBLISH_DIR: /client/public
 
-async function build(exhibitionName) {
+async function build(exhibitionName, configPath, publishPath) {
   let CONFIG_DIR;
   let PUBLISH_DIR;
 
-  if (fs.existsSync(process.argv[2])) {
-    CONFIG_DIR = path.resolve(process.argv[2]);
+  if (fs.existsSync(configPath)) {
+    CONFIG_DIR = path.resolve(configPath);
   } else {
     CONFIG_DIR = __dirname;
   }
 
-  if (fs.existsSync(process.argv[3])) {
-    PUBLISH_DIR = path.resolve(process.argv[3]);
+  if (fs.existsSync(publishPath)) {
+    PUBLISH_DIR = path.resolve(publishPath);
   } else {
     PUBLISH_DIR = path.resolve('./public');
   }
@@ -161,5 +161,5 @@ async function build(exhibitionName) {
 module.exports = build;
 
 if (require.main === module) {
-  build();
+  build(null, process.argv[2], process.argv[3]);
 }
