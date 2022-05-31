@@ -103,14 +103,14 @@ function MapPane({ image, maps, circles, favorites, onCircleClick }) {
 
 function App() {
   const [maps, setMaps] = useState();
-  const [circles, setCircles] = useState();
+  const [circles, setCircles] = useState([]);
   const [error, setError] = useState();
 
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
     const exhibition = q.get("e");
 
-    window.fetch(`${window.location.origin}/${exhibition}.json`, { credentials: 'include' })
+    window.fetch(`${window.location.origin}/test.json`, { credentials: 'include' })
       .then(data => data.json())
       .then(data => {
         setMaps(data.map);
@@ -137,7 +137,7 @@ function App() {
       <div>{error}</div>
       <MapPane
         maps={maps}
-        image={"map.png"}
+        image={"test/map.png"}
         circles={circles}
         favorites={[]}
         onCircleClick={() => { alert(1) }}

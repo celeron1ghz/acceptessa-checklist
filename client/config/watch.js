@@ -15,5 +15,5 @@ watcher.on("change", (path) => {
   console.log(`!!!!! ${path} has been changed`);
   const splitted = path.split("/");
   const exhibition = splitted[splitted.length - 2];
-  build(exhibition);
+  build(exhibition, process.argv[2], process.argv[3]);
 });
