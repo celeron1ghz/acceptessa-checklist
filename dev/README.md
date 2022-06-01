@@ -1,9 +1,6 @@
 # ABOUT
 チェックリストのマップ座標の作成方法
 
-## 更新履歴
- * 2021/07/06 初稿
-
 # INSTALL AND SETUP
 ## nodejs を入れる
 
@@ -21,26 +18,26 @@ v10.19.0
 一番最初のセットアップの際は、下記のコマンドを実行する。
 
 ```bash
-git clone git@github.com:celeron1ghz/acceptessa-checklist.git
+$ git clone git@github.com:celeron1ghz/acceptessa-checklist.git
 
-cd acceptessa-checklist/client
+$ cd acceptessa-checklist/dev
 
-npm install
+$ npm install
 ```
 
 前回の操作から間が空いた際は、下記のコマンドを実行して最新のものを取ってくる。
 
 ```bash
-cd acceptessa-checklist/client
+$ cd acceptessa-checklist/dev
 
-git pull --rebase
+$ git pull --rebase
 
-npm install
+$ npm install
 ```
 
 # MAKE CONFIG
 ## サーバの起動
-設定の内容をリアルタイムで確認できるようにするため、サーバを立ち上げる。
+設定の内容をリアルタイムで確認できるようにするため、設定作成用のサーバを立ち上げる。
 
 ```
 npm run start
@@ -60,44 +57,38 @@ Note that the development build is not optimized.
 To create a production build, use yarn build.
 ```
 
-上記起動後に下記にアクセスして、チェックリストが表示されれば OK。
+エラーがなければブラウザで起動するので、起動したブラウザで画面が表示されればOK。
 
-http://localhost:3000/?e=nijisanji
-
-## ファイルの場所
-
-1. 以下の場所に即売会のディレクトリを作る。適宜ファイルを置く。
+## ファイルを置いて設定を作成する
+以下の場所に対応するファイルを置く。
 
 ```
 acceptessa-checklist
-└ dev
- └ config
-  └ test
-   ┣ config.yaml      （設定ファイル。これから書き方を説明）
-   ┣ map.png          （マップとして表示されるファイル）
-   ┗ not_uploaded.png （サークルカット未アップロード時に表示される画像）
+┗ dev
+  ┗ config
+    ┗ test
+      ┣ config.yaml      （設定ファイル。これから書き方を説明）
+      ┣ map.png          （マップとして表示されるファイル）
+      ┗ not_uploaded.png （サークルカット未アップロード時に表示される画像）
 ```
 
-2. サーバを起動した Terminal と別に Terminal を立ちあげ、下記のコマンドを実行する。`config.yaml` を変更するたびに自動で設定ファイルを生成してくれるようになる。
+サーバを起動した Terminal と別に Terminal を立ちあげ、下記のコマンドを実行する。`config.yaml` を変更するたびに自動で設定ファイルを生成してくれるようになる。
 
 ```bash
-cd acceptessa-checklist/client
+cd acceptessa-checklist/dev
 
 npm run watchConfig
 ```
 
-下記のような画面が出てエラーになっていなければ OK。あとは `config.yaml` を書いていく。
+下記のような表示が出てエラーになっていなければ OK。あとは `config.yaml` を書いていく。
 
 ```bash
-> acceptessa-checklist@0.1.0 watchConfig /home/xxxxx/go/src/github.com/celeron1ghz/acceptessa-checklist/client
-> node config/watch.js
-
 Start watching config...
 ```
 
 ## config.yaml の書き方
 
-`npm run watchConfig` を実行していれば、 `config.yaml` を保存 → 設定ファイルの生成 → ブラウザの再読み込みが自動で走るので、保存したらマップの座標がずれていないかを都度確認する。
+`npm run watchConfig` を実行していれば、 `config.yaml` を保存 → 設定ファイルの生成 → ブラウザの再読み込みが自動で走るので、設定ファイルを記入していく座標がずれていないかを確認していく。
 
 正しくないフォーマットを `config.yaml` を書いた際にはエラーが表示されてマップが再表示されない場合があるが、その際はブラウザをリロードする。それでもだめだったらサーバを一回止めて再度起動する。
 
@@ -158,17 +149,40 @@ https://developer.twitter.com/en/docs/twitter-for-websites/tweet-button/guides/p
 ```
 
 ## commit&push して repository へ反映
+マッピングの作成が完了したら、設定作成用のディレクトリ(dev)から本番用(client)のディレクトリにファイルを移動し、gitにファイルを登録してpushを行う。
 
-正しく設定ファイルが作成出来たら repository へ反映する。
+```
+acceptessa-checklist
+┣ dev （ローカルで設定を作成する際にファイルを置いたところ）
+┃ ┗ config
+┃   ┗ test
+┃     ┣ config.yaml
+┃     ┣ map.png
+┃     ┗ not_uploaded.png
+┃
+┗ client （本番で使われる設定ファイルを置くところ）
+  ┗ config
+    ┗ <即売会名>
+      ┣ config.yaml
+      ┣ map.png
+      ┗ not_uploaded.png
+```
+
+ファイルを置いたらgitに登録し、repositoryへ反映する。
 
 ```bash
-git add config/7fes11th/config.yaml
-git add config/7fes11th/map.png
-git add config/7fes11th/not_uploaded.png
+cd client/config
+git add <即売会名>/config.yaml
+git add <即売会名>/map.png
+git add <即売会名>/not_uploaded.png
 
-git commit -m "7fes11thの設定ファイルを追加"
+git commit -m "<即売会名>の設定ファイルを追加"
 
 git push
 ```
+
+その後Actionsでエラーが出ていないことを確認する。
+
+エラーが出ていた場合は再度修正する。
 
 以上。
