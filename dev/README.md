@@ -1,10 +1,11 @@
-# About
-チェックリストのマップ座標の設定方法
+# ABOUT
+チェックリストのマップ座標の作成方法
 
 ## 更新履歴
  * 2021/07/06 初稿
 
-# nodejs を入れる
+# INSTALL AND SETUP
+## nodejs を入れる
 
 nodejs はがんばってインストールする。
 
@@ -15,9 +16,9 @@ $ node -v
 v10.19.0
 ```
 
-# セットアップ（初回）
+## セットアップ
 
-一番最初のセットアップの際、下記のコマンドを実行する。
+一番最初のセットアップの際は、下記のコマンドを実行する。
 
 ```bash
 git clone git@github.com:celeron1ghz/acceptessa-checklist.git
@@ -27,9 +28,7 @@ cd acceptessa-checklist/client
 npm install
 ```
 
-# セットアップ（二回目以降）
-
-前回の操作から間が空いた際、下記のコマンドを実行して最新のものを取ってくる。
+前回の操作から間が空いた際は、下記のコマンドを実行して最新のものを取ってくる。
 
 ```bash
 cd acceptessa-checklist/client
@@ -39,7 +38,9 @@ git pull --rebase
 npm install
 ```
 
-# サーバの起動
+# MAKE CONFIG
+## サーバの起動
+設定の内容をリアルタイムで確認できるようにするため、サーバを立ち上げる。
 
 ```
 npm run start
@@ -63,17 +64,18 @@ To create a production build, use yarn build.
 
 http://localhost:3000/?e=nijisanji
 
-# 即売会ごとの初期設定
+## ファイルの場所
 
 1. 以下の場所に即売会のディレクトリを作る。適宜ファイルを置く。
 
 ```
 acceptessa-checklist
-└ config
- └ <即売会名>
-  ┣ config.yaml      （設定ファイル。これから書き方を説明）
-  ┣ map.png          （マップとして表示されるファイル）
-  ┗ not_uploaded.png （サークルカット未アップロード時に表示される画像）
+└ dev
+ └ config
+  └ test
+   ┣ config.yaml      （設定ファイル。これから書き方を説明）
+   ┣ map.png          （マップとして表示されるファイル）
+   ┗ not_uploaded.png （サークルカット未アップロード時に表示される画像）
 ```
 
 2. サーバを起動した Terminal と別に Terminal を立ちあげ、下記のコマンドを実行する。`config.yaml` を変更するたびに自動で設定ファイルを生成してくれるようになる。
@@ -87,15 +89,17 @@ npm run watchConfig
 下記のような画面が出てエラーになっていなければ OK。あとは `config.yaml` を書いていく。
 
 ```bash
-> acceptessa-checklist@0.1.0 watchConfig /home/nose/go/src/github.com/celeron1ghz/acceptessa-checklist/client
+> acceptessa-checklist@0.1.0 watchConfig /home/xxxxx/go/src/github.com/celeron1ghz/acceptessa-checklist/client
 > node config/watch.js
 
 Start watching config...
 ```
 
-# config.yaml の書き方
+## config.yaml の書き方
 
-`npm run watchConfig` を実行していれば、 `config.yaml` を保存 → 設定ファイルの生成 → ブラウザの再読み込みが自動で走るはずなので、保存したらマップの座標がずれていないかを確認してください。
+`npm run watchConfig` を実行していれば、 `config.yaml` を保存 → 設定ファイルの生成 → ブラウザの再読み込みが自動で走るので、保存したらマップの座標がずれていないかを都度確認する。
+
+正しくないフォーマットを `config.yaml` を書いた際にはエラーが表示されてマップが再表示されない場合があるが、その際はブラウザをリロードする。それでもだめだったらサーバを一回止めて再度起動する。
 
 フォーマットは下記の通り。
 
@@ -153,7 +157,7 @@ https://developer.twitter.com/en/docs/twitter-for-websites/tweet-button/guides/p
  - { sym: "ス", left: 18, tops: [324, 342,361, 379, 427, 445, 464, 482, 501, 519] }
 ```
 
-# repository へ反映
+## commit&push して repository へ反映
 
 正しく設定ファイルが作成出来たら repository へ反映する。
 
@@ -166,9 +170,5 @@ git commit -m "7fes11thの設定ファイルを追加"
 
 git push
 ```
-
-自動テストを追加して、設定がおかしかったらエラーが出るようにするかもしれない。
-
-機能を追加したら書く。
 
 以上。
