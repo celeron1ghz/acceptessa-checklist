@@ -7,7 +7,7 @@
     "aws-sdk": "^2.199.0",
     "aws-wkhtmltopdf": "^0.0.2",
     "cookie": "^0.3.1",
-    "jsonwebtoken": "^8.1.1",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "node-fetch": "^2.1.2",
     "oauth": "^0.9.15",
