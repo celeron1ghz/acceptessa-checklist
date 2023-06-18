@@ -428,7 +428,7 @@ class AdminRoot extends React.Component {
               : 'サークル一覧'
           }
         </span>
-        {
+        {/* {
           enableChecklist &&
             <div className="pull-right">
               {
@@ -466,9 +466,9 @@ class AdminRoot extends React.Component {
                       </Button>
               }
             </div>
-        }
+        } */}
       </Card>
-      {
+      {/* {
         (enableChecklist && !me) &&
           <div className="text-info mt1e mb1e">
             <FontAwesomeIcon icon={['fas', 'info-circle']} /> Twitterのアカウントでログインを行うことでチェックリストの作成を行うことが可能です。
@@ -477,7 +477,7 @@ class AdminRoot extends React.Component {
               （取得した情報はログインしたユーザの情報取得のみに利用し、ツイートの取得・自動ツイート等は行いません。）
             </span>
           </div>
-      }
+      } */}
       <Tab.Container id="mainContainer" defaultActiveKey="circlecut">
         <div className="mt1e">
           <Nav variant="pills">
@@ -493,12 +493,12 @@ class AdminRoot extends React.Component {
                   <Nav.Link eventKey="map"><FontAwesomeIcon icon={['fas', 'map-marked-alt']} /> マップ</Nav.Link>
                 </Nav.Item>
             }
-            {
+            {/* {
               enableChecklist &&
                 <Nav.Item>
                   <Nav.Link eventKey="favorite"><FontAwesomeIcon icon={['fas', 'star']} /> お気に入り <Badge pill variant="light">{Object.keys(favoriteIdx).length}</Badge></Nav.Link>
                 </Nav.Item>
-            }
+            } */}
           </Nav>
           <Tab.Content>
             <Tab.Pane eventKey="list">
