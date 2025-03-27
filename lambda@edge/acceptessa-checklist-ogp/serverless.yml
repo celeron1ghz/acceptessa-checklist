@@ -1,0 +1,44 @@
+service: acceptessa-checklist-ogp
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  stage: dev
+  region: us-east-1
+  deploymentBucket: serverless-upload-us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action: [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ]
+      Resource: ["arn:aws:logs:*:*:*"]
+    - Effect: Allow
+      Action: [s3:GetObject]
+      Resource:
+        - "arn:aws:s3:::acceptessa-data/*"
+
+functions:
+  ogp:
+    handler: handler.ogp
+    description: showing ogp
+    memorySize: 128
+    timeout: 5
+
+resources:
+  Resources:
+    IamRoleLambdaExecution:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - "lambda.amazonaws.com"
+                  - "edgelambda.amazonaws.com"
+              Action: ["sts:AssumeRole"]

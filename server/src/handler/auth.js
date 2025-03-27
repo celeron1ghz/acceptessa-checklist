@@ -1,26 +1,23 @@
 'use strict';
 
 const jwt       = require('jsonwebtoken');
-const vo        = require('vo');
 const uniqid    = require('uniqid');
 const Cookie    = require('cookie');
 const aws       = require('aws-sdk');
-const ssm       = new aws.SSM();
 const dynamodb  = new aws.DynamoDB.DocumentClient();
 
 const OAuth   = require('oauth').OAuth;
 const Twitter = require('twitter');
 
+const SESSION_TABLE = 'tessa_session';
+
 class TwitterOAuth {
-  static createInstance(event, keyName, secretName){
-    return vo(function*(){
-      const key    = yield ssm.getParameter({ Name: keyName,    WithDecryption: true }).promise().then(d => d.Parameter.Value);
-      const secret = yield ssm.getParameter({ Name: secretName, WithDecryption: true }).promise().then(d => d.Parameter.Value);
-      return new TwitterOAuth(event, key, secret);
-    }).catch(err => {
-      console.log("Error on creating oauth object:", err);
-      throw err;
-    });
+  static createInstance(event){
+    return new TwitterOAuth(
+      event,
+      process.env.SSM_KEY_CONSUMER_KEY,
+      process.env.SSM_KEY_CONSUMER_SECRET
+    );
   }
 
   constructor(event, key, secret) {
@@ -28,9 +25,15 @@ class TwitterOAuth {
     this.consumer_secret = secret;
 
     // fix path for aws's auto-assigned URL and mydomain
+    // const innerPath = event.path;
+    // const outerPath = event.requestContext.path;
+    // const cbPath    = outerPath.replace(innerPath, "/api/auth/callback");
     const innerPath = event.path;
     const outerPath = event.requestContext.path;
-    const cbPath    = outerPath.replace(innerPath, "/auth/callback");
+    const cbPath    = innerPath.replace("start", "callback");
+
+    // const callback = 'https://' + event.headers.Host + cbPath;
+    const callback = 'https://' + process.env.SERVE_HOST + cbPath;
 
     this.oauth = new OAuth(
       'https://api.twitter.com/oauth/request_token',
@@ -38,7 +41,7 @@ class TwitterOAuth {
       key,
       secret,
       '1.0A',
-      'https://' + event.headers.Host + cbPath,
+      callback,
       'HMAC-SHA1'
     );
   }
@@ -73,18 +76,14 @@ class TwitterOAuth {
   }
 }
 
-const SESSION_TABLE           = 'tessa_session';
-const SSM_KEY_JWT_SECRET      = '/tessa_checklist/jwt_secret';
-const SSM_KEY_CONSUMER_KEY    = '/tessa_checklist/twitter_consumer_key';
-const SSM_KEY_CONSUMER_SECRET = '/tessa_checklist/twitter_consumer_secret';
 const ROUTE = {
-  start: (event, context, callback) => {
-    return vo(function*(){
+  start: async (event, context, callback) => {
+    try {
       const uid   = uniqid();
-      const oauth = yield TwitterOAuth.createInstance(event, SSM_KEY_CONSUMER_KEY, SSM_KEY_CONSUMER_SECRET);
-      const auth  = yield oauth.getOAuthRequestToken();
+      const oauth = TwitterOAuth.createInstance(event);
+      const auth  = await oauth.getOAuthRequestToken();
 
-      const ret = yield dynamodb.put({
+      const ret = await dynamodb.put({
         TableName: SESSION_TABLE,
         Item: {
           uid: uid,
@@ -101,36 +100,35 @@ const ROUTE = {
           'Set-Cookie': 'sessid=' + uid + '; secure;',
         },
       });
-
-    }).catch(err => {
+    } catch (err) {
       console.log("Error on auth:", err);
       return callback(null, { statusCode: 500, body: "ERROR!" });
-    });
+    }
   },
 
-  callback: (event, context, callback) => {
-    return vo(function*(){
+  callback: async (event, context, callback) => {
+    try {
       if (!event.headers.Cookie) {
         throw { code: 400, message: 'NO_DATA' };
       }
 
       const sessid = Cookie.parse(event.headers.Cookie).sessid;
-      const row    = yield dynamodb.get({ TableName: SESSION_TABLE, Key: { "uid": sessid } }).promise();
+      const row    = await dynamodb.get({ TableName: SESSION_TABLE, Key: { "uid": sessid } }).promise();
 
       if (!row.Item) {
         throw { code: 401, message: 'NO_DATA' };
       }
 
-      const oauth = yield TwitterOAuth.createInstance(event, SSM_KEY_CONSUMER_KEY, SSM_KEY_CONSUMER_SECRET);
+      const oauth = TwitterOAuth.createInstance(event);
       const oauth_token_secret = row.Item.session;
 
       const query = event.queryStringParameters;
-      const ret = yield oauth.getOAuthAccessToken(query.oauth_token, oauth_token_secret, query.oauth_verifier);
-      const me  = yield oauth.call_get_api(ret.access_token, ret.access_token_secret, "account/verify_credentials", {});
+      const ret = await oauth.getOAuthAccessToken(query.oauth_token, oauth_token_secret, query.oauth_verifier);
+      const me  = await oauth.call_get_api(ret.access_token, ret.access_token_secret, "account/verify_credentials", {});
 
       console.log(JSON.stringify({ status: "success", id: me.screen_name, name: me.name }));
 
-      yield dynamodb.put({
+      await dynamodb.put({
         TableName: SESSION_TABLE,
         Item: {
           uid:                  sessid,
@@ -144,26 +142,25 @@ const ROUTE = {
         },
       }).promise();
 
-      const secret = yield ssm.getParameter({ Name: SSM_KEY_JWT_SECRET, WithDecryption: true }).promise().then(d => d.Parameter.Value);
-      const signed = jwt.sign({ sessid: sessid }, secret);
+      const signed = jwt.sign({ sessid: sessid }, process.env.SSM_KEY_JWT_SECRET);
 
       return callback(null, {
         statusCode: 200,
         headers: { 'Content-Type': "text/html"},
         body: `<script>window.opener.postMessage("${signed}", "*"); window.close();</script>`,
       });
-    }).catch(err => {
+    } catch (err) {
       if (err instanceof Error) {
         console.log("Error on callback:", err);
         return callback(null, { statusCode: 500,      body: JSON.stringify({ error: err.message }) });
       } else {
         return callback(null, { statusCode: err.code, body: JSON.stringify({ error: err.message }) });
       }
-    });
+    }
   },
 
-  me: (event, context, callback) => {
-    return vo(function*(){
+  me: async (event, context, callback) => {
+    try {
       if (!event.headers.Authorization) {
         throw { code: 400, message: 'INVALID_HEADER' };
       }
@@ -175,18 +172,17 @@ const ROUTE = {
       }
 
       const token  = token_matched[1];
-      const secret = (yield ssm.getParameter({ Name: SSM_KEY_JWT_SECRET, WithDecryption: true }).promise() ).Parameter.Value;
       let sessid;
 
       try {
-        const data = jwt.verify(token, secret);
+        const data = jwt.verify(token, process.env.SSM_KEY_JWT_SECRET);
         sessid = data.sessid;
       } catch(e) {
         console.log("Error on jwt verify:", e.toString());
         throw { code: 401, message: 'INVALID_HEADER' };
       }
 
-      const ret = yield dynamodb.get({
+      const ret = await dynamodb.get({
         TableName: SESSION_TABLE,
         Key: { "uid": sessid },
         AttributesToGet: ['twitter_id', 'screen_name', 'display_name', 'profile_image_url']
@@ -207,8 +203,7 @@ const ROUTE = {
         headers: { 'Access-Control-Allow-Origin': '*' },
         body: JSON.stringify(row),
       });
-
-    }).catch(err => {
+    } catch(err) {
       let code;
       let mess;
       console.log("ERROR:", err);
@@ -226,12 +221,12 @@ const ROUTE = {
         headers: { 'Access-Control-Allow-Origin': '*' },
         body: JSON.stringify({ error: mess }),
       });
-    });
+    }
   },
 };
 
 module.exports.auth = (event, context, callback) => {
-  const action = event.path.split('/')[2];
+  const action = event.path.split('/')[3];
   const method = ROUTE[action];
 
   if (method) {

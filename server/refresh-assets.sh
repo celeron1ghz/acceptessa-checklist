@@ -8,7 +8,7 @@ yarn buildConfig
 
 echo syncing...
 cd build
-aws s3 sync . s3://acceptessa-checklist-assets
+aws s3 sync . s3://acceptessa-checklist --delete
 
 echo invalidation...
 NOW=`date +%s`

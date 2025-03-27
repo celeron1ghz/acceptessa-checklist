@@ -1,0 +1,15 @@
+space:
+  width: 93
+  height: 35
+tweet:
+  url: "http://aquamarine-dream.info"
+  hashtags: "アマドリ"
+  related: "aqmd_info"
+horizontal_syms:
+ - { sym: "淡島", top: 602, lefts: [1509, 1409, 1309, 1209, 1109]}
+ - { sym: "長浜", idx: 1, top: 872, lefts: [1509, 1409, 1309, 1209, 1109]}
+ - { sym: "長浜", idx: 6, top: 773, lefts: [1109, 1209, 1309, 1409, 1509]}
+ - { sym: "三津", idx: 1, top: 1141, lefts: [1509, 1409, 1309, 1209, 1109]}
+ - { sym: "三津", idx: 6, top: 1041, lefts: [1109, 1209, 1309, 1409, 1509]}
+ - { sym: "沼津", idx: 1, top: 1411, lefts: [1509, 1409, 1309, 1209, 1109]}
+ - { sym: "沼津", idx: 6, top: 1311, lefts: [1209, 1309, 1509]}

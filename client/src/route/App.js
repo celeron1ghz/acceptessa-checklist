@@ -65,7 +65,7 @@ class AdminRoot extends React.Component {
         exportChecklistUrl: false,
     };
 
-    this.ENDPOINT = "https://api.familiar-life.info";
+    this.ENDPOINT = "https://checklist.familiar-life.info/api/";
 
     this.openCircleDescModal      = this.openCircleDescModal.bind(this);
     this.closeCircleDescModal     = this.closeCircleDescModal.bind(this);
@@ -97,7 +97,7 @@ class AdminRoot extends React.Component {
 
     if (load_type) this.addLoading(load_type);
 
-    return fetch(this.ENDPOINT, {
+    return fetch(this.ENDPOINT + "endpoint", {
       headers: new Headers({ 'Authorization': "Bearer " + token }),
       method: 'POST',
       body: JSON.stringify(args),
@@ -294,11 +294,13 @@ class AdminRoot extends React.Component {
 
   login() {
     const getJwtToken = event => {
-      localStorage.setItem("token", event.data);
-      this.getUserData();
+      if (typeof event.data === 'string') {
+        localStorage.setItem("token", event.data);
+        this.getUserData();
+      }
     };
 
-    window.open(this.ENDPOINT + "/auth/start");
+    window.open(this.ENDPOINT + "auth/start");
     window.addEventListener('message', getJwtToken, false);
   }
 
@@ -341,7 +343,7 @@ class AdminRoot extends React.Component {
     return this.callChecklistApi({ command: "add", exhibition_id: exhibition.id, circle_id: circle.circle_id }, circle.circle_id).then(data => {
       if (!data) return;
 
-      console.log("ADD_FAVORITE", data);
+      // console.log("ADD_FAVORITE");
       favoriteIdx[circle.circle_id] = data;
       this.setState({ favoriteIdx });
     });
@@ -353,7 +355,7 @@ class AdminRoot extends React.Component {
     this.callChecklistApi({ command: "remove", circle_id: circle.circle_id }, circle.circle_id).then(data => {
       if (!data) return;
 
-      console.log("REMOVE_FAVORITE", data);
+      // console.log("REMOVE_FAVORITE");
       delete favoriteIdx[circle.circle_id];
       this.setState({ favoriteIdx });
     });
@@ -426,7 +428,7 @@ class AdminRoot extends React.Component {
               : 'サークル一覧'
           }
         </span>
-        {
+        {/* {
           enableChecklist &&
             <div className="pull-right">
               {
@@ -464,9 +466,9 @@ class AdminRoot extends React.Component {
                       </Button>
               }
             </div>
-        }
+        } */}
       </Card>
-      {
+      {/* {
         (enableChecklist && !me) &&
           <div className="text-info mt1e mb1e">
             <FontAwesomeIcon icon={['fas', 'info-circle']} /> Twitterのアカウントでログインを行うことでチェックリストの作成を行うことが可能です。
@@ -475,7 +477,7 @@ class AdminRoot extends React.Component {
               （取得した情報はログインしたユーザの情報取得のみに利用し、ツイートの取得・自動ツイート等は行いません。）
             </span>
           </div>
-      }
+      } */}
       <Tab.Container id="mainContainer" defaultActiveKey="circlecut">
         <div className="mt1e">
           <Nav variant="pills">
@@ -491,12 +493,12 @@ class AdminRoot extends React.Component {
                   <Nav.Link eventKey="map"><FontAwesomeIcon icon={['fas', 'map-marked-alt']} /> マップ</Nav.Link>
                 </Nav.Item>
             }
-            {
+            {/* {
               enableChecklist &&
                 <Nav.Item>
                   <Nav.Link eventKey="favorite"><FontAwesomeIcon icon={['fas', 'star']} /> お気に入り <Badge pill variant="light">{Object.keys(favoriteIdx).length}</Badge></Nav.Link>
                 </Nav.Item>
-            }
+            } */}
           </Nav>
           <Tab.Content>
             <Tab.Pane eventKey="list">

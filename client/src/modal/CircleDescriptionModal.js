@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import _ from 'lodash';
@@ -131,7 +130,7 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
                   circle.twitter_id &&
                   <dl className="circle-link">
                     <dt>
-                      <Badge pill variant="secondary"> 𝕏</Badge>
+                    <Badge pill variant="secondary"> 𝕏</Badge>
                     </dt>
                     <dd>
                         <a href={"https://twitter.com/" + circle.twitter_id} target="_blank" rel="noopener noreferrer">{circle.twitter_id}</a>

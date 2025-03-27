@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { sprintf } from 'sprintf-js';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import styled from 'styled-components';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'font-awesome/css/font-awesome.min.css';
 
 const CirclePositionElement = styled.div`
   @keyframes pointerBlink {
@@ -51,10 +52,7 @@ function MapPane({ image, maps, circles, favorites, onCircleClick }) {
   }
 
   return (
-    <div className="">
-      <div className="text-muted mt1e">
-        <FontAwesomeIcon icon={['fas', 'info-circle']} /> サークルのスペースをクリックすると詳細画面が開きます。
-      </div>
+    <div className="px-3 py-3">
       <div className="pre-scrollable mt1e" style={{ height: parseInt(maps.image_height, 10) + 10 + "px", maxHeight: parseInt(maps.image_height, 10) + 10 + "px" }}>
         <div style={{
           display: "inline-block",
@@ -103,4 +101,49 @@ function MapPane({ image, maps, circles, favorites, onCircleClick }) {
   )
 }
 
-export default MapPane;
+function App() {
+  const [maps, setMaps] = useState();
+  const [circles, setCircles] = useState([]);
+  const [error, setError] = useState();
+
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const exhibition = q.get("e");
+
+    window.fetch(`${window.location.origin}/test.json`, { credentials: 'include' })
+      .then(data => data.json())
+      .then(data => {
+        setMaps(data.map);
+      })
+      .catch(err => {
+        console.log(err);
+        setError("Error1");
+      });
+
+    fetch('https://data.familiar-life.info/' + exhibition + '.json')
+      .then(data => data.ok ? data : Promise.reject(data))
+      .then(data => data.json())
+      .then(data => {
+        setCircles(data.circles);
+      })
+      .catch(err => {
+        console.log(err);
+        setError("Error2");
+      });
+  }, []);
+
+  return (
+    <>
+      <div>{error}</div>
+      <MapPane
+        maps={maps}
+        image={"test/map.png"}
+        circles={circles}
+        favorites={[]}
+        onCircleClick={() => { alert(1) }}
+      />
+    </>
+  );
+}
+
+export default App;
