@@ -18,7 +18,7 @@ function generateTweetLink(tweetParams, text, url) {
   ).slice(0, -1);
 }
 
-export default ({ show, showChecklistComponent, circle, favorite, loadings, onClose, onUpdateComment, onAddFavorite, onRemoveFavorite, tweetParams, exhibitionName }) => {
+export default ({ show, showChecklistComponent, circle, favorite, loadings, onClose, onUpdateComment, onAddFavorite, onRemoveFavorite, tweetParams, exhibitionName, exhibitionID }) => {
     const [comment, setComment] = useState(favorite ? favorite.comment : null);
 
     return <Modal show={show} onHide={onClose}>
@@ -41,8 +41,15 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
       <Modal.Body>
         {
           circle && <div>
-            <div className="text-center">
-              <Image src={circle.circlecut} style={{ border: favorite ? "7px solid #f00" : "none" }}/>
+            <div className={'circleCut-parent ev_' + exhibitionID}>
+              <div className={"circleCut text-center space-" + circle.space_count}>
+                <Image src={circle.circlecut} style={{ border: favorite ? "7px solid #f00" : "none" }}/>
+
+                {
+                  circle.space_sym &&
+                    <span className='place'>{circle.space_sym}<br/>{circle.space_num.replace('-', ',')}</span>
+                }
+              </div>
             </div>
 
             <br/>
@@ -91,11 +98,13 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
 
             <h4 className="text-center">サークルの情報</h4>
             <Card body bg="">
-              <p>
-                <Badge variant="primary">{circle.space_sym}-{circle.space_num}</Badge>
-                &nbsp;
-                {circle.circle_name} ({circle.penname})
-              </p>
+                <dl className="circle-name">
+                  {
+                    circle.space_sym &&
+                      <dt><Badge variant="primary">{circle.space_sym}-{circle.space_num}</Badge>&nbsp;</dt>
+                  }
+                  <dd>{circle.circle_name} ({circle.penname})</dd>
+                </dl>
                 {
                   circle.pixiv_url &&
                     <dl className="circle-link">
@@ -122,7 +131,7 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
                   circle.twitter_id &&
                   <dl className="circle-link">
                     <dt>
-                        <Badge pill variant="secondary"><FontAwesomeIcon icon={['fab', 'twitter']} /> Twitter</Badge>
+                        <Badge pill variant="secondary"> 𝕏</Badge>
                     </dt>
                     <dd>
                         <a href={"https://twitter.com/" + circle.twitter_id} target="_blank" rel="noopener noreferrer">{circle.twitter_id}</a>
@@ -159,7 +168,7 @@ export default ({ show, showChecklistComponent, circle, favorite, loadings, onCl
                         window.location.href,
                     )}
                     target="_blank">
-                  <FontAwesomeIcon icon={['fav', 'twitter']} /> {' '}サークルの情報をツイートする（別画面が開きます）
+                  <FontAwesomeIcon icon={['fav', 'twitter']} /> {' '}Xでサークルの情報をポストする（別画面が開きます）
                 </Button>
             }
           </div>

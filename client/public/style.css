@@ -29,7 +29,6 @@
 .circleCut-item {
     position: relative;
     max-width: 250px;
-    margin-bottom: 15px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -61,17 +60,20 @@
     justify-content: center;
 }
 .circleCut-detail {
-    border: 3px solid #111;
-    border-top: none;
+    background-color: #333;
+    /* border: 3px solid #111; */
+    /* border-top: none; */
+    color: #fff;
     font-size: 14px;
     display: block;
     height: auto;
     flex-grow: 1;
+    padding: 10px 0 20px;
 }
 .circleCut-name {
     width: auto;
     flex-grow: 1;
-    padding: 15px 0.5em 0;
+    padding: 0 0.5em 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -94,7 +96,7 @@
     top: 0;
     border: 3px solid #f00;
 }
-@media screen and (max-width: 991px) {
+@media screen and (max-width: 990px) {
     /*510*/
     .circleCutWrapper {
         width: 510px;
@@ -117,12 +119,10 @@
         height: 37px;
     }
     .circleCut-detail {
-        font-Size: 14px;
-        min-height: 60px;
+        font-Size: 12px;
     }
     .circleCut-name {
         width: auto;
-        padding: 15px 0.5em 0;
     }
     .circleCut-favorite {
         width: auto;
@@ -132,7 +132,7 @@
         width: 100%;
     }
 }
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 991px) {
     /*930px*/
     .circleCutWrapper {
         width: 930px;
@@ -153,6 +153,20 @@
         height: 45px;
     }
 }
+.container.ev_243410 {
+    @media screen and (max-width: 990px) {
+        .circleCut-space {
+            width: 43px;
+            height: 43px;
+        }
+    }
+    @media screen and (min-width: 991px) {
+        .circleCut-space {
+            width: 53px;
+            height: 53px;
+        }
+    }
+}
 @media screen and (min-width: 1200px) {
     .circleCutWrapper {
         width: 1000px;
@@ -169,17 +183,22 @@
         height: 49px;
     }
     .circleCut-detail {
-        min-height: 90px;
     }
 }
 
+.circle-name {
+    margin: 1em 0 0;
+    display: flex;
+}
 .circle-link {
     margin: 1em 0 0;
     display: flex;
 }
+.circle-name dt,
 .circle-link dt {
     margin: 0 1em 0 0;
 }
+.circle-name dd,
 .circle-link dd {
     margin: 0 0 0;
 }
@@ -187,4 +206,33 @@
     .circleDescripton-renewComment {
         margin-top: 1em;
     }
+}
+.circleCut-parent {
+    text-align: center;
+}
+.modal-body .circleCut {
+    display: inline-block;
+    position: relative;
+    height: 200px;
+}
+.modal-body .circleCut img {
+    height: 100%;
+    width: auto;
+}
+.modal-body .place {
+    display: none;
+}
+/* にじそ用 */
+.modal-body .ev_243410 .place {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 46px;
+    height: 46px;
+    background-color: #000;
+    color: #fff;
+    font-size: 11px;
 }

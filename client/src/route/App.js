@@ -416,7 +416,7 @@ class AdminRoot extends React.Component {
       </div>;
     }
 
-    return <div className="container">
+    return <div className={'container ev_' + exhibition.id}>
       <br/>
       <Card body bg="light">
         <span>
@@ -560,7 +560,8 @@ class AdminRoot extends React.Component {
         onRemoveFavorite={this.removeFavorite}
         showChecklistComponent={!!me}
         tweetParams={param.tweet}
-        exhibitionName={exhibition.exhibition_name}/>
+        exhibitionName={exhibition.exhibition_name}
+        exhibitionID={exhibition.id}/>
 
       <PublicLinkModal
         show={showPublicLinkModal}
