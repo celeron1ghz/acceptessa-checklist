@@ -38,31 +38,31 @@ function CirclecutPane({ circles, favorites, loadings, showChecklistComponent, o
                 </LazyLoad>
               </div>
               <div className="circleCut-space">
-                {c.space_sym}<br />{c.space_num}
+                {c.space_sym}<br/>{c.space_num.replace('-', ',')}
               </div>
-              <div className="circleCut-detail">
-                <div className="circleCut-name">
-                  {c.circle_name}
-                </div>
-                {
-                  showChecklistComponent &&
-                  <div className="circleCut-favorite">
-                    {
-                      loadings[c.circle_id]
-                        ? <Button variant="warning" size="sm" onClick={e => { e.stopPropagation(); }}>
-                          <FontAwesomeIcon icon={['fas', 'spinner']} spin pulse={true} /> 処理中
-                        </Button>
-                        : c.favorite
-                          ? <Button variant="danger" size="sm" onClick={e => { e.stopPropagation(); onRemoveFavorite(c) }}>
-                            <FontAwesomeIcon icon={['fas', 'star']} /> 削除
-                          </Button>
-                          : <Button variant="primary" size="sm" onClick={e => { e.stopPropagation(); onAddFavorite(c) }}>
-                            <FontAwesomeIcon icon={['far', 'star']} /> 追加
-                          </Button>
-                    }
+                <div className="circleCut-detail">
+                  <div className="circleCut-name">
+                    {c.circle_name}
                   </div>
-                }
-              </div>
+                  {
+                    showChecklistComponent &&
+                    <div className="circleCut-favorite">
+                      {
+                        loadings[c.circle_id]
+                          ? <Button variant="warning" size="sm" onClick={e => { e.stopPropagation(); }}>
+                            <FontAwesomeIcon icon={['fas', 'spinner']} spin pulse={true} /> 処理中
+                          </Button>
+                          : c.favorite
+                            ? <Button variant="danger" size="sm" onClick={e => { e.stopPropagation(); onRemoveFavorite(c) }}>
+                              <FontAwesomeIcon icon={['fas', 'star']} /> 削除
+                            </Button>
+                            : <Button variant="primary" size="sm" onClick={e => { e.stopPropagation(); onAddFavorite(c) }}>
+                              <FontAwesomeIcon icon={['far', 'star']} /> 追加
+                            </Button>
+                      }
+                    </div>
+                  }
+                </div>
             </div>
           );
         })
