@@ -123,16 +123,20 @@ async function build(exhibitionName, configPath, publishPath) {
         ]),
       ];
 
-      const meta = await stat(mapFile).then(() => sizeOf(mapFile));
+      const meta = await stat(mapFile).then(() => sizeOf(mapFile)).catch(() => null);
+      console.log(mapFile, meta)
 
       const data = {
         tweet: config.tweet,
-        map: {
+      };
+
+      if (meta) {
+        data.map = {
           image_width: meta.width,
           image_height: meta.height,
           mappings,
-        }
-      };
+        };
+      }
 
       await writeFile(destConfigFile, JSON.stringify(data));
       console.log(`[${eid}] <CREATE> `, destConfigFile);
