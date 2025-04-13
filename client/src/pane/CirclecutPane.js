@@ -38,7 +38,7 @@ function CirclecutPane({ circles, favorites, loadings, showChecklistComponent, o
                 </LazyLoad>
               </div>
               <div className="circleCut-space">
-                {c.space_sym}<br/>{c.space_num.replace('-', ',')}
+                {c.space_sym}<br/>{c.space_num ? c.space_num.replace('-', ',') : ''}
               </div>
                 <div className="circleCut-detail">
                   <div className="circleCut-name">
