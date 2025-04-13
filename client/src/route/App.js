@@ -1,19 +1,10 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import {
-  Image,
-  ButtonToolbar,
-  Dropdown,
-  DropdownButton,
   Badge,
   Card,
   Tab,
   Nav,
-  // NavItem,
-  Button,
-  // ToggleButton,
-  // ToggleButtonGroup,
-  // ButtonGroup
 } from 'react-bootstrap';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
@@ -25,15 +16,11 @@ import _ from 'lodash';
 
 import CircleListPane from '../pane/CircleListPane';
 import CirclecutPane from '../pane/CirclecutPane';
-import FavoriteListPane from '../pane/FavoriteListPane';
 import MapPane from '../pane/MapPane';
 
 import CircleDescriptionModal from '../modal/CircleDescriptionModal';
-import PublicLinkModal from '../modal/PublicLinkModal';
-import ExportChecklistModal from '../modal/ExportChecklistModal';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import 'bootstrap/dist/css/bootstrap-theme.min.css';
 import 'react-bootstrap-toggle/dist/bootstrap2-toggle.css';
 import 'font-awesome/css/font-awesome.min.css';
 library.add(fab, fas, far);
@@ -49,8 +36,6 @@ class AdminRoot extends React.Component {
         loading:     {},
 
         showCircleDescModal: false,
-        showPublicLinkModal: false,
-        showExportChecklistModal: false,
 
         exhibition:  null,
         me: null,
@@ -58,70 +43,18 @@ class AdminRoot extends React.Component {
         param: null,
 
         spaceSymSorter: null,
-        publicChecklist: null,
         map: null,
         selectedCircle: null,
-        enableChecklist: false,
-        exportChecklistUrl: false,
     };
 
     this.ENDPOINT = "https://checklist.familiar-life.info/api/";
 
     this.openCircleDescModal      = this.openCircleDescModal.bind(this);
     this.closeCircleDescModal     = this.closeCircleDescModal.bind(this);
-    this.addFavorite              = this.addFavorite.bind(this);
-    this.removeFavorite           = this.removeFavorite.bind(this);
-    this.updateFavoriteComment    = this.updateFavoriteComment.bind(this);
-    this.updatePublicLinkSetting  = this.updatePublicLinkSetting.bind(this);
-    this.login                    = this.login.bind(this);
-    this.logout                   = this.logout.bind(this);
     this.addLoading               = this.addLoading.bind(this);
     this.removeLoading            = this.removeLoading.bind(this);
-    this.exportChecklist          = this.exportChecklist.bind(this);
-
-    this.openPublicLinkModal          = this.openPublicLinkModal.bind(this);
-    this.closePublicLinkModal         = this.closePublicLinkModal.bind(this);
-    this.openExportChecklistModal     = this.openExportChecklistModal.bind(this);
-    this.closeExportChecklistModal    = this.closeExportChecklistModal.bind(this);
-    this.removePublicChecklistDisplay = this.removePublicChecklistDisplay.bind(this);
 
     this.getCircleList      = this.getCircleList.bind(this);
-    this.getUserData        = this.getUserData.bind(this);
-    this.getShareChecklist  = this.getShareChecklist.bind(this);
-  }
-
-  callChecklistApi(args, load_type) {
-    const token = localStorage.getItem("token");
-
-    if (!token) return Promise.reject("No access_token. Please login!!");
-
-    if (load_type) this.addLoading(load_type);
-
-    return fetch(this.ENDPOINT + "endpoint", {
-      headers: new Headers({ 'Authorization': "Bearer " + token }),
-      method: 'POST',
-      body: JSON.stringify(args),
-      cors: true,
-    })
-    .then(data => data.json())
-    .catch(err => {
-      alert(`サーバでエラーが発生しました。しばらく経ってもエラーが続く場合は管理者にお問い合わせください。(${err})`);
-      return;
-    })
-    .then(data => {
-      if (load_type) this.removeLoading(load_type);
-
-      if (data && data.error && (data.error === "EXPIRED" || data.error === "INVALID_TOKEN")) {
-        return;
-      }
-
-      if (data && data.error) {
-        alert(`リクエストでエラーが発生しました。しばらく経ってもエラーが続く場合は管理者にお問い合わせください。(${args.command}: ${data.error})`);
-        return;
-      }
-
-      return data;
-    });
   }
 
   addLoading(key) {
@@ -163,47 +96,6 @@ class AdminRoot extends React.Component {
         this.setState({ param: {} });
       })
       .then(this.getCircleList)
-      .then(data => {
-        if (!this.state.enableChecklist) {
-          console.log("list mode");
-          return;
-        }
-
-        const param = new URLSearchParams(window.location.search);
-
-        if ( param.get("id") ) {
-          return Promise.resolve(param.get("id"))
-            .then(this.getShareChecklist)
-            .then(this.getUserData);
-        } else {
-          return this.getUserData();
-        }
-      });
-  }
-
-  getShareChecklist(member_id) {
-    const { exhibition } = this.state;
-
-    return fetch(`${this.ENDPOINT}/public/${exhibition.id}/?mid=${member_id}`, { cors: true })
-      .then(data => data.json())
-      .then(data => {
-        if (!data.favorite) {
-          console.log("PUBLIC_CHECKLIST_DATA_NG", member_id);
-          alert(`${member_id} さんのチェックリストは存在しないか、公開設定になっていません。`);
-          return;
-        }
-
-        console.log("PUBLIC_CHECKLIST_DATA_OK", member_id, data.favorite.length);
-        const idx = {};
-        for (const f of data.favorite) {
-          idx[f.circle_id] = f;
-        }
-
-        this.setState({ publicChecklist: { idx, config: data.config } });
-      })
-      .catch(err => {
-        console.log("Error on fetch public checklist:", err);
-      });
   }
 
   getCircleList() {
@@ -216,7 +108,6 @@ class AdminRoot extends React.Component {
       .then(data => {
         this.removeLoading("circle");
         console.log("CIRCLE_DATA_OK:", data.circles.length);
-        const enableChecklist = data.circles.filter(c => c.space_sym && c.space_num).length !== 0;
 
         let circleList = data.circles;
 
@@ -265,7 +156,6 @@ class AdminRoot extends React.Component {
           spaceSymSorter: sorter,
           exhibition: data.exhibition,
           map: data.map,
-          enableChecklist,
         });
         this.componentWillReceiveProps(this.props);
       })
@@ -274,39 +164,6 @@ class AdminRoot extends React.Component {
         this.setState({ circleList: null });
         console.error("ERROR:", exhibition + '.json', err.status);
       });
-  }
-
-  getUserData() {
-    const { exhibition } = this.state;
-
-    return this.callChecklistApi({ command: "list", exhibition_id: exhibition.id }, "user").then(data => {
-      if (!data) return;
-      console.log("FAVORITE_DATA_OK:", data.favorite.length);
-
-      const favoriteIdx = {};
-      for (const f of data.favorite) {
-        favoriteIdx[f.circle_id] = f;
-      }
-
-      this.setState({ favoriteIdx, config: data.config, me: data.user });
-    });
-  }
-
-  login() {
-    const getJwtToken = event => {
-      if (typeof event.data === 'string') {
-        localStorage.setItem("token", event.data);
-        this.getUserData();
-      }
-    };
-
-    window.open(this.ENDPOINT + "auth/start");
-    window.addEventListener('message', getJwtToken, false);
-  }
-
-  logout() {
-    localStorage.clear();
-    this.setState({ me: null, favoriteIdx: {} });
   }
 
   openCircleDescModal(selectedCircle) {
@@ -321,87 +178,11 @@ class AdminRoot extends React.Component {
     this.props.history.push("?" + param.toString());
   }
 
-  openPublicLinkModal() {
-    this.setState({ showPublicLinkModal: true });
-  }
-
-  closePublicLinkModal() {
-    this.setState({ showPublicLinkModal: false });
-  }
-
-  openExportChecklistModal() {
-    this.setState({ showExportChecklistModal: true });
-  }
-
-  closeExportChecklistModal() {
-    this.setState({ showExportChecklistModal: false });
-  }
-
-  addFavorite(circle) {
-    const { favoriteIdx, exhibition } = this.state;
-
-    return this.callChecklistApi({ command: "add", exhibition_id: exhibition.id, circle_id: circle.circle_id }, circle.circle_id).then(data => {
-      if (!data) return;
-
-      // console.log("ADD_FAVORITE");
-      favoriteIdx[circle.circle_id] = data;
-      this.setState({ favoriteIdx });
-    });
-  }
-
-  removeFavorite(circle) {
-    const { favoriteIdx } = this.state;
-
-    this.callChecklistApi({ command: "remove", circle_id: circle.circle_id }, circle.circle_id).then(data => {
-      if (!data) return;
-
-      // console.log("REMOVE_FAVORITE");
-      delete favoriteIdx[circle.circle_id];
-      this.setState({ favoriteIdx });
-    });
-  }
-
-  updateFavoriteComment(circle,comment) {
-    const { favoriteIdx } = this.state;
-
-    this.callChecklistApi({ command: "update", circle_id: circle.circle_id, comment: comment }, circle.circle_id).then(data => {
-      if (!data) return;
-
-      console.log("UPDATE_FAVORITE", data);
-      const fav = favoriteIdx[circle.circle_id];
-      fav.comment = comment;
-      this.setState({ favoriteIdx });
-    });
-  }
-
-  updatePublicLinkSetting(isPublic) {
-    const { exhibition } = this.state;
-
-    this.callChecklistApi({ command: "public", exhibition_id: exhibition.id, public: isPublic }).then(data => {
-      if (!data) return;
-
-      console.log("UPDATE_PUBLIC_LINK", data);
-      this.setState({ config: { public: isPublic } });
-    });
-  }
-
-  removePublicChecklistDisplay() {
-    this.setState({ publicChecklist: null });
-  }
-
-  exportChecklist() {
-    const { exhibition } = this.state;
-    this.callChecklistApi({ command: "export", exhibition_id: exhibition.id }, 'export').then(data => {
-      console.log("EXPORT_CHECKLIST", data);
-      this.setState({ exportChecklistUrl: data.url });
-    });
-  }
-
   render() {
     const {
       circleList, favoriteIdx, loading,
-      showCircleDescModal, showPublicLinkModal, showExportChecklistModal, publicChecklist, exportChecklistUrl,
-      selectedCircle, me, config, exhibition, enableChecklist, spaceSymSorter, param,
+      showCircleDescModal,
+      selectedCircle, me, config, exhibition, spaceSymSorter, param,
     } = this.state;
 
     if (circleList instanceof Array && circleList.length === 0) {
@@ -428,56 +209,7 @@ class AdminRoot extends React.Component {
               : 'サークル一覧'
           }
         </span>
-        {/* {
-          enableChecklist &&
-            <div className="pull-right">
-              {
-                loading.auth
-                  ? <Button variant="warning" size="sm">
-                      <FontAwesomeIcon icon={['fas', 'spinner']} spin pulse={true} /> 読み込み中...
-                    </Button>
-                  : me
-                    ? <ButtonToolbar>
-                        <DropdownButton
-                          alignRight
-                          variant="success"
-                          size="sm"
-                          id="dropdown-size-extra-small"
-                          title={<span><FontAwesomeIcon icon={['fab', 'twitter']} /> {me.screen_name}</span>}>
-                            <Dropdown.Item eventKey="1">
-                              {me.display_name + ' '}
-                              <Image circle src={me.profile_image_url} style={{width: "32px", height: "32px", borderRadius: "50%" }}/>
-                            </Dropdown.Item>
-                            <Dropdown.Item eventKey="2" onClick={this.logout}>
-                              ログアウト <FontAwesomeIcon icon={['fas', 'sign-out-alt']} />
-                            </Dropdown.Item>
-                            <Dropdown.Divider />
-                            <Dropdown.Item eventKey="3" onClick={this.openExportChecklistModal}>
-                              <FontAwesomeIcon icon={['fas', 'file-download']} /> エクスポート
-                            </Dropdown.Item>
-                            <Dropdown.Divider />
-                            <Dropdown.Item eventKey="4" onClick={this.openPublicLinkModal}>
-                              <FontAwesomeIcon icon={['fas', 'link']} /> 公開設定
-                            </Dropdown.Item>
-                        </DropdownButton>
-                      </ButtonToolbar>
-                    : <Button variant="primary" size="sm" onClick={this.login}>
-                      <FontAwesomeIcon icon={['fab', 'twitter']} /> Login via Twitter
-                      </Button>
-              }
-            </div>
-        } */}
       </Card>
-      {/* {
-        (enableChecklist && !me) &&
-          <div className="text-info mt1e mb1e">
-            <FontAwesomeIcon icon={['fas', 'info-circle']} /> Twitterのアカウントでログインを行うことでチェックリストの作成を行うことが可能です。
-            <br/>
-            <span className="fz80p">
-              （取得した情報はログインしたユーザの情報取得のみに利用し、ツイートの取得・自動ツイート等は行いません。）
-            </span>
-          </div>
-      } */}
       <Tab.Container id="mainContainer" defaultActiveKey="circlecut">
         <div className="mt1e">
           <Nav variant="pills">
@@ -493,26 +225,20 @@ class AdminRoot extends React.Component {
                   <Nav.Link eventKey="map"><FontAwesomeIcon icon={['fas', 'map-marked-alt']} /> マップ</Nav.Link>
                 </Nav.Item>
             }
-            {/* {
-              enableChecklist &&
-                <Nav.Item>
-                  <Nav.Link eventKey="favorite"><FontAwesomeIcon icon={['fas', 'star']} /> お気に入り <Badge pill variant="light">{Object.keys(favoriteIdx).length}</Badge></Nav.Link>
-                </Nav.Item>
-            } */}
           </Nav>
           <Tab.Content>
             <Tab.Pane eventKey="list">
               <CircleListPane
                 circles={circleList}
                 favorites={favoriteIdx}
-                publicChecklist={publicChecklist}
+                publicChecklist={false}
                 loadings={loading}
                 onRowClick={this.openCircleDescModal}
-                onAddFavorite={this.addFavorite}
-                onRemoveFavorite={this.removeFavorite}
-                onRemovePublicChecklist={this.removePublicChecklistDisplay}
+                onAddFavorite={() => {}}
+                onRemoveFavorite={() => {}}
+                onRemovePublicChecklist={() => {}}
                 showChecklistComponent={!!me}
-                enableChecklist={enableChecklist}
+                enableChecklist={false}
                 spaceSymSorter={spaceSymSorter}/>
             </Tab.Pane>
             <Tab.Pane eventKey="circlecut">
@@ -521,21 +247,11 @@ class AdminRoot extends React.Component {
                 favorites={favoriteIdx}
                 loadings={loading}
                 onImageClick={this.openCircleDescModal}
-                onAddFavorite={this.addFavorite}
-                onRemoveFavorite={this.removeFavorite}
+                onAddFavorite={() => {}}
+                onRemoveFavorite={() => {}}
                 showChecklistComponent={!!me}
                 spaceSymSorter={spaceSymSorter}/>
             </Tab.Pane>
-            {
-              enableChecklist &&
-                <Tab.Pane eventKey="favorite">
-                  <FavoriteListPane
-                    circles={circleList}
-                    favorites={favoriteIdx}
-                    onRowClick={this.openCircleDescModal}
-                    spaceSymSorter={spaceSymSorter}/>
-                </Tab.Pane>
-            }
             {
               param.map &&
                 <Tab.Pane eventKey="map">
@@ -557,28 +273,13 @@ class AdminRoot extends React.Component {
         favorite={selectedCircle ? favoriteIdx[selectedCircle.circle_id] : null}
         loadings={loading}
         onClose={this.closeCircleDescModal}
-        onUpdateComment={this.updateFavoriteComment}
-        onAddFavorite={this.addFavorite}
-        onRemoveFavorite={this.removeFavorite}
+        onUpdateComment={() => {}}
+        onAddFavorite={() => {}}
+        onRemoveFavorite={() => {}}
         showChecklistComponent={!!me}
         tweetParams={param.tweet}
         exhibitionName={exhibition.exhibition_name}
         exhibitionID={exhibition.id}/>
-
-      <PublicLinkModal
-        show={showPublicLinkModal}
-        me={me}
-        config={config}
-        onPublicLinkClick={this.updatePublicLinkSetting}
-        onClose={this.closePublicLinkModal}/>
-
-      <ExportChecklistModal
-        show={showExportChecklistModal}
-        loadings={loading}
-        checklistUrl={exportChecklistUrl}
-        onClose={this.closeExportChecklistModal}
-        onExport={this.exportChecklist}/>
-
     </div>;
   }
 }
