@@ -1,43 +1,19 @@
-import { useEffect, useState } from 'react';
 import { Switch, Router, Route } from 'wouter';
 import { useHashLocation } from 'wouter/use-hash-location';
-
-import Root from './routes/Root';
+import NotFound from './routes/NotFound';
+import CircleList from './routes/CircleList';
+import CirclecutList from './routes/CirclecutList';
 
 function App() {
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    window.fetch(window.location.origin + '/api/me', { credentials: 'include' })
-      .then(data => data.json())
-      .then(data => {
-        setUser(data);
-      })
-      .catch(err => {
-        console.log('me error:', err);
-      });
-
-  }, []);
-
-  // if (!user) {
-  //   return (
-  //     <>
-  //       <Header user={null} />
-  //       <div className='container' style={{ paddingTop: '8vh' }}>
-  //         <div>ログインしてください</div>
-  //       </div>
-  //     </>
-  //   );
-  // }
-
-  return (
+  return (<>
     <Switch>
       <Router hook={useHashLocation}>
-        {/* <Header user={user} /> */}
-        <Route path="/" component={Root} />
-        {/* <Route path="/qrReader/jsQr" component={JsQrReader} /> */}
+        <Route path="/" component={NotFound} />
+        <Route path="/:exhibition_id/circleList" component={CircleList} />
+        <Route path="/:exhibition_id/circlecutList" component={CirclecutList} />
       </Router>
     </Switch>
+  </>
   )
 }
 

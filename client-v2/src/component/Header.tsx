@@ -1,41 +1,20 @@
-import { Link } from 'wouter';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faUser, faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { Container } from 'react-bootstrap';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
 
-export default function Header(param: { user: { member_id: string } | null }) {
+export default function Header(param: { exhibition_id: string }) {
   return (
-    <div className='container-fluid' style={{ position: 'fixed' }}>
-      <nav>
-        <ul>
-          <li>
-            <strong>
-              <Link href="/" style={{ color: 'none' }}>
-                Acceptessa 入場業務
-              </Link>
-            </strong>
-          </li>
-        </ul>
-        <ul>
-          {/* <li><a href="#" className="contrast">About</a></li> */}
-          {
-            !param.user &&
-            <li>
-              {/* <FontAwesomeIcon icon={faSpinner} className='spinner' />
-              &nbsp; */}
-              読み込み中...
-            </li>
-          }
-          {
-            param.user &&
-            <li>
-              <FontAwesomeIcon icon={faUser} />
-              &nbsp;
-              {param.user.member_id}
-            </li>
-          }
-        </ul>
-      </nav>
-    </div>
+    <Navbar bg="light" variant="light" expand="lg" className="bg-body-tertiary_">
+      <Container>
+        <Navbar.Brand href="#/">React-Bootstrap</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link href={`#/${param.exhibition_id}/circleList`}>サークル一覧</Nav.Link>
+            <Nav.Link href={`#/${param.exhibition_id}/circlecutList`}>サークルカット一覧</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   )
 }
