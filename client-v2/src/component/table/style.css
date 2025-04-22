@@ -1,0 +1,78 @@
+table#circleList {
+    width: 100%;
+    table-layout: fixed;
+}
+
+table#circleList th,
+table#circleList td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+table#circleList thead tr {
+    background-color: #ddd;
+    text-align: center;
+}
+
+table#circleList thead tr * {
+    border: 1px solid #ddd;
+    padding: 0.3rem;
+}
+
+table#circleList thead tr th {
+    font-weight: normal;
+}
+
+table#circleList thead tr input {
+    border: none;
+    font-size: 90%;
+    border-radius: 0.2rem;
+    padding: 0.3rem 0.3rem;
+}
+
+table#circleList tbody tr:nth-child(odd) {
+    background: rgba(0, 0, 0, .03);
+}
+
+table#circleList tbody tr td {
+    padding: 0.2rem 0.3rem;
+    border: 1px solid #eee;
+}
+
+table#circleList thead tr {
+    font-size: 90%;
+}
+
+table#circleList thead tr th:nth-child(1),
+table#circleList tbody tr td:nth-child(1) {
+    width: 40px;
+}
+
+table#circleList thead tr th:nth-child(2),
+table#circleList tbody tr td:nth-child(2) {
+    width: 60px;
+}
+
+table#circleList thead tr th:nth-child(6),
+table#circleList tbody tr td:nth-child(6) {
+    width: 40px;
+}
+
+table#circleList thead tr th:nth-child(7),
+table#circleList tbody tr td:nth-child(7) {
+    width: 40px;
+}
+
+table#circleList thead tr th:nth-child(8),
+table#circleList tbody tr td:nth-child(8) {
+    width: 40px;
+}
+
+table#circleList tbody tr td:nth-child(1),
+table#circleList tbody tr td:nth-child(2),
+table#circleList tbody tr td:nth-child(6),
+table#circleList tbody tr td:nth-child(7),
+table#circleList tbody tr td:nth-child(8) {
+    text-align: center;
+}

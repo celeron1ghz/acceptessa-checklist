@@ -25,7 +25,7 @@ function Content(): ReactElement {
 
   return <>
     <Header exhibition_id={param.exhibition_id}></Header>
-    <div className='text-secondary'><FontAwesomeIcon icon={faInfoCircle} />  画像をクリックすると詳細画面が開きます。</div>
+    <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} />  画像をクリックすると詳細画面が開きます。</div>
     サークルカット一覧
   </>;
 }
