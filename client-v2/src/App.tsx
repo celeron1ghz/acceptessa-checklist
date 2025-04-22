@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Switch, Router, Route } from 'wouter';
 import { useHashLocation } from 'wouter/use-hash-location';
 
-import Header from './component/Header';
 import Root from './routes/Root';
 
 function App() {
@@ -34,7 +33,7 @@ function App() {
   return (
     <Switch>
       <Router hook={useHashLocation}>
-        <Header user={user} />
+        {/* <Header user={user} /> */}
         <Route path="/" component={Root} />
         {/* <Route path="/qrReader/jsQr" component={JsQrReader} /> */}
       </Router>
