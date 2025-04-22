@@ -1,6 +1,5 @@
 #!/bin/sh
 cd `dirname $0`
-cd ../client
 
 echo building...
 yarn build
