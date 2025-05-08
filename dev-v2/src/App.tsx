@@ -3,6 +3,7 @@ import yaml from 'js-yaml';
 import './index.css';
 
 interface InputConfig {
+  tweet: OutputTweet;
   marker_size: MarkerSize;
   vertial_space?: VertialCoords[] | null;
   horizontal_space?: HorizontalCoords[] | null;
@@ -63,6 +64,7 @@ interface ImageData {
 }
 
 const INIT_INPUT_CONFIG_VALUE: InputConfig = {
+  tweet: { url: "", related: "", hashtags: "" },
   marker_size: { width: 15, height: 20 },
   horizontal_space: [
     { top: 50, lefts: ["100", "+5", "+5", "+10"], sym: "A", num: 1, reverse: false },
@@ -252,9 +254,7 @@ const App: React.FC = () => {
         }
 
         setInputConfig(parsed);
-
-        outputConfig.map.mappings = coords;
-        setOutputConfig(outputConfig);
+        setOutputConfig({ ...outputConfig, map: { ...outputConfig.map, mappings: coords }, tweet: inputConfig.tweet });
       } else {
         setInputConfig(parsed);
       }
