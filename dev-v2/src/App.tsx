@@ -145,6 +145,10 @@ const App: React.FC = () => {
     setInputYamlText(yamlString);
     setInputYamlError('');
 
+    if (!imageRawData) {
+      return;
+    }
+
     try {
       const newConfig = yaml.load(yamlString) as InputConfig;
       setInputConfig(newConfig);
@@ -253,7 +257,14 @@ const App: React.FC = () => {
         coords.push(...newConfig.custom_space);
       }
 
-      setOutputConfig({ ...outputConfig, map: { ...outputConfig.map, mappings: coords }, tweet: newConfig.tweet });
+      setOutputConfig({
+        tweet: newConfig.tweet,
+        map: {
+          image_width: imageRawData.width,
+          image_height: imageRawData.height,
+          mappings: coords,
+        },
+      });
     } catch (e: any) {
       setInputYamlError(e.toString());
     }
