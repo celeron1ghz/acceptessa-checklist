@@ -263,6 +263,30 @@ const App: React.FC = () => {
     }
   }
 
+  const saveYaml = () => {
+    const fileName = 'input.yaml';
+    const data = new Blob([inputYamlText], { type: 'text/yaml' });
+    const jsonURL = window.URL.createObjectURL(data);
+    const link = document.createElement('a');
+    document.body.appendChild(link);
+    link.href = jsonURL;
+    link.setAttribute('download', fileName);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  const saveJson = () => {
+    const fileName = 'input.json';
+    const data = new Blob([JSON.stringify(outputConfig)], { type: 'text/json' });
+    const jsonURL = window.URL.createObjectURL(data);
+    const link = document.createElement('a');
+    document.body.appendChild(link);
+    link.href = jsonURL;
+    link.setAttribute('download', fileName);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   let coords = outputConfig.map.mappings;
 
   return (
@@ -321,11 +345,12 @@ const App: React.FC = () => {
             <div>
               <h4>入力(YAML)</h4>
               <textarea rows={30} value={inputYamlText} onChange={handleYamlChange} />
-
+              <button onClick={saveYaml}>YAMLを保存する</button>
             </div>
             <div>
               <h4>出力(JSON)</h4>
               <textarea disabled rows={30} value={JSON.stringify(outputConfig, null, 2)} />
+              <button onClick={saveJson}>JSONを保存する</button>
             </div>
             <div>
               <h4>設定</h4>
