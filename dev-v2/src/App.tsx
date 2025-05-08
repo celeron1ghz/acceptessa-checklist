@@ -146,118 +146,114 @@ const App: React.FC = () => {
     setInputYamlError('');
 
     try {
-      const parsed = yaml.load(yamlString) as InputConfig;
+      const newConfig = yaml.load(yamlString) as InputConfig;
+      setInputConfig(newConfig);
 
-      if (parsed.horizontal_space || parsed.vertial_space) {
-        let coords: OutputCoords[] = [];
+      let coords: OutputCoords[] = [];
 
-        if (parsed.vertial_space) {
-          for (const vertial of parsed.vertial_space) {
-            let translated: OutputCoords[] = [];
-            let previousTop = 0;
+      if (newConfig.vertial_space) {
+        for (const vertial of newConfig.vertial_space) {
+          let translated: OutputCoords[] = [];
+          let previousTop = 0;
 
-            for (const top of vertial.tops) {
-              let currentTop: number;
+          for (const top of vertial.tops) {
+            let currentTop: number;
 
-              const ret = String(top).match(/^([+-])(\d+)$/);
+            const ret = String(top).match(/^([+-])(\d+)$/);
 
-              if (ret) {
-                const op = ret[1];
-                const num = Number(ret[2]);
+            if (ret) {
+              const op = ret[1];
+              const num = Number(ret[2]);
 
-                if (op === '-') {
-                  currentTop = previousTop + inputConfig.marker_size.height - num;
-                } else {
-                  currentTop = previousTop + inputConfig.marker_size.height + num;
-                }
+              if (op === '-') {
+                currentTop = previousTop + newConfig.marker_size.height - num;
               } else {
-                currentTop = Number(top);
+                currentTop = previousTop + newConfig.marker_size.height + num;
               }
-
-              translated.push({
-                l: vertial.left,
-                t: currentTop,
-                s: vertial.sym,
-                n: "0", // real value set after
-                w: inputConfig.marker_size.width,
-                h: inputConfig.marker_size.height
-              });
-
-              previousTop = currentTop;
+            } else {
+              currentTop = Number(top);
             }
 
-            if (vertial.reverse) {
-              translated = translated.reverse();
-            }
+            translated.push({
+              l: vertial.left,
+              t: currentTop,
+              s: vertial.sym,
+              n: "0", // real value set after
+              w: newConfig.marker_size.width,
+              h: newConfig.marker_size.height
+            });
 
-            let cnt = vertial.num || 1;
-
-            for (const t of translated) {
-              t.n = String(cnt++);
-            }
-
-            coords.push(...translated);
+            previousTop = currentTop;
           }
-        }
 
-        if (parsed.horizontal_space) {
-          for (const horizontal of parsed.horizontal_space) {
-            let translated: OutputCoords[] = [];
-            let previousLeft = 0;
-
-            for (const left of horizontal.lefts) {
-              let currentLeft: number;
-
-              const ret = String(left).match(/^([+-])(\d+)$/);
-
-              if (ret) {
-                const op = ret[1];
-                const num = Number(ret[2]);
-
-                if (op === '-') {
-                  currentLeft = previousLeft + inputConfig.marker_size.width - num;
-                } else {
-                  currentLeft = previousLeft + inputConfig.marker_size.width + num;
-                }
-              } else {
-                currentLeft = Number(left);
-              }
-
-              translated.push({
-                l: currentLeft,
-                t: horizontal.top,
-                s: horizontal.sym,
-                n: "0", // real value set after
-                w: inputConfig.marker_size.width,
-                h: inputConfig.marker_size.height
-              });
-
-              previousLeft = currentLeft;
-            }
-
-            if (horizontal.reverse) {
-              translated = translated.reverse();
-            }
-
-            let cnt = horizontal.num || 1;
-
-            for (const t of translated) {
-              t.n = String(cnt++);
-            }
-
-            coords.push(...translated);
+          if (vertial.reverse) {
+            translated = translated.reverse();
           }
-        }
 
-        if (parsed.custom_space) {
-          coords.push(...parsed.custom_space);
-        }
+          let cnt = vertial.num || 1;
 
-        setInputConfig(parsed);
-        setOutputConfig({ ...outputConfig, map: { ...outputConfig.map, mappings: coords }, tweet: inputConfig.tweet });
-      } else {
-        setInputConfig(parsed);
+          for (const t of translated) {
+            t.n = String(cnt++);
+          }
+
+          coords.push(...translated);
+        }
       }
+
+      if (newConfig.horizontal_space) {
+        for (const horizontal of newConfig.horizontal_space) {
+          let translated: OutputCoords[] = [];
+          let previousLeft = 0;
+
+          for (const left of horizontal.lefts) {
+            let currentLeft: number;
+
+            const ret = String(left).match(/^([+-])(\d+)$/);
+
+            if (ret) {
+              const op = ret[1];
+              const num = Number(ret[2]);
+
+              if (op === '-') {
+                currentLeft = previousLeft + newConfig.marker_size.width - num;
+              } else {
+                currentLeft = previousLeft + newConfig.marker_size.width + num;
+              }
+            } else {
+              currentLeft = Number(left);
+            }
+
+            translated.push({
+              l: currentLeft,
+              t: horizontal.top,
+              s: horizontal.sym,
+              n: "0", // real value set after
+              w: newConfig.marker_size.width,
+              h: newConfig.marker_size.height
+            });
+
+            previousLeft = currentLeft;
+          }
+
+          if (horizontal.reverse) {
+            translated = translated.reverse();
+          }
+
+          let cnt = horizontal.num || 1;
+
+          for (const t of translated) {
+            t.n = String(cnt++);
+          }
+
+          coords.push(...translated);
+        }
+      }
+
+      if (newConfig.custom_space) {
+        coords.push(...newConfig.custom_space);
+      }
+
+      setOutputConfig({ ...outputConfig, map: { ...outputConfig.map, mappings: coords }, tweet: newConfig.tweet });
     } catch (e: any) {
       setInputYamlError(e.toString());
     }
@@ -310,9 +306,8 @@ const App: React.FC = () => {
               ref={imageRef}
               src={imageRawData.src}
               alt="Selected"
-              onClick={handleImageClick}
-              onLoad={(e) => { console.log(e.target) }}
               style={{ width: `${imageRawData.width * imageScale}px` }}
+              onClick={handleImageClick}
             />
             {coords.map((coord, index) => (
               <div
