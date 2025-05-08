@@ -45,6 +45,7 @@ class AdminRoot extends React.Component {
         spaceSymSorter: null,
         map: null,
         selectedCircle: null,
+        enableChecklist: false,
     };
 
     this.ENDPOINT = "https://checklist.familiar-life.info/api/";
@@ -108,6 +109,7 @@ class AdminRoot extends React.Component {
       .then(data => {
         this.removeLoading("circle");
         console.log("CIRCLE_DATA_OK:", data.circles.length);
+        const enableChecklist = data.circles.filter(c => c.space_sym && c.space_num).length !== 0;
 
         let circleList = data.circles;
 
@@ -156,6 +158,7 @@ class AdminRoot extends React.Component {
           spaceSymSorter: sorter,
           exhibition: data.exhibition,
           map: data.map,
+          enableChecklist,
         });
         this.componentWillReceiveProps(this.props);
       })
@@ -183,6 +186,7 @@ class AdminRoot extends React.Component {
       circleList, favoriteIdx, loading,
       showCircleDescModal,
       selectedCircle, me, config, exhibition, spaceSymSorter, param,
+      enableChecklist,
     } = this.state;
 
     if (circleList instanceof Array && circleList.length === 0) {
@@ -238,7 +242,7 @@ class AdminRoot extends React.Component {
                 onRemoveFavorite={() => {}}
                 onRemovePublicChecklist={() => {}}
                 showChecklistComponent={!!me}
-                enableChecklist={false}
+                enableChecklist={enableChecklist}
                 spaceSymSorter={spaceSymSorter}/>
             </Tab.Pane>
             <Tab.Pane eventKey="circlecut">
