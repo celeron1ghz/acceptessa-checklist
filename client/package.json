@@ -33,6 +33,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "watchConfig": "node config/watch.js",
+    "buildConfigV2": "node config/build-v2.js",
     "buildConfig": "node config/build.js"
   },
   "browserslist": {
