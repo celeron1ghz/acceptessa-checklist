@@ -3,6 +3,7 @@ import { useHashLocation } from 'wouter/use-hash-location';
 import NotFound from './routes/NotFound';
 import CircleList from './routes/CircleList';
 import CirclecutList from './routes/CirclecutList';
+import Map from './routes/Map';
 
 function App() {
   return (<>
@@ -11,6 +12,7 @@ function App() {
         <Route path="/" component={NotFound} />
         <Route path="/:exhibition_id/circleList" component={CircleList} />
         <Route path="/:exhibition_id/circlecutList" component={CirclecutList} />
+        <Route path="/:exhibition_id/map" component={Map} />
       </Router>
     </Switch>
   </>

@@ -14,7 +14,7 @@ export default function Header(param: { exhibition_id: string, count: number }) 
           <Nav className="me-auto">
             <Nav.Link href={`#/${param.exhibition_id}/circleList`}><FontAwesomeIcon icon={faList}/> リストで表示</Nav.Link>
             <Nav.Link href={`#/${param.exhibition_id}/circlecutList`}><FontAwesomeIcon icon={faImage}/> サークルカットで表示</Nav.Link>
-            <Nav.Link href={`#/${param.exhibition_id}/circlecutList`}><FontAwesomeIcon icon={faMap}/> マップで表示</Nav.Link>
+            <Nav.Link href={`#/${param.exhibition_id}/map`}><FontAwesomeIcon icon={faMap}/> マップで表示</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
