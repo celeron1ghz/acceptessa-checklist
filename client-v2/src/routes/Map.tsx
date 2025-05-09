@@ -40,8 +40,11 @@ function Content(): ReactElement {
   const circleIdxBySpace: { [space: string]: Circle } = {};
 
   for (const c of data.circleList) {
-    const space = sprintf("%s%s", c.space_sym, c.space_num);
-    circleIdxBySpace[space] = c;
+    for (const num of c.space_num.split('-')) {
+      const space = sprintf("%s%s", c.space_sym, num);
+      console.log(c.space_num)
+      circleIdxBySpace[space] = c;
+    }
   }
 
   return <>
