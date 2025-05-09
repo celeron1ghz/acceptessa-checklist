@@ -5,8 +5,8 @@ const stat = Promise.denodeify(fs.stat);
 const copyFile = Promise.denodeify(fs.copyFile);
 
 const copyFiles = {
-  "not_uploaded.png": "not_uploaded.png",
-  "map.png": "map.png",
+  "not_uploaded.png": "$EID/not_uploaded.png",
+  "map.png": "$EID/map.png",
   "config.json": "$EID.json",
 };
 
@@ -37,7 +37,7 @@ async function build() {
       destBasename = destBasename.replaceAll("$EID", eid);
 
       const from = `${CONFIG_DIR}/${eid}/${fromBasename}`;
-      const dest = `${PUBLISH_DIR}/${eid}/${destBasename}`;
+      const dest = `${PUBLISH_DIR}/${destBasename}`;
 
       await stat(from)
         .then(data => {

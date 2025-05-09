@@ -1,7 +1,113 @@
-space:
-  width: 93
-  height: 35
 tweet:
-  url: https://suitcase-rabbits.com/
-  related: suitcaserabbits
-  hashtags: スーツケースのうさぎたち
+  url: 'https://suitcase-rabbits.com/'
+  related: 'suitcaserabbits'
+  hashtags: 'スーツケースのウサギたち'
+marker_size:
+  width: 29
+  height: 43
+vertial_space:
+  - left: 171
+    tops:
+      - '140'
+      - '+2'
+      - '+2'
+      - '+1'
+      - '+2'
+      - '+1'
+      - '+1'
+      - '+2'
+      - '+2'
+      - '+2'
+    sym: A
+    num: 1
+    reverse: true
+  - left: 284
+    tops:
+      - '140'
+      - '+2'
+      - '+2'
+      - '+1'
+      - '+2'
+      - '+1'
+      - '+1'
+      - '+2'
+      - '+2'
+      - '+2'
+    sym: A
+    num: 11
+    reverse: false
+  - left: 437
+    tops:
+      - '140'
+      - '+2'
+      - '+2'
+      - '+1'
+      - '+2'
+      - '+1'
+      - '+1'
+      - '+2'
+      - '+2'
+      - '+2'
+    sym: B
+    num: 1
+    reverse: true
+  - left: 551
+    tops:
+      - '140'
+      - '+2'
+      - '+2'
+      - '+1'
+      - '+2'
+      - '+1'
+      - '+1'
+      - '+2'
+      - '+2'
+      - '+2'
+    sym: B
+    num: 11
+    reverse: false
+  - left: 705
+    tops:
+      - '80'
+      - '+2'
+      - '+2'
+      - '+1'
+      - '+2'
+      - '+2'
+      - '+61'
+      - '+2'
+      - '+2'
+      - '+2'
+    sym: C
+    num: 1
+    reverse: true
+  - left: 818
+    tops:
+      - '80'
+      - '+2'
+      - '+2'
+      - '+1'
+      - '+2'
+      - '+2'
+      - '+61'
+      - '+2'
+      - '+2'
+      - '+2'
+    sym: C
+    num: 11
+    reverse: false
+  - left: 1007
+    tops:
+      - '80'
+      - '+2'
+      - '+2'
+      - '+1'
+      - '+2'
+      - '+2'
+      - '+61'
+      - '+2'
+      - '+2'
+      - '+2'
+    sym: D
+    num: 1
+    reverse: true
