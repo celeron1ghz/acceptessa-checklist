@@ -14,7 +14,7 @@ import {
 
 import Header from '../component/Header';
 import Loading from '../component/Loading';
-import { columns, Circle } from '../component/table/column';
+import { columns } from '../component/table/column';
 
 import '../component/table/style.css';
 
@@ -24,9 +24,6 @@ function getCircleData(exhibition_id: string) {
       .then(data => data.ok ? data : Promise.reject(data))
       .then(data => data.json())
       .then(data => {
-        // this.removeLoading("circle");
-        console.log("CIRCLE_DATA_OK:", data.circles.length);
-
         let circleList = data.circles;
 
         // for circle of not upload circlecut, padding not uploaded image.
@@ -75,11 +72,9 @@ function getCircleData(exhibition_id: string) {
           exhibition: data.exhibition,
           map: data.map,
         };
-        // this.componentWillReceiveProps(this.props);
       });
-  }, { suspense: true })
+  }, { suspense: true });
 }
-
 
 function Content(): ReactElement {
   const [, param] = useRoute("/:exhibition_id/circleList");
