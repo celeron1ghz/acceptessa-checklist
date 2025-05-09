@@ -6,7 +6,7 @@ import { Alert, Container } from 'react-bootstrap';
 import Header from '../component/Header';
 
 function Content(): ReactElement {
-  const [, param] = useRoute("/:exhibition_id/circlecutList");
+  const [, param] = useRoute("/:exhibition_id/circlecut");
 
   if (!param) {
     return <></>;

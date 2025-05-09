@@ -10,8 +10,8 @@ function App() {
     <Switch>
       <Router hook={useHashLocation}>
         <Route path="/" component={NotFound} />
-        <Route path="/:exhibition_id/circleList" component={CircleList} />
-        <Route path="/:exhibition_id/circlecutList" component={CirclecutList} />
+        <Route path="/:exhibition_id/list" component={CircleList} />
+        <Route path="/:exhibition_id/circlecut" component={CirclecutList} />
         <Route path="/:exhibition_id/map" component={Map} />
       </Router>
     </Switch>

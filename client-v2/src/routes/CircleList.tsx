@@ -86,7 +86,7 @@ function getCircleData(exhibition_id: string): SWRResponse<CircleListResponse, a
 }
 
 function Content(): ReactElement {
-  const [, param] = useRoute("/:exhibition_id/circleList");
+  const [, param] = useRoute("/:exhibition_id/list");
 
   if (!param) {
     return <></>;
