@@ -53,7 +53,7 @@ function Content(): ReactElement {
   };
 
   return <>
-    <Header exhibition_id={param.exhibition_id} count={data.circleList.length}></Header>
+    <Header exhibition={data.exhibition} count={data.circleList.length}></Header>
     <div className='my-3'>
       <div className='text-secondary my-2'>
         <FontAwesomeIcon icon={faInfoCircle} />  サークルのスペースをクリックすると詳細画面が開きます。画像は上下にスクロール、または拡大/縮小が可能です。

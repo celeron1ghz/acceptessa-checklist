@@ -51,7 +51,7 @@ export function getCircleData(exhibition_id: string): SWRResponse<CircleListResp
           type: 'success',
           circleList: circleList as Array<Circle>,
           exhibition: data.exhibition,
-          map: data.map,
+          // sort_order
         };
 
         return ret;

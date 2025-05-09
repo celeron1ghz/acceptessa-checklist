@@ -14,7 +14,7 @@ import {
 import Header from '../component/Header';
 import Loading from '../component/Loading';
 import { columns } from '../component/table/column';
-import { getCircleData } from '../component/Client';
+import { getCircleData, getExhibitionData } from '../component/Client';
 
 import '../component/table/style.css';
 
@@ -28,6 +28,16 @@ function Content(): ReactElement {
   const { data } = getCircleData(param.exhibition_id);
 
   if (data.type === 'error') {
+    return (
+      <Alert variant="danger" className='my-3'>
+        <FontAwesomeIcon icon={faExclamationTriangle} /> 即売会が存在しません。(id={param.exhibition_id})
+      </Alert>
+    );
+  }
+
+  const { data: data2 } = getExhibitionData(param.exhibition_id);
+
+  if (data2.type === 'error') {
     return (
       <Alert variant="danger" className='my-3'>
         <FontAwesomeIcon icon={faExclamationTriangle} /> 即売会が存在しません。(id={param.exhibition_id})
@@ -56,7 +66,7 @@ function Content(): ReactElement {
   });
 
   return <>
-    <Header exhibition_id={param.exhibition_id} count={circles.length}></Header>
+    <Header exhibition={data.exhibition} count={circles.length}></Header>
     <div className='my-3'>
       <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} /> テーブルの行をクリックすると詳細画面が開きます。</div>
       {

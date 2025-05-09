@@ -16,13 +16,17 @@ interface Circle {
     site_url: string;
 }
 
+interface Exhibition {
+    id: string;
+    exhibition_name: string;
+}
+
 type CircleListResponse = SuccessResponse | ErrorResponse;
 
 type SuccessResponse = {
     type: 'success';
     circleList: Array<Circle>;
-    exhibition: Object;
-    map: Object;
+    exhibition: Exhibition;
 }
 
 type ErrorResponse = {

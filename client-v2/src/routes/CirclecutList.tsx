@@ -6,7 +6,7 @@ import { Alert, Container } from 'react-bootstrap';
 import LazyLoad from 'react-lazyload';
 
 import Header from '../component/Header';
-import { getCircleData } from '../component/Client';
+import { getCircleData, getExhibitionData } from '../component/Client';
 import Loading from '../component/Loading';
 
 function Circlecut() {
@@ -32,8 +32,20 @@ function Content(): ReactElement {
     );
   }
 
+  const { data: data2 } = getExhibitionData(param.exhibition_id);
+
+  if (data2.type === 'error') {
+    return (
+      <Alert variant="danger" className='my-3'>
+        <FontAwesomeIcon icon={faExclamationTriangle} /> 即売会が存在しません。(id={param.exhibition_id})
+      </Alert>
+    );
+  }
+
+  console.log(data);
+
   return <>
-    <Header exhibition_id={param.exhibition_id} count={data.circleList.length}></Header>
+    <Header exhibition={data.exhibition} count={data.circleList.length}></Header>
     <div className='my-3'>
       <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} />  画像をクリックすると詳細画面が開きます。</div>
       <div className="circlecuts">
