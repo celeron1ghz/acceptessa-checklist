@@ -42,7 +42,15 @@ function Content(): ReactElement {
     );
   }
 
-  console.log(data);
+  const circleListBySym: { [sym: string]: Circle[] } = {};
+
+  for (const c of data.circleList) {
+    if (!circleListBySym[c.space_sym]) {
+      circleListBySym[c.space_sym] = [];
+    }
+
+    circleListBySym[c.space_sym].push(c);
+  }
 
   return <>
     <Header exhibition={data.exhibition} count={data.circleList.length}></Header>
@@ -50,28 +58,35 @@ function Content(): ReactElement {
       <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} />  画像をクリックすると詳細画面が開きます。</div>
       <div className="circlecuts">
         {
-          data.circleList.map(c => {
-            let spaceClass = (c.space_count === "1") ? 'space-1sp' : 'space-2sp';
+          Object.entries(circleListBySym).map(([sym, circles]) => {
+            return <>
+              <h2>{sym}</h2>
+              {
+                circles.map(c => {
+                  let spaceClass = (c.space_count === "1") ? 'space-1sp' : 'space-2sp';
 
-            return (
-              <div className={spaceClass + " circlecut"} key={c.circlecut || c.circle_id}>
-                <LazyLoad height={200} offset={-100} placeholder={<Circlecut />} once>
-                  <img
-                    src={c.circlecut ? c.circlecut.replace('http:', 'https:') : ''}
-                    className="circleCut-img"
-                    alt={c.circle_name}
-                  />
-                </LazyLoad>
-                <div className="circleCut-space" style={{ width: '50px', height: '23px' }}>
-                  {c.space_sym}{c.space_num ? c.space_num.replace('-', ',') : ''}
-                </div>
-                <div className="circleCut-detail">
-                  <div className="circleCut-name">
-                    {c.circle_name}
-                  </div>
-                </div>
-              </div>
-            );
+                  return (
+                    <div className={spaceClass + " circlecut"} key={c.circlecut || c.circle_id}>
+                      <LazyLoad height={200} offset={-100} placeholder={<Circlecut />} once>
+                        <img
+                          src={c.circlecut ? c.circlecut.replace('http:', 'https:') : ''}
+                          className="circleCut-img"
+                          alt={c.circle_name}
+                        />
+                      </LazyLoad>
+                      <div className="circleCut-space" style={{ width: '50px', height: '23px' }}>
+                        {c.space_sym}{c.space_num ? c.space_num.replace('-', ',') : ''}
+                      </div>
+                      <div className="circleCut-detail">
+                        <div className="circleCut-name">
+                          {c.circle_name}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              }
+            </>
           })
         }
       </div>

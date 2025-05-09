@@ -180,12 +180,12 @@
 
 @media screen and (min-width: 576px) {
     .circlecuts>.circlecut {
-        width: 33%;
+        width: 33.3%;
         border-color: blue;
     }
 
     .circlecuts>.circlecut.space-2sp {
-        width: 66%;
+        width: 66.6%;
     }
 }
 
@@ -213,23 +213,23 @@
 
 @media screen and (min-width: 1200px) {
     .circlecuts>.circlecut {
-        width: 16%;
+        width: 16.65%;
         border-color: green;
     }
 
     .circlecuts>.circlecut.space-2sp {
-        width: 32%;
+        width: 33.3%;
     }
 }
 
 @media screen and (min-width: 1400px) {
     .circlecuts>.circlecut {
-        width: 12%;
+        width: 12.5%;
         border-color: blueviolet;
     }
 
     .circlecuts>.circlecut.space-2sp {
-        width: 24%;
+        width: 25%;
     }
 }
 
@@ -245,8 +245,12 @@
     width: 100%;
 }
 
-.circleCut-item.space-wide {
-    max-width: 500px;
+.circlecuts>h2 {
+    width: 100%;
+    margin: 0;
+    padding: 1vw 0;
+    text-align: center;
+    background-color: #cff;
 }
 
 .circlecut-lazy {
