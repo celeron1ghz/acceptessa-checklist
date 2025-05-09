@@ -1,13 +1,19 @@
 import { ReactElement, Suspense } from 'react';
 import { useRoute } from 'wouter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExclamationTriangle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCircleNotch, faExclamationTriangle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Alert, Container } from 'react-bootstrap';
 import LazyLoad from 'react-lazyload';
 
 import Header from '../component/Header';
 import { getCircleData } from '../component/Client';
 import Loading from '../component/Loading';
+
+function Circlecut() {
+  return <div className='circlecut-lazy'>
+    <FontAwesomeIcon icon={faCircleNotch} spin />
+  </div>
+}
 
 function Content(): ReactElement {
   const [, param] = useRoute("/:exhibition_id/circlecut");
@@ -37,14 +43,14 @@ function Content(): ReactElement {
 
             return (
               <div className={spaceClass + " circlecut"} key={c.circlecut || c.circle_id}>
-                <LazyLoad height={200} offset={0} once>
+                <LazyLoad height={200} offset={-100} placeholder={<Circlecut />} once>
                   <img
                     src={c.circlecut ? c.circlecut.replace('http:', 'https:') : ''}
                     className="circleCut-img"
                     alt={c.circle_name}
                   />
                 </LazyLoad>
-                <div className="circleCut-space">
+                <div className="circleCut-space" style={{ width: '50px', height: '23px' }}>
                   {c.space_sym}{c.space_num ? c.space_num.replace('-', ',') : ''}
                 </div>
                 <div className="circleCut-detail">

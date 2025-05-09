@@ -249,9 +249,15 @@
     max-width: 500px;
 }
 
+.circlecut-lazy {
+    height: 80px;
+    text-align: center;
+    font-size: 300%;
+    color: #ccc;
+}
+
 .circlecut {
     position: relative;
-    max-width: 250px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
