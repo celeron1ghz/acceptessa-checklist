@@ -8,7 +8,6 @@ export function getCircleData(exhibition_id: string): SWRResponse<CircleListResp
       .then(data => {
         let circleList = data.circles;
 
-        // for circle of not upload circlecut, padding not uploaded image.
         for (const c of circleList) {
           if (!c.circlecut) {
             c.circlecut = `/${exhibition_id}/not_uploaded.png?_=${c.circle_id}`;
@@ -53,6 +52,31 @@ export function getCircleData(exhibition_id: string): SWRResponse<CircleListResp
           circleList: circleList as Array<Circle>,
           exhibition: data.exhibition,
           map: data.map,
+        };
+
+        return ret;
+      }).catch(err => {
+        const ret: CircleListResponse = {
+          type: 'error',
+          error: err,
+        };
+
+        return ret;
+      });
+  }, { suspense: true });
+}
+
+export function getExhibitionData(exhibition_id: string): SWRResponse<ExhibitionResponse, any, { suspense: true }> {
+  return useSWR('exhibition', () => {
+    // return fetch('https://checklist.familiar-life.info/' + exhibition_id + '.json')
+    return fetch(`${window.location.origin}/${exhibition_id}.json`)
+      .then(data => data.ok ? data : Promise.reject(data))
+      .then(data => data.json())
+      .then(data => {
+        const ret: ExhibitionResponse = {
+          type: 'success',
+          map: data.map,
+          tweet: data.tweet,
         };
 
         return ret;

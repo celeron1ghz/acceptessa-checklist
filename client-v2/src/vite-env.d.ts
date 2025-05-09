@@ -29,3 +29,32 @@ type ErrorResponse = {
     type: 'error';
     error: Error;
 }
+
+type ExhibitionResponse = OutputConfig | ErrorResponse;
+
+interface OutputConfig {
+    type: 'success';
+    tweet: OutputTweet;
+    map: OutputMap;
+}
+
+interface OutputTweet {
+    url: string;
+    related: string;
+    hashtags: string;
+}
+
+interface OutputMap {
+    image_width: number;
+    image_height: number;
+    mappings: OutputCoords[];
+}
+
+interface OutputCoords {
+    w: number;
+    h: number;
+    l: number;
+    t: number;
+    s: string;
+    n: string;
+}

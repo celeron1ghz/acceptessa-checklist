@@ -1,30 +1,31 @@
 import { ReactElement, Suspense } from 'react';
 import { useRoute } from 'wouter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExclamationCircle, faExclamationTriangle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationTriangle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Alert, Container } from 'react-bootstrap';
+
 import Header from '../component/Header';
+import { getCircleData } from '../component/Client';
 
 function Content(): ReactElement {
   const [, param] = useRoute("/:exhibition_id/circlecut");
 
   if (!param) {
-    return <></>;
+    return <>SETTING_FAILED</>;
   }
 
-  //   const { data } = UA.getExhibitionData(param.id);
-  // const { data } = { data: [] };
+  const { data } = getCircleData(param.exhibition_id);
 
-  // if (!data) {
-  //   return (
-  //     <Alert variant="danger">
-  //       <FontAwesomeIcon icon={faExclamationTriangle} /> 即売会が存在しません。(id={param.exhibition_id})
-  //     </Alert>
-  //   );
-  // }
+  if (data.type === 'error') {
+    return (
+      <Alert variant="danger" className='my-3'>
+        <FontAwesomeIcon icon={faExclamationTriangle} /> 即売会が存在しません。(id={param.exhibition_id})
+      </Alert>
+    );
+  }
 
   return <>
-    <Header exhibition_id={param.exhibition_id}></Header>
+    <Header exhibition_id={param.exhibition_id} count={data.circleList.length}></Header>
     <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} />  画像をクリックすると詳細画面が開きます。</div>
     サークルカット一覧
   </>;

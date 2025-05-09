@@ -22,7 +22,7 @@ function Content(): ReactElement {
   const [, param] = useRoute("/:exhibition_id/list");
 
   if (!param) {
-    return <></>;
+    return <>SETTING_FAILED</>;
   }
 
   const { data } = getCircleData(param.exhibition_id);
@@ -57,30 +57,31 @@ function Content(): ReactElement {
 
   return <>
     <Header exhibition_id={param.exhibition_id} count={circles.length}></Header>
-    <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} /> テーブルの行をクリックすると詳細画面が開きます。</div>
-    {
-      selectedCircle && selectedCircle.circle_id
-    }
-    <table id="circleList">
-      <thead>
-        {
-          table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {
-                headerGroup.headers.map((header) => (
-                  <th key={header.id}>
-                    {
-                      header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())
-                    }
-                  </th>
-                ))
-              }
-            </tr>
-          ))
-        }
-        {/* <tr>
+    <div className='my-3'>
+      <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} /> テーブルの行をクリックすると詳細画面が開きます。</div>
+      {
+        selectedCircle && selectedCircle.circle_id
+      }
+      <table id="circleList">
+        <thead>
+          {
+            table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {
+                  headerGroup.headers.map((header) => (
+                    <th key={header.id}>
+                      {
+                        header.isPlaceholder
+                          ? null
+                          : flexRender(header.column.columnDef.header, header.getContext())
+                      }
+                    </th>
+                  ))
+                }
+              </tr>
+            ))
+          }
+          {/* <tr>
           <td colSpan={2}>
             <input type="text" onChange={e => table.getColumn("space_sym")?.setFilterValue(e.target.value)} placeholder='記号' style={{ width: '3rem' }} />
           </td>
@@ -95,24 +96,25 @@ function Content(): ReactElement {
           <td></td>
           <td></td>
         </tr> */}
-      </thead>
-      <tbody>
-        {
-          table.getRowModel().rows.map((row) =>
-            <tr key={row.id} onClick={() => { setSelectedCircle(row.original as any) }}>
-              {row.getVisibleCells().map((cell) => {
-                return <td key={cell.id}>
-                  {flexRender(
-                    cell.column.columnDef.cell,
-                    cell.getContext()
-                  )}
-                </td>;
-              })}
-            </tr>
-          )
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {
+            table.getRowModel().rows.map((row) =>
+              <tr key={row.id} onClick={() => { setSelectedCircle(row.original as any) }}>
+                {row.getVisibleCells().map((cell) => {
+                  return <td key={cell.id}>
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext()
+                    )}
+                  </td>;
+                })}
+              </tr>
+            )
+          }
+        </tbody>
+      </table>
+    </div>
   </>;
 }
 
