@@ -12,11 +12,11 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
-import '../component/table/style.css';
-
 import Header from '../component/Header';
+import Loading from '../component/Loading';
 import { columns, Circle } from '../component/table/column';
 
+import '../component/table/style.css';
 
 function getCircleData(exhibition_id: string) {
   return useSWR('circle', () => {
@@ -182,8 +182,7 @@ function Content(): ReactElement {
 export default function Root(): ReactElement {
   return (
     <Container>
-      {/* <Suspense fallback={<Loading />}> */}
-      <Suspense fallback={'読み込み中'}>
+      <Suspense fallback={<Loading />}>
         <Content />
       </Suspense>
     </Container>
