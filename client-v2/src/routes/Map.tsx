@@ -1,4 +1,4 @@
-import { ReactElement, Suspense } from 'react';
+import { ReactElement, Suspense, useState } from 'react';
 import { useRoute } from 'wouter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
@@ -36,30 +36,45 @@ function Content(): ReactElement {
     );
   }
 
+  const [imageScale, setImageScale] = useState<number>(0.75);
+
   const map = data2.map;
   const circleIdxBySpace: { [space: string]: Circle } = {};
 
   for (const c of data.circleList) {
     for (const num of c.space_num.split('-')) {
       const space = sprintf("%s%s", c.space_sym, num);
-      console.log(c.space_num)
       circleIdxBySpace[space] = c;
     }
   }
+
+  const handleScaleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setImageScale(Number(event.target.value));
+  };
 
   return <>
     <Header exhibition_id={param.exhibition_id} count={data.circleList.length}></Header>
     <div className='my-3'>
       <div className='text-secondary my-2'>
-        <FontAwesomeIcon icon={faInfoCircle} />  サークルのスペースをクリックすると詳細画面が開きます。画像は上下にスクロールが可能です。
+        <FontAwesomeIcon icon={faInfoCircle} />  サークルのスペースをクリックすると詳細画面が開きます。画像は上下にスクロール、または拡大/縮小が可能です。
       </div>
-      <div className="overflow-scroll" style={{ height: "78vh", border: "3px solid #ccc", borderRadius: '0.5rem' }}>
-        <div style={{
-          height: map.image_height + "px",
-          width: map.image_width + "px",
-          background: `url(${param.exhibition_id}/map.png) 0 0 no-repeat`,
-          position: "relative",
-        }}>
+      <div className='my-2'>
+        <small>
+          マップを拡大/縮小する：
+        </small>
+        <input
+          type="range"
+          min="0.3"
+          max="1.5"
+          step="0.1"
+          value={imageScale}
+          onChange={handleScaleChange}
+          style={{ width: '200px' }}
+        />
+      </div>
+      <div className="overflow-scroll" style={{ height: "70vh", border: "3px solid #ccc", borderRadius: '0.5rem' }}>
+        <div style={{ position: "relative" }}>
+          <img src={param.exhibition_id + "/map.png"} style={{ height: map.image_height * imageScale + "px", width: map.image_width * imageScale + "px", }} />
           {
             map.mappings.map(pos => {
               const space = pos.s + sprintf('%02d', pos.n);
@@ -84,10 +99,10 @@ function Content(): ReactElement {
                     backgroundColor: "rgba(255,0,0,0.3)",
                     border: '1px solid red',
                     cursor: 'pointer',
-                    left: `${pos.l}px`,
-                    top: `${pos.t}px`,
-                    width: `${pos.w}px`,
-                    height: `${pos.h}px`,
+                    left: `${pos.l * imageScale}px`,
+                    top: `${pos.t * imageScale}px`,
+                    width: `${pos.w * imageScale}px`,
+                    height: `${pos.h * imageScale}px`,
                     // onClick={() => onCircleClick(circle)}
                   }}
                 />
