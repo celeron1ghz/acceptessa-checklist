@@ -1,8 +1,8 @@
 import { ReactElement, Suspense, useState } from 'react';
 import { useRoute } from 'wouter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { Container } from 'react-bootstrap';
+import { faExclamationTriangle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { Alert, Container } from 'react-bootstrap';
 import useSWR from 'swr';
 import {
   flexRender,
@@ -71,6 +71,15 @@ function getCircleData(exhibition_id: string) {
           // spaceSymSorter: sorter,
           exhibition: data.exhibition,
           map: data.map,
+          error: null,
+        };
+      }).catch(err => {
+        return {
+          circleList: null,
+          // spaceSymSorter: sorter,
+          exhibition: null,
+          map: null,
+          error: err,
         };
       });
   }, { suspense: true });
@@ -83,17 +92,17 @@ function Content(): ReactElement {
     return <></>;
   }
 
-  const [selectedCircle, setSelectedCircle] = useState<Circle>();
-
   const { data } = getCircleData(param.exhibition_id);
 
-  // if (!data) {
-  //   return (
-  //     <Alert variant="danger">
-  //       <FontAwesomeIcon icon={faExclamationTriangle} /> 即売会が存在しません。(id={param.exhibition_id})
-  //     </Alert>
-  //   );
-  // }
+  if (data.error) {
+    return (
+      <Alert variant="danger" className='my-3'>
+        <FontAwesomeIcon icon={faExclamationTriangle} /> 即売会が存在しません。(id={param.exhibition_id})
+      </Alert>
+    );
+  }
+
+  const [selectedCircle, setSelectedCircle] = useState<Circle>();
 
   const initialPageIndex = 0;
   const initialPageSize = -1;
