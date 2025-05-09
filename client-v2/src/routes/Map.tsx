@@ -8,6 +8,7 @@ import { sprintf } from 'sprintf-js';
 import Header from '../component/Header';
 import { getCircleData, getExhibitionData } from '../component/Client';
 import Loading from '../component/Loading';
+import CircleDescModal from '../component/CircleDescModal';
 
 function Content(): ReactElement {
   const [, param] = useRoute("/:exhibition_id/map");
@@ -37,6 +38,7 @@ function Content(): ReactElement {
   }
 
   const [imageScale, setImageScale] = useState<number>(0.75);
+  const [selectedCircle, setSelectedCircle] = useState<Circle | null>(null);
 
   const map = data2.map;
   const circleIdxBySpace: { [space: string]: Circle } = {};
@@ -55,6 +57,7 @@ function Content(): ReactElement {
   return <>
     <Header exhibition={data.exhibition} count={data.circleList.length}></Header>
     <div className='my-3'>
+      <CircleDescModal circle={selectedCircle} show={!!selectedCircle} onHide={() => setSelectedCircle(null)} />
       <div className='text-secondary my-2'>
         <FontAwesomeIcon icon={faInfoCircle} />  サークルのスペースをクリックすると詳細画面が開きます。画像は上下にスクロール、または拡大/縮小が可能です。
       </div>
@@ -93,7 +96,7 @@ function Content(): ReactElement {
                   </Tooltip>
                 }>
                 <div
-                  key={space}
+                  onClick={() => setSelectedCircle(circle)}
                   style={{
                     position: 'absolute',
                     backgroundColor: "rgba(255,0,0,0.3)",
@@ -103,7 +106,6 @@ function Content(): ReactElement {
                     top: `${pos.t * imageScale}px`,
                     width: `${pos.w * imageScale}px`,
                     height: `${pos.h * imageScale}px`,
-                    // onClick={() => onCircleClick(circle)}
                   }}
                 />
               </OverlayTrigger>;

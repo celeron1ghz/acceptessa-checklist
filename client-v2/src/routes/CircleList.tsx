@@ -17,6 +17,7 @@ import { columns } from '../component/table/column';
 import { getCircleData, getExhibitionData } from '../component/Client';
 
 import '../component/table/style.css';
+import CircleDescModal from '../component/CircleDescModal';
 
 function Content(): ReactElement {
   const [, param] = useRoute("/:exhibition_id/list");
@@ -45,7 +46,7 @@ function Content(): ReactElement {
     );
   }
 
-  const [selectedCircle, setSelectedCircle] = useState<Circle>();
+  const [selectedCircle, setSelectedCircle] = useState<Circle | null>(null);
 
   const initialPageIndex = 0;
   const initialPageSize = -1;
@@ -68,6 +69,7 @@ function Content(): ReactElement {
   return <>
     <Header exhibition={data.exhibition} count={circles.length}></Header>
     <div className='my-3'>
+      <CircleDescModal circle={selectedCircle} show={!!selectedCircle} onHide={() => setSelectedCircle(null)} />
       <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} /> テーブルの行をクリックすると詳細画面が開きます。</div>
       {
         selectedCircle && selectedCircle.circle_id
