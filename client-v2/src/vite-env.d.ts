@@ -15,3 +15,17 @@ interface Circle {
     pixiv_url: string;
     site_url: string;
 }
+
+type CircleListResponse = SuccessResponse | ErrorResponse;
+
+type SuccessResponse = {
+    type: 'success';
+    circleList: Array<Circle>;
+    exhibition: Object;
+    map: Object;
+}
+
+type ErrorResponse = {
+    type: 'error';
+    error: Error;
+}

@@ -3,7 +3,7 @@ import { useRoute } from 'wouter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Alert, Container } from 'react-bootstrap';
-import useSWR from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 import {
   flexRender,
   getCoreRowModel,
@@ -18,7 +18,7 @@ import { columns } from '../component/table/column';
 
 import '../component/table/style.css';
 
-function getCircleData(exhibition_id: string) {
+function getCircleData(exhibition_id: string): SWRResponse<CircleListResponse, any, { suspense: true }> {
   return useSWR('circle', () => {
     return fetch('https://data.familiar-life.info/' + exhibition_id + '.json')
       .then(data => data.ok ? data : Promise.reject(data))
@@ -66,21 +66,21 @@ function getCircleData(exhibition_id: string) {
         //   });
         // }
 
-        return {
+        const ret: CircleListResponse = {
+          type: 'success',
           circleList: circleList as Array<Circle>,
-          // spaceSymSorter: sorter,
           exhibition: data.exhibition,
           map: data.map,
-          error: null,
         };
+
+        return ret;
       }).catch(err => {
-        return {
-          circleList: null,
-          // spaceSymSorter: sorter,
-          exhibition: null,
-          map: null,
+        const ret: CircleListResponse = {
+          type: 'error',
           error: err,
         };
+
+        return ret;
       });
   }, { suspense: true });
 }
@@ -94,7 +94,7 @@ function Content(): ReactElement {
 
   const { data } = getCircleData(param.exhibition_id);
 
-  if (data.error) {
+  if (data.type === 'error') {
     return (
       <Alert variant="danger" className='my-3'>
         <FontAwesomeIcon icon={faExclamationTriangle} /> 即売会が存在しません。(id={param.exhibition_id})
