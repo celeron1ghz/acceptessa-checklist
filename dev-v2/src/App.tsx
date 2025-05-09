@@ -2,67 +2,6 @@ import React, { useState, useRef } from 'react';
 import yaml from 'js-yaml';
 import './index.css';
 
-interface InputConfig {
-  tweet: OutputTweet;
-  marker_size: MarkerSize;
-  vertial_space?: VertialCoords[] | null;
-  horizontal_space?: HorizontalCoords[] | null;
-  custom_space?: OutputCoords[] | null;
-}
-
-interface OutputConfig {
-  tweet: OutputTweet;
-  map: OutputMap;
-}
-
-interface OutputTweet {
-  url: string;
-  related: string;
-  hashtags: string;
-}
-
-interface OutputMap {
-  image_width: number;
-  image_height: number;
-  mappings: OutputCoords[];
-}
-
-interface OutputCoords {
-  w: number;
-  h: number;
-  l: number;
-  t: number;
-  s: string;
-  n: string;
-}
-
-interface MarkerSize {
-  width: number;
-  height: number;
-}
-
-interface VertialCoords {
-  left: number;
-  tops: string[];
-  sym: string;
-  num?: number;
-  reverse: boolean;
-}
-
-interface HorizontalCoords {
-  top: number;
-  lefts: string[];
-  sym: string;
-  num?: number;
-  reverse: boolean;
-}
-
-interface ImageData {
-  width: number;
-  height: number;
-  src: string;
-}
-
 const INIT_INPUT_CONFIG_VALUE: InputConfig = {
   tweet: { url: "", related: "", hashtags: "" },
   marker_size: { width: 15, height: 20 },
@@ -85,7 +24,7 @@ const INIT_OUTPUT_CONFIG_VALUE: OutputConfig = {
 };
 
 const App: React.FC = () => {
-  const [imageRawData, setImageRawData] = useState<ImageData | null>(null);
+  const [imageRawData, setImageRawData] = useState<InputImageData | null>(null);
   const [imageScale, setImageScale] = useState<number>(1.5);
   const [clickCoord, setClickCoord] = useState<{ x: number; y: number } | null>(null);
   const [inputConfig, setInputConfig] = useState<InputConfig>(INIT_INPUT_CONFIG_VALUE);
@@ -373,17 +312,23 @@ const App: React.FC = () => {
                   style={{ width: '300px' }}
                 />
               </div>
-              <div>
-                生成された座標数は {outputConfig.map.mappings.length} 座標です。
-              </div>
-              <div>
-                {
-                  !inputYamlError && <div className='yaml_error'>入力のエラーはありません</div>
-                }
-                {
-                  inputYamlError && <div className='yaml_error'>入力にエラーがあります：<br />{inputYamlError}</div>
-                }
-              </div>
+              <hr />
+              <h4>生成結果</h4>
+              生成された座標数は {outputConfig.map.mappings.length} 座標です。
+              <hr />
+              画像の幅={imageRawData.width}<br />
+              画像の高さ={imageRawData.height}<br />
+              <hr />
+              URL：<code>{inputConfig.tweet.url || 'null'}</code><br />
+              アカウント名：<code>{inputConfig.tweet.related || 'null'}</code><br />
+              ハッシュタグ：<code>{inputConfig.tweet.hashtags || 'null'}</code><br />
+              <hr />
+              {
+                !inputYamlError && <div className='yaml_error'>入力のエラーはありません</div>
+              }
+              {
+                inputYamlError && <div className='yaml_error'>入力にエラーがあります：<br />{inputYamlError}</div>
+              }
             </div>
           </div>
         </>
