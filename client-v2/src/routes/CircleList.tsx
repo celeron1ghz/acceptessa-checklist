@@ -101,7 +101,7 @@ function Content(): ReactElement {
   // }
 
   const initialPageIndex = 0;
-  const initialPageSize = 20;
+  const initialPageSize = -1;
   const circles = data.circleList;
 
   const table = useReactTable<Circle>({
