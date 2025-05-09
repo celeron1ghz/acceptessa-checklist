@@ -1,1 +1,293 @@
 @import "bootstrap/scss/bootstrap.scss";
+
+/*
+.circleCutWrapper {
+    margin: 1em auto 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.circleCut-item {
+    position: relative;
+    max-width: 250px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.circleCut-item.space-wide {
+    max-width: 500px;
+}
+
+.circleCut-image {
+    position: relative;
+}
+
+.circleCut-img {
+    width: 100%;
+    height: auto;
+    display: inline-block;
+    pointer-events: none;
+}
+
+.circleCut-space {
+    position: absolute;
+    left: 0;
+    top: 0;
+    text-align: center;
+    line-height: 1.2em;
+    font-size: 13px;
+    background-color: #111;
+    color: #fff;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.circleCut-detail {
+    background-color: #333;
+    color: #fff;
+    font-size: 14px;
+    display: block;
+    height: auto;
+    flex-grow: 1;
+    padding: 10px 0 20px;
+}
+
+.circleCut-name {
+    width: auto;
+    flex-grow: 1;
+    padding: 0 0.5em 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.3em;
+}
+
+@media screen and (max-width: 990px) {
+    .circleCutWrapper {
+        width: 510px;
+        padding: 0;
+    }
+
+    .circleCut-item {
+        width: 127px;
+    }
+
+    .circleCut-item.space-wide {
+        width: 255px;
+    }
+
+    .circleCut-space {
+        font-size: 12px;
+    }
+
+    .circleCut-item.space-wide .circleCut-space {
+        font-size: 10px;
+    }
+
+    .circleCut-space {
+        width: 37px;
+        height: 37px;
+    }
+
+    .circleCut-detail {
+        font-Size: 12px;
+    }
+
+    .circleCut-name {
+        width: auto;
+    }
+}
+
+@media screen and (min-width: 991px) {
+    .circleCutWrapper {
+        width: 930px;
+    }
+
+    .circleCut-item {
+        width: 155px;
+        transition: 0.15s;
+    }
+
+    .circleCut-item:hover {
+        opacity: 0.5;
+        transition: 0.25s;
+    }
+
+    .circleCut-item.space-wide {
+        width: 310px;
+    }
+
+    .circleCut-space {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .circleCutWrapper {
+        width: 1000px;
+        padding: 0;
+    }
+
+    .circleCut-item {
+        width: 166px;
+    }
+
+    .circleCut-item.space-wide {
+        width: 333px;
+    }
+
+    .circleCut-space {
+        width: 49px;
+        height: 49px;
+    }
+}
+
+.circle-name {
+    margin: 1em 0 0;
+    display: flex;
+}
+
+.circle-link {
+    margin: 1em 0 0;
+    display: flex;
+}
+
+.circle-name dt,
+.circle-link dt {
+    margin: 0 1em 0 0;
+}
+
+.circle-name dd,
+.circle-link dd {
+    margin: 0 0 0;
+}
+*/
+
+/* circlecut width adjusting by screen width */
+
+.circlecuts>.circlecut {
+    width: 50%;
+    /* border: 1px solid red; */
+}
+
+.circlecuts>.circlecut.space-2sp {
+    width: 100%;
+}
+
+@media screen and (min-width: 576px) {
+    .circlecuts>.circlecut {
+        width: 33%;
+        border-color: blue;
+    }
+
+    .circlecuts>.circlecut.space-2sp {
+        width: 66%;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .circlecuts>.circlecut {
+        width: 25%;
+        border-color: cyan;
+    }
+
+    .circlecuts>.circlecut.space-2sp {
+        width: 50%;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .circlecuts>.circlecut {
+        width: 20%;
+        border-color: yellow;
+    }
+
+    .circlecuts>.circlecut.space-2sp {
+        width: 40%;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .circlecuts>.circlecut {
+        width: 16%;
+        border-color: green;
+    }
+
+    .circlecuts>.circlecut.space-2sp {
+        width: 32%;
+    }
+}
+
+@media screen and (min-width: 1400px) {
+    .circlecuts>.circlecut {
+        width: 12%;
+        border-color: blueviolet;
+    }
+
+    .circlecuts>.circlecut.space-2sp {
+        width: 24%;
+    }
+}
+
+/* normal styles */
+
+.circlecuts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.circlecuts img {
+    width: 100%;
+}
+
+.circleCut-item.space-wide {
+    max-width: 500px;
+}
+
+.circlecut {
+    position: relative;
+    max-width: 250px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.circleCut-space {
+    position: absolute;
+    left: 0;
+    top: 0;
+    text-align: center;
+    line-height: 1.2em;
+    font-size: 13px;
+    background-color: #111;
+    color: #fff;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.circleCut-detail {
+    background-color: #333;
+    color: #fff;
+    font-size: 14px;
+    display: block;
+    height: auto;
+    flex-grow: 1;
+    padding: 10px 0 20px;
+}
+
+.circleCut-name {
+    width: auto;
+    flex-grow: 1;
+    padding: 0 0.5em 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.3em;
+}

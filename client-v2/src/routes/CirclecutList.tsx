@@ -3,9 +3,11 @@ import { useRoute } from 'wouter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Alert, Container } from 'react-bootstrap';
+import LazyLoad from 'react-lazyload';
 
 import Header from '../component/Header';
 import { getCircleData } from '../component/Client';
+import Loading from '../component/Loading';
 
 function Content(): ReactElement {
   const [, param] = useRoute("/:exhibition_id/circlecut");
@@ -26,16 +28,43 @@ function Content(): ReactElement {
 
   return <>
     <Header exhibition_id={param.exhibition_id} count={data.circleList.length}></Header>
-    <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} />  画像をクリックすると詳細画面が開きます。</div>
-    サークルカット一覧
+    <div className='my-3'>
+      <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} />  画像をクリックすると詳細画面が開きます。</div>
+      <div className="circlecuts">
+        {
+          data.circleList.map(c => {
+            let spaceClass = (c.space_count === "1") ? 'space-1sp' : 'space-2sp';
+
+            return (
+              <div className={spaceClass + " circlecut"} key={c.circlecut || c.circle_id}>
+                <LazyLoad height={200} offset={0} once>
+                  <img
+                    src={c.circlecut ? c.circlecut.replace('http:', 'https:') : ''}
+                    className="circleCut-img"
+                    alt={c.circle_name}
+                  />
+                </LazyLoad>
+                <div className="circleCut-space">
+                  {c.space_sym}{c.space_num ? c.space_num.replace('-', ',') : ''}
+                </div>
+                <div className="circleCut-detail">
+                  <div className="circleCut-name">
+                    {c.circle_name}
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
   </>;
 }
 
 export default function Root(): ReactElement {
   return (
     <Container>
-      {/* <Suspense fallback={<Loading />}> */}
-      <Suspense fallback={'読み込み中'}>
+      <Suspense fallback={<Loading />}>
         <Content />
       </Suspense>
     </Container>
