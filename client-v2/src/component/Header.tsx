@@ -1,10 +1,11 @@
 import { faImage, faList, faMap } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ReactElement } from 'react';
 import { Container } from 'react-bootstrap';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
-export default function Header(param: { exhibition: Exhibition, count: number }) {
+export default function Header(param: { exhibition: Exhibition, count: number, children?: ReactElement }) {
   return (
     <Navbar bg="light" variant="light" expand="md" className="bg-body-tertiary_">
       <Container>

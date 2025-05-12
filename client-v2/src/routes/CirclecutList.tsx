@@ -54,7 +54,7 @@ function Content(): ReactElement {
   }
 
   return <>
-    <Header exhibition={data.exhibition} count={data.circleList.length}></Header>
+    <Header exhibition={data.exhibition} count={data.circleList.length} />
     <div className='my-3'>
       <CircleDescModal circle={selectedCircle} show={!!selectedCircle} onHide={() => setSelectedCircle(null)} />
       <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} />  画像をクリックすると詳細画面が開きます。</div>
@@ -62,7 +62,7 @@ function Content(): ReactElement {
         {
           Object.entries(circleListBySym).map(([sym, circles]) => {
             return <>
-              <h2>{sym}</h2>
+              <h2>{sym}ブロック</h2>
               {
                 circles.map(c => {
                   let spaceClass = (c.space_count === "1") ? 'space-1sp' : 'space-2sp';

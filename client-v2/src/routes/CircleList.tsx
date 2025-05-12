@@ -1,8 +1,8 @@
 import { ReactElement, Suspense, useState } from 'react';
 import { useRoute } from 'wouter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExclamationTriangle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { Alert, Container } from 'react-bootstrap';
+import { faExclamationTriangle, faInfoCircle, faNoteSticky } from '@fortawesome/free-solid-svg-icons';
+import { Alert, Badge, Container, ListGroup } from 'react-bootstrap';
 
 import Header from '../component/Header';
 import Loading from '../component/Loading';
@@ -41,21 +41,56 @@ function Content(): ReactElement {
   const [selectedCircle, setSelectedCircle] = useState<Circle | null>(null);
   const circles = data.circleList;
 
+  const circleListBySym: { [sym: string]: Circle[] } = {};
+
+  for (const c of data.circleList) {
+    if (!circleListBySym[c.space_sym]) {
+      circleListBySym[c.space_sym] = [];
+    }
+
+    circleListBySym[c.space_sym].push(c);
+  }
+
   return <>
-    <Header exhibition={data.exhibition} count={circles.length}></Header>
+    <Header exhibition={data.exhibition} count={circles.length}><span>aaa</span></Header>
     <div className='my-3'>
+      {/* <div className='sticky-top'>
+        ブロックに移動：
+        {
+          Object.keys(circleListBySym).map(s => {
+            return <a href={"#block-" + s}><Badge className='mr-2'>{s}</Badge>&nbsp;</a>;
+          })
+        }
+      </div> */}
       <CircleDescModal circle={selectedCircle} show={!!selectedCircle} onHide={() => setSelectedCircle(null)} />
-      <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} /> テーブルの行をクリックすると詳細画面が開きます。</div>
-      {
-        selectedCircle && selectedCircle.circle_id
-      }
       <div className='d-block d-md-none'>
-        小さいときに表示
+        <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} /> リストの行をクリックすると詳細画面が開きます。</div>
+        <ListGroup>
+          {
+            Object.entries(circleListBySym).map(([sym, circles]) => {
+              return <>
+                <ListGroup.Item variant="info" className="text-center">{sym}ブロック</ListGroup.Item>
+                {
+                  circles.map(c => {
+                    return <ListGroup.Item onClick={() => setSelectedCircle(c)} className='d-flex justify-content-between align-items-center'>
+                      <span><Badge bg="info">{c.space_sym}-{c.space_num}</Badge> {c.circle_name}({c.penname})</span>
+                      <span>
+                        {
+                          (c.circle_comment || c.circle_link) && <FontAwesomeIcon icon={faNoteSticky} className='text-info' />
+                        }
+                      </span>
+                    </ListGroup.Item>;
+                  })
+                }
+              </>
+            })
+          }
+        </ListGroup>
       </div>
       <div className='d-none d-md-block'>
-        大きいときに表示
+        <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} /> テーブルの行をクリックすると詳細画面が開きます。</div>
+        <CircleListTable circles={circles} onSelectedCircle={(c: Circle) => setSelectedCircle(c)} />
       </div>
-      <CircleListTable circles={circles} onSelectedCircle={(c: Circle) => setSelectedCircle(c)} />
     </div>
   </>;
 }
