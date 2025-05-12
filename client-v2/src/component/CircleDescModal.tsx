@@ -1,6 +1,8 @@
-import { faClipboard, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import { faClipboard, faExclamationCircle, faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Card, Modal } from "react-bootstrap";
+import { Badge, Button, Card, Modal } from "react-bootstrap";
+
+import './style.css';
 
 export default function CircleDescModal(param: { circle: Circle | null, show: boolean, onHide: () => void }) {
   const c = param.circle;
@@ -12,12 +14,29 @@ export default function CircleDescModal(param: { circle: Circle | null, show: bo
       </Modal.Header>
       <Modal.Body>
         <h4>サークルの情報</h4>
-        <Card>
+        <Card className="circle_desc">
           <Card.Body>
-            aa
+            <div>
+              <Badge>{c?.space_sym}-{c?.space_num}</Badge> {c?.circle_name} ({c?.penname})
+            </div>
+            {
+              c?.pixiv_url && <div>
+                <FontAwesomeIcon icon={['fab', 'pixiv']} size="2xl" /> <a href={c.pixiv_url} target="_blank">{c.pixiv_url}</a>
+              </div>
+            }
+            {
+              c?.twitter_id && <div>
+                <FontAwesomeIcon icon={['fab', 'x-twitter']} size="2xl" /> <a href={'https://twitter.com/' + c.twitter_id} target="_blank">{c.twitter_id}</a>
+              </div>
+            }
+            {
+              c?.site_url && <div>
+                <FontAwesomeIcon icon={faLink} size="2xl" /> <a href={c.site_url} target="_blank">{c.site_url}</a>
+              </div>
+            }
           </Card.Body>
         </Card>
-        <h4 className='mt-3'>サークルのお品書き</h4>
+        <h4 className='mt-3'>お品書き</h4>
         <Card>
           <Card.Body>
             <div key={"comment-" + c?.circle_id}>
