@@ -3,21 +3,13 @@ import { useRoute } from 'wouter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Alert, Container } from 'react-bootstrap';
-import {
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
 
 import Header from '../component/Header';
 import Loading from '../component/Loading';
-import { columns } from '../component/table/column';
 import { getCircleData, getExhibitionData } from '../component/Client';
 
-import '../component/table/style.css';
 import CircleDescModal from '../component/CircleDescModal';
+import { CircleListTable } from '../component/CircleList/Table/CircleListTable';
 
 function Content(): ReactElement {
   const [, param] = useRoute("/:exhibition_id/list");
@@ -47,24 +39,7 @@ function Content(): ReactElement {
   }
 
   const [selectedCircle, setSelectedCircle] = useState<Circle | null>(null);
-
-  const initialPageIndex = 0;
-  const initialPageSize = -1;
   const circles = data.circleList;
-
-  const table = useReactTable<Circle>({
-    columns,
-    data: circles,
-    initialState: {
-      pagination: {
-        pageIndex: initialPageIndex,
-        pageSize: initialPageSize,
-      },
-    },
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-  });
 
   return <>
     <Header exhibition={data.exhibition} count={circles.length}></Header>
@@ -74,58 +49,13 @@ function Content(): ReactElement {
       {
         selectedCircle && selectedCircle.circle_id
       }
-      <table id="circleList">
-        <thead>
-          {
-            table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {
-                  headerGroup.headers.map((header) => (
-                    <th key={header.id}>
-                      {
-                        header.isPlaceholder
-                          ? null
-                          : flexRender(header.column.columnDef.header, header.getContext())
-                      }
-                    </th>
-                  ))
-                }
-              </tr>
-            ))
-          }
-          {/* <tr>
-          <td colSpan={2}>
-            <input type="text" onChange={e => table.getColumn("space_sym")?.setFilterValue(e.target.value)} placeholder='記号' style={{ width: '3rem' }} />
-          </td>
-          <td>
-            <input type="text" onChange={e => table.getColumn("circle_name")?.setFilterValue(e.target.value)} placeholder='サークル名' />
-          </td>
-          <td>
-            <input type="text" onChange={e => table.getColumn("penname")?.setFilterValue(e.target.value)} placeholder='ペンネーム' />
-          </td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr> */}
-        </thead>
-        <tbody>
-          {
-            table.getRowModel().rows.map((row) =>
-              <tr key={row.id} onClick={() => { setSelectedCircle(row.original as any) }}>
-                {row.getVisibleCells().map((cell) => {
-                  return <td key={cell.id}>
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
-                  </td>;
-                })}
-              </tr>
-            )
-          }
-        </tbody>
-      </table>
+      <div className='d-block d-md-none'>
+        小さいときに表示
+      </div>
+      <div className='d-none d-md-block'>
+        大きいときに表示
+      </div>
+      <CircleListTable circles={circles} onSelectedCircle={(c: Circle) => setSelectedCircle(c)} />
     </div>
   </>;
 }
