@@ -62,7 +62,7 @@ function Content(): ReactElement {
           })
         }
       </div> */}
-      <CircleDescModal circle={selectedCircle} show={!!selectedCircle} onHide={() => setSelectedCircle(null)} />
+      <CircleDescModal exhibiton={data.exhibition} circle={selectedCircle} show={!!selectedCircle} onHide={() => setSelectedCircle(null)} tweetParams={data2.tweet}/>
       <div className='d-block d-md-none'>
         <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} /> リストの行をクリックすると詳細画面が開きます。</div>
         <ListGroup>

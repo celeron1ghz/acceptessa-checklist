@@ -4,7 +4,25 @@ import { Badge, Button, Card, Modal } from "react-bootstrap";
 
 import './style.css';
 
-export default function CircleDescModal(param: { circle: Circle | null, show: boolean, onHide: () => void }) {
+function generateTweetLink(exhibition: Exhibition, circle: Circle, tweetParams: OutputTweet) {
+  const param = {
+    ...tweetParams,
+    text: `${exhibition.exhibition_name} `
+      + (circle.space_sym && circle.space_num ? `【${circle.space_sym}-${circle.space_num}】 ` : '')
+      + `${circle.circle_name} のサークル情報です。`,
+    url: window.location.href,
+  };
+
+  const p = new URLSearchParams();
+
+  for (const [k, v] of Object.entries(param)) {
+    p.append(k, v);
+  }
+
+  return 'https://twitter.com/intent/tweet?' + p.toString();
+}
+
+export default function CircleDescModal(param: { exhibiton: Exhibition, circle: Circle | null, show: boolean, onHide: () => void, tweetParams: OutputTweet }) {
   const c = param.circle;
 
   return (
@@ -13,6 +31,9 @@ export default function CircleDescModal(param: { circle: Circle | null, show: bo
         <FontAwesomeIcon icon={faClipboard} />&nbsp;{c?.circle_name || '...'}
       </Modal.Header>
       <Modal.Body>
+        <div className="mb-5">
+          <img src={c?.circlecut} className="mx-auto d-block" />
+        </div>
         <h4>サークルの情報</h4>
         <Card className="circle_desc">
           <Card.Body>
@@ -43,23 +64,35 @@ export default function CircleDescModal(param: { circle: Circle | null, show: bo
               {
                 c?.circle_comment
                   ? c.circle_comment.split('\n').map(l => <div style={{ wordWrap: 'break-word' }}>{l}</div>)
-                  : <span className="text-info"><FontAwesomeIcon icon={faExclamationCircle} /> お品書きコメントを記入していません</span>
+                  : <span className="text-info"><FontAwesomeIcon icon={faExclamationCircle} /> お品書きのテキストを記入していません</span>
               }
             </div>
             <div key={"link-" + c?.circle_id}>
               {
                 c?.circle_link
                   ? <a href={c.circle_link} target="_blank" rel="noopener noreferrer">{c.circle_link}</a>
-                  : <span className="text-info"><FontAwesomeIcon icon={faExclamationCircle} /> お品書きリンクを記入していません</span>
+                  : <span className="text-info"><FontAwesomeIcon icon={faExclamationCircle} /> お品書きのリンクを記入していません</span>
               }
             </div>
           </Card.Body>
         </Card>
+        {
+          param.circle && <Button
+            variant="primary"
+            className="mt-3"
+            style={{ width: '100%' }}
+            href={generateTweetLink(param.exhibiton, param.circle, param.tweetParams)}
+            target="_blank">
+            <FontAwesomeIcon icon={['fab', 'x-twitter']} /> {' '}Xでサークルの情報をポストする（別画面が開きます）
+          </Button>
+        }
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={param.onHide}>
-          Close
-        </Button>
+        <div>
+          <Button variant="secondary" onClick={param.onHide}>
+            閉じる
+          </Button>
+        </div>
       </Modal.Footer>
     </Modal>
   );
