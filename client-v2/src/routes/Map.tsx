@@ -57,7 +57,7 @@ function Content(): ReactElement {
   return <>
     <Header exhibition={data.exhibition} count={data.circleList.length}></Header>
     <div className='my-3'>
-      <CircleDescModal circle={selectedCircle} show={!!selectedCircle} onHide={() => setSelectedCircle(null)} />
+      <CircleDescModal exhibiton={data.exhibition} circle={selectedCircle} show={!!selectedCircle} onHide={() => setSelectedCircle(null)} tweetParams={data2.tweet} />
       <div className='text-secondary my-2'>
         <FontAwesomeIcon icon={faInfoCircle} />  サークルのスペースをクリックすると詳細画面が開きます。画像は上下にスクロール、または拡大/縮小が可能です。
       </div>

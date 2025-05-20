@@ -1,0 +1,11 @@
+.circle_desc .card-body>div {
+    margin-bottom: 0.3rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.circle_desc .card-body>div svg:nth-child(1) {
+    margin-right: 0.4rem;
+    width: 25px;
+}

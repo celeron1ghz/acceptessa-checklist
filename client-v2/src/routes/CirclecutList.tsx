@@ -56,7 +56,7 @@ function Content(): ReactElement {
   return <>
     <Header exhibition={data.exhibition} count={data.circleList.length} />
     <div className='my-3'>
-      <CircleDescModal circle={selectedCircle} show={!!selectedCircle} onHide={() => setSelectedCircle(null)} />
+      <CircleDescModal exhibiton={data.exhibition} circle={selectedCircle} show={!!selectedCircle} onHide={() => setSelectedCircle(null)} tweetParams={data2.tweet} />
       <div className='text-secondary my-2'><FontAwesomeIcon icon={faInfoCircle} />  画像をクリックすると詳細画面が開きます。</div>
       <div className="circlecuts">
         {
