@@ -1,16 +1,17 @@
-import { faLink, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import { faLink, faQuestion, IconPack } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ColumnDef } from '@tanstack/react-table';
+import { AccessorKeyColumnDef, createColumnHelper } from '@tanstack/react-table';
 // import moment from 'moment';
 // import relativeDate from 'relative-date';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
-library.add(fab);
+library.add(fab as IconPack);
 
-export const columns: ColumnDef<Circle>[] = [
-    {
-        accessorKey: 'space_sym',
+const columnHelpr = createColumnHelper<Circle>();
+
+export const columns: AccessorKeyColumnDef<Circle, string>[] = [
+    columnHelpr.accessor('space_sym', {
         header: '記号',
         size: 50,
 
@@ -23,9 +24,9 @@ export const columns: ColumnDef<Circle>[] = [
 
             return <span>{v}</span>
         }
-    },
-    {
-        accessorKey: 'space_num',
+    }),
+
+    columnHelpr.accessor('space_num', {
         header: '数値',
         maxSize: 60,
         minSize: 60,
@@ -39,19 +40,19 @@ export const columns: ColumnDef<Circle>[] = [
 
             return <span>{v}</span>
         }
-    },
-    {
-        accessorKey: 'circle_name',
+    }),
+
+    columnHelpr.accessor('circle_name', {
         header: 'サークル名',
         size: 90,
-    },
-    {
-        accessorKey: 'penname',
+    }),
+
+    columnHelpr.accessor('penname', {
         header: 'ペンネーム',
         size: 90,
-    },
-    {
-        accessorKey: 'circle_comment',
+    }),
+
+    columnHelpr.accessor('circle_comment', {
         header: 'お品書き',
         size: 90,
         cell: (props) => {
@@ -64,10 +65,10 @@ export const columns: ColumnDef<Circle>[] = [
             // return v.substring(0, 20) + "...";
             return v;
         }
-    },
-    {
-        accessorKey: 'twitter_id',
-        header: <FontAwesomeIcon icon={['fab', 'twitter']} />,
+    }),
+
+    columnHelpr.accessor('twitter_id', {
+        // header: <FontAwesomeIcon icon={['fab', 'twitter']} />,
         size: 40,
         cell: (props) => {
             const v = props.getValue() as string;
@@ -78,10 +79,10 @@ export const columns: ColumnDef<Circle>[] = [
 
             return <a href={`https://x.com/${v}`} target="_blank"><FontAwesomeIcon icon={['fab', 'twitter']} /></a>
         }
-    },
-    {
-        accessorKey: 'pixiv_url',
-        header: <FontAwesomeIcon icon={['fab', 'pixiv']} />,
+    }),
+
+    columnHelpr.accessor('pixiv_url', {
+        // header: <FontAwesomeIcon icon={['fab', 'pixiv']} />,
         size: 40,
         cell: (props) => {
             const v = props.getValue() as string;
@@ -92,10 +93,10 @@ export const columns: ColumnDef<Circle>[] = [
 
             return <a href={v} target="_blank"><FontAwesomeIcon icon={['fab', 'pixiv']} /></a>
         }
-    },
-    {
-        accessorKey: 'site_url',
-        header: <FontAwesomeIcon icon={faLink} />,
+    }),
+
+    columnHelpr.accessor('site_url', {
+        // header: <FontAwesomeIcon icon={faLink} />,
         size: 40,
         cell: (props) => {
             const v = props.getValue() as string;
@@ -106,5 +107,6 @@ export const columns: ColumnDef<Circle>[] = [
 
             return <a href={v} target="_blank"><FontAwesomeIcon icon={faLink} /></a>
         }
-    },
+    }),
+
 ];
