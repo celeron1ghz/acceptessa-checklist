@@ -31,10 +31,7 @@
     "start": "NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
     "build": "NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "watchConfig": "node config/watch.js",
-    "buildConfigV2": "node config/build-v2.js",
-    "buildConfig": "node config/build.js"
+    "eject": "react-scripts eject"
   },
   "browserslist": {
     "production": [

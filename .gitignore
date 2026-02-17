@@ -23,3 +23,5 @@ yarn-error.log*
 
 client/public/
 client/build/
+client-v2/public/
+client-v2/build/

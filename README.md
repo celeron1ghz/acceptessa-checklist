@@ -6,17 +6,22 @@
 ```
 npm i
 npm run dev
+## ブラウザでデータを作成...
 ```
 
-## client, client-v2
-作成したjsonファイルを `public` に置く。置き方は以下の通り。
-即売会名をtestとする。
-```
-public
-┣ test/
-┃ ┗ map.png
-┃ ┗ not_uploaded.png
-┗ test.json
-```
+## 新しくデータを作るとき（client, client-v2）
+作成したjsonファイルを `config` に置く。
+下記の例では即売会名をtestとする。
 
-
+ * `mkdir config/v2/test`
+ * `test` 以下に下記ファイルを置く
+   * config.yaml - map_data_generatorで作ったもの
+   * config.json - map_data_generatorで作ったもの
+   * map.png - mapの画像
+   * not_uploaded.png - サークルカット未アップロード時に使う画像（任意）
+ * ` node config/v2/build.js`
+ * client v1の場合
+   * `cd client`
+   * `sh refresh-assets.sh`
+ * client v2の場合
+   * 移行後に考える
