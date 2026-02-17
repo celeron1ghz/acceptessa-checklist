@@ -6,12 +6,10 @@ const INIT_INPUT_CONFIG_VALUE: InputConfig = {
   tweet: { url: "", related: "", hashtags: "" },
   marker_size: { width: 15, height: 20 },
   horizontal_space: [
-    { top: 50, lefts: ["100", "+5", "+5", "+10"], sym: "A", num: 1, reverse: false },
-    { top: 50, lefts: ["230", "+5", "+5", "+10"], sym: "B", num: 1, reverse: true },
+    { top: 50, lefts: ["100", "+2", "+2", "+2"], sym: "A", num: 1, reverse: false },
   ],
   vertial_space: [
-    { left: 50, tops: ["30", "+0", "+0", "+5"], sym: "C", num: 1, reverse: false },
-    { left: 50, tops: ["130", "+0", "+0", "+5"], sym: "D", num: 1, reverse: true },
+    { left: 50, tops: ["30", "+2", "+2", "+2"], sym: "B", num: 1, reverse: false },
   ],
   custom_space: [
     { l: 150, t: 100, w: 30, h: 30, s: "王", n: "1" },
