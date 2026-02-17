@@ -45,8 +45,8 @@ const App: React.FC = () => {
         img.onload = () => {
           setImageRawData({ width: img.width, height: img.height, src: result });
         };
-        img.src = result;
 
+        img.src = result;
         setClickCoord(null);
 
         setInputConfig(INIT_INPUT_CONFIG_VALUE);
@@ -81,10 +81,6 @@ const App: React.FC = () => {
   const updateYaml = function (yamlString: string) {
     setInputYamlText(yamlString);
     setInputYamlError('');
-
-    if (!imageRawData) {
-      return;
-    }
 
     try {
       const newConfig = yaml.load(yamlString) as InputConfig;
@@ -197,8 +193,8 @@ const App: React.FC = () => {
       setOutputConfig({
         tweet: newConfig.tweet,
         map: {
-          image_width: imageRawData.width,
-          image_height: imageRawData.height,
+          image_width: imageRawData?.width || 0,
+          image_height: imageRawData?.height || 0,
           mappings: coords,
         },
       });
