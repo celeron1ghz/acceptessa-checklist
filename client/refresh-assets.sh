@@ -3,7 +3,6 @@ cd `dirname $0`
 
 echo building...
 yarn build
-# yarn buildConfig
 yarn buildConfigV2
 
 echo syncing...
